@@ -1,0 +1,58 @@
+#pragma once
+#include <list>
+
+#ifndef NN
+#include "ClusterSolver.hpp"
+#endif 
+
+#include "NearestNeighboursSolver.hpp"
+#include "Utilities.hpp"
+#include "Point.hpp"
+
+typedef std::list<Point*> DataList;
+
+typedef std::list<Neighbour> Neighbours;  // list of neighbours
+
+class Evaluator {
+   private:
+    /* data */
+    void print_to_fstream(ofstream stream, string msg);
+    uint32_t k, w, L, probes, M;
+    double R;
+
+    // use brute force O(n*logn) algorithm to calculate nearest neighbours
+    Neighbours* nearestNeighboursBruteForce(const DataList &dataset, const Point& p, int k);
+    // evaluate accuracy of NN-RS results
+    double get_accuracy(Neighbours &__true, Neighbours &_res);
+   void dist_metrics(Neighbours &__true, Neighbours &_res);
+   public:
+    Evaluator();
+    ~Evaluator();
+
+    // evaluate algorithm performance from queries of a given file
+    void evaluate_from_file(
+        const DataList& dataset,         // dataset
+        std::string method_name,
+        NearestNeighboursSolver& solver, // NN solver
+        std::string query_file,          // file with query points
+        std::string out_file = "stdout", // default fout is stdout
+        const uint32_t N = 1,            // number of neighbours to find
+        const double R = -1.0           // default is no range search, change to R>=0 to range search
+    );
+
+    void evaluate(
+        const DataList& dataset,         // dataset
+        const Point& q,                  // query point
+        std::string method_name,
+        NearestNeighboursSolver& solver, // solver (LSH, HP)
+        ofstream &out_file,               // name of the out_file, default stdout
+        const uint32_t N = 1,            // number of neighbours to find
+        const double R = -1.0           // R for range search. If R>= 0 then we activate range_search
+    );
+
+    #ifndef NN
+    // evaluate algorithm performance from queries of a given file
+    void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete);
+
+    #endif
+};
