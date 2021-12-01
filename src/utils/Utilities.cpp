@@ -46,5 +46,5 @@ int32_t get_random_num(int32_t min, int32_t max) {
 bool my_less::operator()(const pair<Point *, double>& l, const pair<Point *, double>& r) {
     return l.second - r.second < 0   ? true
         : l.second - r.second > 0 ? false
-            : l.first->getId() - r.first->getId() < 0;
+            : l.first->getId().size() - r.first->getId().size() < 0;
 }

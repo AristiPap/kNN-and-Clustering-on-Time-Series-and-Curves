@@ -1,8 +1,9 @@
 #include "FileHandler.hpp"
 
-FileHandler::FileHandler(DistanceMetric distMetric){
+FileHandler::FileHandler(DistanceMetric distMetric, double f_sample){
     this->db = nullptr;
     this->distMetric = distMetric;
+    this->f_sample = f_sample;
 };
 FileHandler::~FileHandler(){};
 
@@ -24,10 +25,12 @@ void FileHandler::CloseFile(){
 }
 
 std::list<Point *> *FileHandler::create_dbPoints(){
+    int T = (int)(1/this->f_sample);
+    int sample_i = 0;
     string str,token;
-    int id;
+    string id;
     vector<double> coords;
-    
+
     this->db = new list<Point *> ();
     
     //start with 1 point to see if file is empty or not
@@ -36,11 +39,15 @@ std::list<Point *> *FileHandler::create_dbPoints(){
             str.erase( str.size() - 1 );
         istringstream ss(str);
         ss >> token;
-        id = stoi(token);
+        id = token;
         
         while( ss >> token )
-            coords.push_back(stod(token));
-        
+            // sample with the given sampling rate
+                coords.push_back(stod(token));
+                
+        if (coords.size() != 120)
+            cout << "coords size: " << coords.size() << " " << id << endl;
+
         Point p1(id, coords, this->distMetric);
         this->db->push_back(new Point(p1));
         coords.clear();
@@ -50,14 +57,18 @@ std::list<Point *> *FileHandler::create_dbPoints(){
     }  
     //read rest of the file
     while(getline(in,str,'\n')){
+        sample_i = 0;
         if ( !str.empty() && str.back() == '\r' ) 
             str.erase( str.size() - 1 );
         istringstream ss(str);
         ss >> token;
-        id = stoi(token);
+        id = token;
         while( ss >> token )
-            coords.push_back(stod(token));
-        
+            // sample with the given sampling rate
+                coords.push_back(stod(token));
+
+        if (coords.size() != 120)
+            cout << "coords size: " << coords.size() << " " << id << endl;
         Point p(id, coords, this->distMetric);
         this->db->push_back(new Point(p));
         coords.clear();

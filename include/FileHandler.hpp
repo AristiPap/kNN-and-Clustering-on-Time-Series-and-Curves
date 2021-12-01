@@ -23,8 +23,9 @@ class FileHandler{
         string inputPath;
         std::list<Point *> *db;
         DistanceMetric distMetric;
+        double f_sample;
     public:
-        FileHandler(DistanceMetric distMetric);
+        FileHandler(DistanceMetric distMetric, double f_sample);
         ~FileHandler();
         int OpenFile(string inputFile);
         void CloseFile();

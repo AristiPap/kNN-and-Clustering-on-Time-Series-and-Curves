@@ -18,7 +18,7 @@ Evaluator::~Evaluator() {}
 // evaluate algorithm performance from queries of a given file
 void Evaluator::evaluate_from_file(const DataList& dataset, string method_name, NearestNeighboursSolver& solver, string query_file, string out_file, const uint32_t N, const double R) {
     // try to open query file
-    FileHandler file_handler(dataset.front()->getDistMetric());
+    FileHandler file_handler(dataset.front()->getDistMetric(), 0.5);
     if (file_handler.OpenFile(query_file) != 0) {
         cerr << "Could not open: '" <<  query_file << "'";
         return;

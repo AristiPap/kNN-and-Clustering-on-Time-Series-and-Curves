@@ -20,7 +20,7 @@ typedef double (*DistanceMetric)(const vector<double>&, const vector<double>&);
 class Point{
     private:
         DistanceMetric distMetric;
-        uint32_t id;
+        std::string id;
         int dims; 
         vector<double> coords;
         bool marked;
@@ -30,10 +30,10 @@ class Point{
     public:
         //constructor
         Point(DistanceMetric distMetric);
-        Point(int id, int dims, DistanceMetric distMetric);
-        Point(int id, vector<double> p, DistanceMetric distMetric);
+        Point(std::string id, int dims, DistanceMetric distMetric);
+        Point(std::string id, vector<double> p, DistanceMetric distMetric);
         //setters
-        void setId(uint32_t id);
+        void setId(std::string id);
         void setDims(int dim_num);
         void setMarked(bool flg);
         void setCoordinate(double x, int i);
@@ -43,7 +43,7 @@ class Point{
         void setSecCluster(int s_cluster_id);
         //getters
         DistanceMetric getDistMetric() const;
-        uint32_t getId() const;
+        std::string getId() const;
         int getDims() const;
         bool getMarked() const;
         int getCluster() const;

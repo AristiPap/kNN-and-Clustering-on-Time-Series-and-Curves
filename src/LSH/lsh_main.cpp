@@ -100,9 +100,11 @@ int main(int argc, char **argv) {
     ArgumentParser arg_parser(7, categorical, 3, num_args, 4, flags, 0, set_var);
     arg_parser.parse_args(argc, argv);
 
+    // TODO: Find the sampling rate from the name of the query file and pass it in the file handler
+    #define F_S 0.5
 
     Evaluator evaluator;
-    FileHandler file_handler(L2_norm); // create points with L2 points
+    FileHandler file_handler(L2_norm, F_S); // create points with L2 points
     bool end = false;
     bool start_process;
     DataList *dataset = nullptr;

@@ -6,16 +6,16 @@
 
 Point::Point(DistanceMetric distMetric):distMetric(distMetric), dims(0), marked(false){}
 
-Point::Point(int id, int dims, DistanceMetric distMetric) 
+Point::Point(string id, int dims, DistanceMetric distMetric) 
 : distMetric(distMetric), id(id), dims(dims),marked(false), cluster_id(-1) {
     coords.resize(dims);
 }
 
-Point::Point(int id, vector<double> p, DistanceMetric distMetric)
+Point::Point(string id, vector<double> p, DistanceMetric distMetric)
     : distMetric(distMetric), id(id), dims(p.size()), coords(p), marked(false), cluster_id(-1) {}
 
 //setters
-void Point::setId(uint32_t id){
+void Point::setId(string id){
     this->id = id;
 }
 
@@ -50,7 +50,7 @@ DistanceMetric Point::getDistMetric() const {
     return this->distMetric;
 }
 
-uint32_t Point::getId() const {
+string Point::getId() const {
     return id; 
 }
 

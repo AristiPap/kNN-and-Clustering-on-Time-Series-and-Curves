@@ -13,7 +13,7 @@ Hashing::Hashing(int32_t k, int32_t w, int32_t dim)
 Hashing::~Hashing() {}
 
 void Hashing::init_v() {
-    for (int i = 0; i < k; i++) vs.push_back(Point(-1, get_random_vec(this->dim), L1_norm)); // insert v_i, metric is irrelevant
+    for (int i = 0; i < k; i++) vs.push_back(Point("v[i] utility point", get_random_vec(this->dim), L1_norm)); // insert v_i, metric is irrelevant
 }
 
 void Hashing::init_t() {
