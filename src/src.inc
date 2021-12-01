@@ -6,3 +6,6 @@ OBJS += $(BUILD)/NearestNeighboursSolver.o
 OBJS += $(BUILD)/Evaluator.o
 OBJS += $(BUILD)/FileHandler.o
 OBJS += $(BUILD)/Profiler.o
+OBJS += $(BUILD)/frechet.o
+OBJS += $(BUILD)/config.o
+OBJS += $(BUILD)/interval.o

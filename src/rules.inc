@@ -12,3 +12,6 @@ $(BUILD)/%.o : $(SRC)/HyperCube/%.cpp
 
 $(BUILD)/%.o : $(SRC)/Clustering/%.cpp
 	@$(CC) $(CFLAGS) -c $< -o $@	
+
+$(BUILD)/%.o : $(SRC)/utils/Fred/%.cpp
+	@$(CC) $(CFLAGS) -c $< -o $@	

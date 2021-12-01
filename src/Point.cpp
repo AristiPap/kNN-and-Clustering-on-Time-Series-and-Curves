@@ -124,6 +124,52 @@ ostream& operator<<(ostream& os, const Point& p) {
     return os;
 }
 
+// multiply with scalar (element wise)
+Point Point::operator-(const Point p) const{
+    assert(this->coords.size() == p.coords.size());
+
+    Point sub{"after sub", this->dims, this->distMetric};
+
+    for (uint32_t i = 0; i < this->coords.size(); i++)
+        sub.addCoordinate(this->coords[i] - p.getCoordinate(i));
+
+    return sub;
+}
+
+// add-on from Fred module
+distance_t Point::length_sqr() const {
+    distance_t result = 0;
+
+    for (dimensions_t i = 0; i < this->coords.size(); ++i) {
+        result += this->coords[i] * this->coords[i];
+    }
+    return result;
+}
+
+Interval Point::ball_intersection_interval(const distance_t distance_sqr, const Point &line_start, const Point &line_end) const {
+        const Point u = line_end-line_start, v = *this - line_start;
+        const parameter_t ulen_sqr = u.length_sqr(), vlen_sqr = v.length_sqr();
+        
+        if (near_eq(ulen_sqr, parameter_t(0))) {
+            if (vlen_sqr <= distance_sqr) return Interval(parameter_t(0), parameter_t(1));
+            else return Interval();
+        }
+                
+        const parameter_t p =  -2. * ((u * v) / ulen_sqr), q = vlen_sqr / ulen_sqr - distance_sqr / ulen_sqr;
+        
+        const parameter_t phalf_sqr = p * p / 4., discriminant = phalf_sqr - q;
+        
+        if (discriminant < 0) return Interval();
+        
+        const parameter_t discriminant_sqrt = std::sqrt(discriminant);
+        
+        const parameter_t minus_p_h = - p / 2., r1 = minus_p_h + discriminant_sqrt, r2 = minus_p_h - discriminant_sqrt;
+        const parameter_t lambda1 = std::min(r1, r2), lambda2 = std::max(r1, r2);
+                
+        return Interval(std::max(parameter_t(0), lambda1), std::min(parameter_t(1), lambda2));
+    }
+
+
 // Default point distance metrics
 
 double L2_norm(const std::vector<double>& p1, const std::vector<double>& p2) {

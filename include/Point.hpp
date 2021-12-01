@@ -9,6 +9,9 @@
 #include <sstream>
 #include <assert.h>
 
+#include "types.hpp"
+#include "interval.hpp"
+
 using namespace std;
 
 // Default point distance metric
@@ -60,7 +63,11 @@ class Point{
         void operator+=(const Point &p);
         void operator/=(const double n);
         void operator*=(const double n);
+        Point operator-(const Point p) const;
 
+        // Fred add-on for frechet dist
+        distance_t length_sqr() const;
+        Interval ball_intersection_interval(const distance_t distance_sqr, const Point& line_start, const Point& line_end) const;
 };
 
 // overload to print a point as a vector
