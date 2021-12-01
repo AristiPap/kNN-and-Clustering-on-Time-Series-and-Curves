@@ -64,9 +64,11 @@ class Point{
         void operator/=(const double n);
         void operator*=(const double n);
         Point operator-(const Point p) const;
-
+        Point operator+(const Point p) const;
         // Fred add-on for frechet dist
         distance_t length_sqr() const;
+        distance_t dist_sqr(const Point &point) const;
+        distance_t line_segment_dist_sqr(const Point &p1, const Point &p2) const;
         Interval ball_intersection_interval(const distance_t distance_sqr, const Point& line_start, const Point& line_end) const;
 };
 

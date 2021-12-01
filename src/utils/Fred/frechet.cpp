@@ -104,6 +104,8 @@ bool _less_than_or_equal(const distance_t distance, Curve const& curve1, Curve c
         std::vector<Parameters> &reachable1, std::vector<Parameters> &reachable2,
         std::vector<Intervals> &free_intervals1, std::vector<Intervals> &free_intervals2) {
     
+    
+    
     if (Config::verbosity > 2) std::cout << "CFD: constructing FSD" << std::endl;
     const distance_t dist_sqr = distance * distance;
     const auto infty = std::numeric_limits<parameter_t>::infinity();
@@ -126,12 +128,12 @@ bool _less_than_or_equal(const distance_t distance, Curve const& curve1, Curve c
     
     for (curve_size_t i = 0; i < n1 - 1; ++i) {
         reachable1[i][0] = 0;
-        if (curve2[0].dist_sqr(curve1[i+1]) > dist_sqr) break;
+        if ((curve2.getCurvePoints())[0].dist_sqr((curve1.getCurvePoints())[i+1]) > dist_sqr) break;
     }
     
     for (curve_size_t j = 0; j < n2 - 1; ++j) {
         reachable2[0][j] = 0;
-        if (curve1[0].dist_sqr(curve2[j+1]) > dist_sqr) break;
+        if ((curve1.getCurvePoints())[0].dist_sqr((curve2.getCurvePoints())[j+1]) > dist_sqr) break;
     }
     
     if (Config::verbosity > 2) std::cout << "CFD: computing free space" << std::endl;
@@ -140,10 +142,10 @@ bool _less_than_or_equal(const distance_t distance, Curve const& curve1, Curve c
     for (curve_size_t i = 0; i < n1; ++i) {
         for (curve_size_t j = 0; j < n2; ++j) {
             if ((i < n1 - 1) and (j > 0)) {
-                free_intervals1[j][i] = curve2[j].ball_intersection_interval(dist_sqr, curve1[i], curve1[i+1]);
+                free_intervals1[j][i] = (curve2.getCurvePoints())[j].ball_intersection_interval(dist_sqr, (curve1.getCurvePoints())[i], (curve1.getCurvePoints())[i+1]);
             }
             if ((j < n2 - 1) and (i > 0)) {
-                free_intervals2[i][j] = curve1[i].ball_intersection_interval(dist_sqr, curve2[j], curve2[j+1]);
+                free_intervals2[i][j] = (curve1.getCurvePoints())[i].ball_intersection_interval(dist_sqr, (curve2.getCurvePoints())[j], (curve2.getCurvePoints())[j+1]);
             }
         }
     }
@@ -184,11 +186,11 @@ distance_t _greedy_upper_bound(const Curve &curve1, const Curve &curve2) {
     curve_size_t i = 0, j = 0;
     
     while ((i < len1 - 1) and (j < len2 - 1)) {
-        result = std::max(result, curve1[i].dist_sqr(curve2[j]));
+        result = std::max(result, (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j]));
         
-        distance_t dist1 = curve1[i+1].dist_sqr(curve2[j]),
-            dist2 = curve1[i].dist_sqr(curve2[j+1]),
-            dist3 = curve1[i+1].dist_sqr(curve2[j+1]);
+        distance_t dist1 = (curve1.getCurvePoints())[i+1].dist_sqr((curve2.getCurvePoints())[j]);
+        distance_t dist2 = (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j+1]);
+        distance_t dist3 = (curve1.getCurvePoints())[i+1].dist_sqr((curve2.getCurvePoints())[j+1]);
         
         if ((dist1 <= dist2) and (dist1 <= dist3)) ++i;
         else if ((dist2 <= dist1) and (dist2 <= dist3)) ++j;
@@ -198,11 +200,11 @@ distance_t _greedy_upper_bound(const Curve &curve1, const Curve &curve2) {
         }
     }
     
-    while (i < len1) result = std::max(result, curve1[i++].dist_sqr(curve2[j]));
+    while (i < len1) result = std::max(result, (curve1.getCurvePoints())[i++].dist_sqr((curve2.getCurvePoints())[j]));
     
     --i;
     
-    while (j < len2) result = std::max(result, curve1[i].dist_sqr(curve2[j++]));
+    while (j < len2) result = std::max(result, (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j++]));
     
     return std::sqrt(result);
 }
@@ -213,10 +215,10 @@ distance_t _projective_lower_bound(const Curve &curve1, const Curve &curve2) {
     for (curve_size_t i = 0; i < curve1.complexity(); ++i) {
         #pragma omp parallel for
         for (curve_size_t j = 0; j < curve2.complexity() - 1; ++j) {
-            if (curve2[j].dist_sqr(curve2[j+1]) > 0) {
-                distances1_sqr[j] = curve1[i].line_segment_dist_sqr(curve2[j], curve2[j+1]);
+            if ((curve2.getCurvePoints())[j].dist_sqr((curve2.getCurvePoints())[j+1]) > 0) {
+                distances1_sqr[j] = (curve1.getCurvePoints())[i].line_segment_dist_sqr((curve2.getCurvePoints())[j], (curve2.getCurvePoints())[j+1]);
             } else {
-                distances1_sqr[j] = curve1[i].dist_sqr(curve2[j]);
+                distances1_sqr[j] = (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j]);
             }
         }
         distances2_sqr[i] = *std::min_element(distances1_sqr.begin(), distances1_sqr.end());
@@ -227,17 +229,17 @@ distance_t _projective_lower_bound(const Curve &curve1, const Curve &curve2) {
     for (curve_size_t i = 0; i < curve2.complexity(); ++i) {
         #pragma omp parallel for
         for (curve_size_t j = 0; j < curve1.complexity() - 1; ++j) {
-            if (curve1[j].dist_sqr(curve1[j+1]) > 0) {
-                distances1_sqr[j] = curve2[i].line_segment_dist_sqr(curve1[j], curve1[j+1]);
+            if ((curve1.getCurvePoints())[j].dist_sqr((curve1.getCurvePoints())[j+1]) > 0) {
+                distances1_sqr[j] = (curve2.getCurvePoints())[i].line_segment_dist_sqr((curve1.getCurvePoints())[j], (curve1.getCurvePoints())[j+1]);
             } else {
-                distances1_sqr[j] = curve2[i].dist_sqr(curve1[j]);
+                distances1_sqr[j] = (curve2.getCurvePoints())[i].dist_sqr((curve1.getCurvePoints())[j]);
             }
         }
         distances2_sqr[curve1.complexity() + i] = *std::min_element(distances1_sqr.begin(), distances1_sqr.end());
     }
     
-    distances2_sqr[curve1.complexity() + curve2.complexity()] = curve1[0].dist_sqr(curve2[0]);
-    distances2_sqr[curve1.complexity() + curve2.complexity() + 1] = curve1[curve1.complexity()-1].dist_sqr(curve2[curve2.complexity()-1]);
+    distances2_sqr[curve1.complexity() + curve2.complexity()] = (curve1.getCurvePoints())[0].dist_sqr((curve2.getCurvePoints())[0]);
+    distances2_sqr[curve1.complexity() + curve2.complexity() + 1] = (curve1.getCurvePoints())[curve1.complexity()-1].dist_sqr((curve2.getCurvePoints())[curve2.complexity()-1]);
     return std::sqrt(*std::max_element(distances2_sqr.begin(), distances2_sqr.end()));
 }
 
@@ -261,7 +263,7 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     #pragma omp parallel for collapse(2)
     for (curve_size_t i = 0; i < curve1.complexity(); ++i) {
         for (curve_size_t j = 0; j < curve2.complexity(); ++j) {
-            dists[i][j] = curve1[i].dist_sqr(curve2[j]);
+            dists[i][j] = (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j]);
         }
     }
     

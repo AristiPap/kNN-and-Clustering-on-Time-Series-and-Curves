@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Point.hpp"
+#include <iostream> 
+#include <string>
+#include <sstream>
+#include<algorithm>
 
 typedef Point TimeSeries;
 typedef double (*CurveDistMetric)(const Curve&, const Curve&);
@@ -15,5 +19,8 @@ private:
     parameter_t dim;
 public:
     Curve(/* args */);
+    unsigned long complexity() const; 
+    int dimensions() const;
+    std::vector<Point> getCurvePoints() const;
     ~Curve();
 };

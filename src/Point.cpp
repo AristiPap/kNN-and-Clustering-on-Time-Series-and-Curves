@@ -125,6 +125,18 @@ ostream& operator<<(ostream& os, const Point& p) {
 }
 
 // multiply with scalar (element wise)
+/* double Point::operator*(const Point &p) const{
+    assert(this->coords.size() == p.coords.size());
+
+    //Point sub{"after sub", this->dims, this->distMetric};
+    double x;
+    for (uint32_t i = 0; i < this->coords.size(); i++)
+        x += this->coords[i] * p.getCoordinate(i) ;
+
+    return x;
+} */
+
+
 Point Point::operator-(const Point p) const{
     assert(this->coords.size() == p.coords.size());
 
@@ -132,6 +144,17 @@ Point Point::operator-(const Point p) const{
 
     for (uint32_t i = 0; i < this->coords.size(); i++)
         sub.addCoordinate(this->coords[i] - p.getCoordinate(i));
+
+    return sub;
+}
+
+Point Point::operator+(const Point p) const{
+    assert(this->coords.size() == p.coords.size());
+
+    Point sub{"after sub", this->dims, this->distMetric};
+
+    for (uint32_t i = 0; i < this->coords.size(); i++)
+        sub.addCoordinate(this->coords[i] + p.getCoordinate(i));
 
     return sub;
 }
@@ -144,6 +167,30 @@ distance_t Point::length_sqr() const {
         result += this->coords[i] * this->coords[i];
     }
     return result;
+}
+
+distance_t Point::dist_sqr(const Point &point) const {
+    distance_t result = 0, temp;
+    #pragma omp simd private(temp) reduction(+: result)
+    for (dimensions_t i = 0; i < this->dims; i++){
+        temp = this->coords[i] - point.getCoordinate(i);//operator[](i) - point[i];
+        result += temp * temp;
+    }
+    return result;
+}
+
+distance_t Point::line_segment_dist_sqr(const Point &p1, const Point &p2) const {
+    const Vector u = p2 - p1;
+    parameter_t projection_param = (*this - p1) * u / (u * u);
+    if (projection_param < parameter_t(0)) projection_param = parameter_t(0);
+    else if (projection_param > parameter_t(1)) projection_param = parameter_t(1);
+    Point projection(u);
+    //const Point projection = p1 + u * projection_param;
+    for(int i=0; i<u.getCoordinates().size(); i++)
+        projection.getCoordinates()[i] = u.getCoordinate(i) * projection_param;
+    
+    projection += p1;
+    return projection.dist_sqr(*this);
 }
 
 Interval Point::ball_intersection_interval(const distance_t distance_sqr, const Point &line_start, const Point &line_end) const {
