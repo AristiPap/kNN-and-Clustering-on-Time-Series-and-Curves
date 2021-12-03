@@ -14,17 +14,17 @@
 // Basic Hashing interface
 class HashingCurve {
    protected:
-    int dim;  // Dimension of the points of the curves
+    int32_t dim;  // Dimension of the points of the curves
     double delta;
-    int L;  // ammout of grids
-    int w;
-    int k;
+    int32_t L;  // ammout of grids
+    int32_t w;
+    int32_t k;
 
    public:
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
     virtual uint32_t operator()(const Point& p) = 0;
-    HashingCurve(int32_t k, int32_t w, int32_t dim);
+    HashingCurve(int32_t dim, int32_t L, int32_t w, int32_t k);
     ~HashingCurve();
 };
 
