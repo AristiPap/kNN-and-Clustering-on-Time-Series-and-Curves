@@ -1,5 +1,6 @@
 OBJS += $(BUILD)/ArgumentParser.o 
 OBJS += $(BUILD)/Hashing.o
+OBJS += $(BUILD)/CurveHashing.o
 OBJS += $(BUILD)/Utilities.o
 OBJS += $(BUILD)/Point.o
 OBJS += $(BUILD)/Curves.o

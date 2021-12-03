@@ -30,6 +30,9 @@ class Point{
         /* used in clustering */
         int cluster_id; //closest centroid_id 
         int s_cluster_id; //second closest centroid_id
+
+        // if the point interprets the concat'd vector after curve snapping we have to remember the original curve
+        Curve *original_curve;
     public:
         //constructor
         Point(DistanceMetric distMetric);
@@ -44,6 +47,7 @@ class Point{
         void setCoordinates(const std::vector<double> v);
         void setCluster(int cluster_id);
         void setSecCluster(int s_cluster_id);
+        void setCurve(Curve *curve);
         //getters
         DistanceMetric getDistMetric() const;
         std::string getId() const;
@@ -53,6 +57,7 @@ class Point{
         int getSecCluster() const;
         double getCoordinate(int i) const;
         vector<double> getCoordinates() const;
+        Curve *getCurve(void) const;
 
         //utility-functions
         // estimate distance from another point using L2-norm
