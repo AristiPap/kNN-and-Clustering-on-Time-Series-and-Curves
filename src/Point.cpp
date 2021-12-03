@@ -124,18 +124,6 @@ ostream& operator<<(ostream& os, const Point& p) {
     return os;
 }
 
-// multiply with scalar (element wise)
-/* double Point::operator*(const Point &p) const{
-    assert(this->coords.size() == p.coords.size());
-
-    //Point sub{"after sub", this->dims, this->distMetric};
-    double x;
-    for (uint32_t i = 0; i < this->coords.size(); i++)
-        x += this->coords[i] * p.getCoordinate(i) ;
-
-    return x;
-} */
-
 
 Point Point::operator-(const Point p) const{
     assert(this->coords.size() == p.coords.size());
