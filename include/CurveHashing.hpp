@@ -24,7 +24,7 @@ class HashingCurve {
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
     virtual uint32_t operator()(const Point& p) = 0;
-    HashingCurve(int32_t dim, int32_t L, int32_t w, int32_t k);
+    HashingCurve(int32_t dim, int32_t L, int32_t w, int32_t k, double delta);
     ~HashingCurve();
 };
 
@@ -35,7 +35,7 @@ class DLSHHashingCurve : HashingCurve {
 
    public:
     uint32_t operator()(const Point& p);
-    DLSHHashingCurve(int32_t k, int32_t w, int32_t dim);
+    DLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta);
     ~DLSHHashingCurve();
     static uint32_t estimate_w(std::list<Point*>& dataset);
 };
@@ -46,7 +46,7 @@ class CLSHHashingCurve : HashingCurve {
     
    public:
     uint32_t operator()(const Point& p);
-    CLSHHashingCurve(int32_t k, int32_t w, int32_t dim);
+    CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta);
     ~CLSHHashingCurve();
     static uint32_t estimate_w(std::list<Point*>& dataset);
 };
