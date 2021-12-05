@@ -11,3 +11,7 @@ int Curve::dimensions() const {
 std::vector<Point> Curve::getCurvePoints() const{
     return this->curve;
 }
+
+string Curve::getId(void) {
+    return this->id;
+}

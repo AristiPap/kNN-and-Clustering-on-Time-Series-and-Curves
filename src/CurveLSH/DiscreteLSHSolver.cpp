@@ -1,4 +1,5 @@
 #include "DiscreteLSHSolver.hpp"
+#include <set>
 
 DiscreteLSHSolver::DiscreteLSHSolver(std::list<Curve *> &dataset,
                                      uint32_t curve_L, uint32_t curve_delta,
@@ -25,8 +26,29 @@ DiscreteLSHSolver::~DiscreteLSHSolver() {
 }
 
 // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
-std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(const Curve &q,
-                                                                 uint N) {}
+std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(const Curve &q, uint N) {
+    // we will search all L hash tables
+    // save the resulted curves into a neighbours set and return top k
+
+    set<pair<Curve *, double>, curve_compare> neighbours;
+
+    for (auto i = 0; i < this->_curve_L; i++) {
+        DLSHHashingCurve &grid_hash = this->grid_hashes[i];
+        NearestNeighboursSolver *solver = this->solvers[i];
+
+        // get the snapped curve in concatenated form
+        Point x = grid_hash(q);
+        // get the k nearest neighbours
+        list<Neighbour> *cur_neighbours = solver->kNearestNeighbours(x, N);
+    
+        for (auto n_i = cur_neighbours->begin(); n_i != cur_neighbours->end(); n_i++) {
+            neighbours.insert(make_pair(n_i->first->getCurve(), n_i->second));
+        }
+
+        free(cur_neighbours);
+    }
+
+}
 
 // Find all neighbours in range R. Returns list of <Curve *, dist from q>.
 std::list<CurveNeighbour> *DiscreteLSHSolver::nearestNeighbours_w_rangeSearch(
@@ -47,7 +69,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
     // estimate w for given curve storage solver
     uint32_t w = LSHHashing::estimate_w(this->dataset_transformed.back());
 
-    // create solver
+    // create solver and initialize given the snapped curves for the specific grid hash
     if (storage_type == "LSH")
         this->solvers.push_back(new LSHNearestNeighbours(
             this->dataset_transformed.back(), this->dataset_transformed.back().size()/8, k, w, _L)
@@ -59,4 +81,21 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
     else {
         cerr << "The standard convolution hashing storage solver is not implemented. Try 'LSH' or 'Hypercube'" << endl;
     }
+
+}
+
+void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, const DLSHHashingCurve& grid_hash) {
+    // add a new transformed dataset list 
+    this->dataset_transformed.push_back(list<Point *>());
+    list<Point *>& dt = this->dataset_transformed.back();
+    
+    assert(dt.size() == 0); // sanity check
+    
+    for (auto dp_i = dataset.begin(); dp_i != dataset.end(); dp_i++) {
+        // snap the curve into the grid 
+        Point * concated_grid_curve = grid_hash(*dp_i);
+        // add the point/concated snapped curve into the transformed dataset
+        dt.push_back(concated_grid_curve); 
+    }
+
 }
