@@ -22,5 +22,8 @@ public:
     unsigned long complexity() const; 
     int dimensions() const;
     std::vector<Point> getCurvePoints() const;
+    void setId(std::string id);
+    std::string getId() const;
+    void AddToCurve(Point* p);
     ~Curve();
 };

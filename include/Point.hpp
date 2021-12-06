@@ -30,6 +30,8 @@ class Point{
         /* used in clustering */
         int cluster_id; //closest centroid_id 
         int s_cluster_id; //second closest centroid_id
+        /* used in curves */
+        Curve *initial;
     public:
         //constructor
         Point(DistanceMetric distMetric);
@@ -44,6 +46,8 @@ class Point{
         void setCoordinates(const std::vector<double> v);
         void setCluster(int cluster_id);
         void setSecCluster(int s_cluster_id);
+        void setInitial(Curve *curve);
+        void padding(int new_d);
         //getters
         DistanceMetric getDistMetric() const;
         std::string getId() const;
