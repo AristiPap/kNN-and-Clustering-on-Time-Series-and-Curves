@@ -48,3 +48,10 @@ bool my_less::operator()(const pair<Point *, double>& l, const pair<Point *, dou
         : l.second - r.second > 0 ? false
             : l.first->getId().size() - r.first->getId().size() < 0;
 }
+
+
+// bool curve_compare::operator()(const pair<Curve *, double>& l, const pair<Curve *, double>& r) {
+//     return l.second - r.second < 0   ? true
+//         : l.second - r.second > 0 ? false
+//             : l.first->getId().size() - r.first->getId().size() < 0;
+// }

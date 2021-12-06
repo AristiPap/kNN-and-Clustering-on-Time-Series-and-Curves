@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.hpp"
+#include "Utilities.hpp"
 #include <iostream> 
 #include <string>
 #include <sstream>
@@ -8,6 +9,8 @@
 
 typedef Point TimeSeries;
 typedef double (*CurveDistMetric)(const Curve&, const Curve&);
+
+double FrechetDistDiscrete(const Curve& c1, const Curve& c2);
 
 class Curve
 {
@@ -18,12 +21,13 @@ private:
     parameter_t _complexity;
     parameter_t dim;
 public:
-    Curve(/* args */);
+    Curve(std::string _id = "<unknown>", CurveDistMetric _curveDist = FrechetDistDiscrete, std::vector<Point> _curve = std::vector<Point>());
+    ~Curve();
+
     unsigned long complexity() const; 
     int dimensions() const;
     std::vector<Point> getCurvePoints() const;
     void setId(std::string id);
     std::string getId() const;
     void AddToCurve(Point* p);
-    ~Curve();
 };

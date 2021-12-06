@@ -19,37 +19,35 @@ class HashingCurve {
     double delta;
     int32_t w;
     int32_t k;
+    int32_t max_curve_len;
     vector<double> t;
     DistanceMetric distMetric;
    public:
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
     virtual Point * operator()(Curve *curve) = 0;
-    HashingCurve(int32_t dim, int32_t w, int32_t k);
+    HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int32_t max_curve_len);
     ~HashingCurve();
-    Point* vectorCurveToPoint(Curve* hashedCurve, Curve *origin);
+    //squeeze curve to point
+    Point* squeeze(Curve* hashedCurve, Curve *origin);
     Curve* curveHashing(const Curve &curve);
+    static uint32_t estimate_delta(std::list<Curve*>& dataset);
+
 };
 
 // Hashing class for LSH algorithm
-class DLSHHashingCurve : HashingCurve {
-   private:
-    vector<double> t;
+class DLSHHashingCurve : public HashingCurve {
 
    public:
     Point * operator()(Curve *curve);
-    DLSHHashingCurve(int32_t k, int32_t w, int32_t dim);
+    DLSHHashingCurve(double delta, int32_t k, int32_t w, int32_t dim, int32_t max_curve_len);
     ~DLSHHashingCurve();
-    static uint32_t estimate_w(std::list<Curve*>& dataset);
 };
 
 class CLSHHashingCurve : HashingCurve {
-   private:
-    vector<double> t;
     
    public:
     Point * operator()(Curve *curve);
-    CLSHHashingCurve(int32_t k, int32_t w, int32_t dim);
+    CLSHHashingCurve(double delta, int32_t k, int32_t w, int32_t dim, int32_t max_curve_len);
     ~CLSHHashingCurve();
-    static uint32_t estimate_w(std::list<Curve*>& dataset);
 };
