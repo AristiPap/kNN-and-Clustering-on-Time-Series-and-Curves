@@ -54,6 +54,12 @@ hypercube:
 	@echo DEBUG: $(DEBUG_MSG)
 	@$(MAKE) -C $(SRC)/HyperCube -f hypercube.mk 
 
+.PHONY : discrete-frechet-lsh
+discrete-frechet-lsh :
+	@echo VERBOSE: $(VERBOSE_MSG)
+	@echo DEBUG: $(DEBUG_MSG)
+	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk 
+	
 
 .PHONY : clustering 
 clustering:
