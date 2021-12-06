@@ -38,8 +38,7 @@ double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::lis
     return _delta;
 }
 
-HashingCurve::HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
-   
+HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
 
     for (int i=0; i<dim; i++) {
         double num = generateNumber(0,delta);
@@ -49,8 +48,8 @@ HashingCurve::HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int3
     cout << endl;
 }
 
-DLSHHashingCurve::DLSHHashingCurve(double delta, int32_t k, int32_t w, int32_t dim,int32_t max_curve_len)
-:HashingCurve(delta, dim, w, k, max_curve_len){}
+DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delta, int32_t max_curve_len)
+:HashingCurve(dim, w, k, delta, max_curve_len){}
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
