@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.hpp"
+#include "Utilities.hpp"
 #include <iostream> 
 #include <string>
 #include <sstream>
@@ -18,7 +19,7 @@ private:
     parameter_t _complexity;
     parameter_t dim;
 public:
-    Curve(/* args */);
+    Curve(std::string _id = "<unknown>", CurveDistMetric _curveDist = FrechetDist, std::vector<Point> _curve = std::vector<Point>());
     ~Curve();
 
     // getters
