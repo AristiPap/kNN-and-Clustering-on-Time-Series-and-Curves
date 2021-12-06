@@ -31,7 +31,7 @@ class HashingCurve {
     //squeeze curve to point
     Point* squeeze(Curve* hashedCurve, Curve *origin);
     Curve* curveHashing(const Curve &curve);
-    static uint32_t estimate_delta(std::list<Curve*>& dataset);
+    static double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
 
 };
 

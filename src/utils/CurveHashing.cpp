@@ -18,7 +18,25 @@ double generateNumber(double const& lower,double const& upper){
 
 }
 
-uint32_t HashingCurve :: estimate_delta(std::list<Curve*>& dataset){return 10;}
+double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query){
+    int32_t _dim = dataset_input.front()->dimensions();
+    
+    //m1 is the average of the complexities of the input curve dataset
+    double m1 = 0;
+    int counter_input = 0;
+    for(auto it:dataset_input)
+        counter_input += it->complexity();
+    m1 = counter_input / dataset_input.size();
+    //m2 is the average of the complexities of the query curve dataset
+    double m2 = 0;
+    int counter_query = 0;
+    for(auto it2:dataset_query)
+        counter_query += it2->complexity();
+    m2 = counter_query / dataset_query.size();
+    
+    double _delta = 4 * _dim * min(m1,m2);
+    return _delta;
+}
 
 HashingCurve::HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
    
