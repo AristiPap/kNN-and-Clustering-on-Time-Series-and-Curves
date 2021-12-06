@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Point.hpp"
 #include <assert.h>
-
+#include "Curves.hpp"
 
 
 Point::Point(DistanceMetric distMetric):distMetric(distMetric), dims(0), marked(false), initial(NULL){}
@@ -126,7 +126,7 @@ void Point::setCoordinates(const vector<double> v) {
 }
 
 double Point::dist(Point p) const {
-    return this->distMetric(coords, p.getCoordinates());
+    return this->distMetric(*this, p);
 }
 
 ostream& operator<<(ostream& os, const Point& p) {
@@ -222,7 +222,10 @@ Interval Point::ball_intersection_interval(const distance_t distance_sqr, const 
 
 // Default point distance metrics
 
-double L2_norm(const std::vector<double>& p1, const std::vector<double>& p2) {
+double L2_norm(const Point& _p1, const Point& _p2) {
+    auto p1 = _p1.getCoordinates();
+    auto p2 = _p2.getCoordinates();
+
     assert(p1.size() == p2.size());
 
     double dist = 0.0;
@@ -232,11 +235,18 @@ double L2_norm(const std::vector<double>& p1, const std::vector<double>& p2) {
     return sqrt(dist);
 }
 
-double L1_norm(const std::vector<double>& p1, const std::vector<double>& p2) {
+double L1_norm(const Point& _p1, const Point& _p2) {
+    auto p1 = _p1.getCoordinates();
+    auto p2 = _p2.getCoordinates();
+
     assert(p1.size() == p2.size());
 
     double dist = 0.0;
     for (uint32_t i = 0; i < p1.size(); i++)
         dist += abs(p1[i] - p2[i]);
     return dist;
+}
+
+double InitialCurveDF(const Point& p1, const Point& p2) {
+    return p1.getCurve()->dist(*p2.getCurve());
 }

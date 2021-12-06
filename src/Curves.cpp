@@ -1,5 +1,6 @@
 #include "Curves.hpp"
 #include "frechet.hpp"
+#include <assert.h>
 
 void Curve::setId(string id){
     this->id = id;
@@ -39,7 +40,14 @@ void Curve::AddToCurve(Point* p){
     curve.push_back(*p);
 }
 
+double Curve::dist(Curve& curve) {
+    assert(curve.dimensions() == this->dimensions());
 
+    return this->curveDist(*this, curve);
+}
+
+
+// metrics to estimate curve distance
 double FrechetDistDiscrete(const Curve& c1, const Curve& c2) {
     return Frechet::Discrete::distance(c1, c2).value;
 }

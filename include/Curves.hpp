@@ -30,4 +30,7 @@ public:
     void setId(std::string id);
     std::string getId() const;
     void AddToCurve(Point* p);
+
+    // estimate the distance of 2 curves, given the dist metric by the user
+    double dist(Curve& curve);
 };

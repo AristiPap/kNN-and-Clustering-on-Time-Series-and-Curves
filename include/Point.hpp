@@ -13,12 +13,15 @@
 #include "interval.hpp"
 
 using namespace std;
+typedef double (*DistanceMetric)(const Point&, const Point&);
 
 // Default point distance metric
-double L1_norm(const std::vector<double>& p1, const std::vector<double>& p2);
-double L2_norm(const std::vector<double>& p1, const std::vector<double>& p2);
+double L1_norm(const Point& p1, const Point& p2);
+double L2_norm(const Point& p1, const Point& p2);
 
-typedef double (*DistanceMetric)(const vector<double>&, const vector<double>&);
+// calculate the frechet distance of the original curves between 
+// 2 concatenated grid curve in Point objs
+double InitialCurveDF(const Point& p1, const Point& p2);
 
 class Point{
     private:
