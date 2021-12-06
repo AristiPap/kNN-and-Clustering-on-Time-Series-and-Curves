@@ -24,4 +24,4 @@ std::vector<Point> Curve::getCurvePoints() const{
 
 void Curve::AddToCurve(Point* p){
     curve.push_back(*p);
-}
+    

@@ -57,6 +57,7 @@ class Point{
         int getSecCluster() const;
         double getCoordinate(int i) const;
         vector<double> getCoordinates() const;
+        Curve *getCurve(void) const;
 
         //utility-functions
         // estimate distance from another point using L2-norm

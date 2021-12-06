@@ -4,15 +4,15 @@
 
 
 
-Point::Point(DistanceMetric distMetric):distMetric(distMetric), dims(0), marked(false){}
+Point::Point(DistanceMetric distMetric):distMetric(distMetric), dims(0), marked(false), initial(NULL){}
 
 Point::Point(string id, int dims, DistanceMetric distMetric) 
-: distMetric(distMetric), id(id), dims(dims),marked(false), cluster_id(-1) {
+: distMetric(distMetric), id(id), dims(dims),marked(false), cluster_id(-1), initial(NULL) {
     coords.resize(dims);
 }
 
 Point::Point(string id, vector<double> p, DistanceMetric distMetric)
-    : distMetric(distMetric), id(id), dims(p.size()), coords(p), marked(false), cluster_id(-1) {}
+    : distMetric(distMetric), id(id), dims(p.size()), coords(p), marked(false), cluster_id(-1), initial(NULL) {}
 
 //setters
 void Point::setId(string id){
@@ -88,6 +88,10 @@ double Point::getCoordinate(int i) const {
 
 vector<double> Point::getCoordinates() const {
     return coords;
+}
+
+Curve *Point::getCurve(void) const {
+    return this->initial;
 }
 
 // dot product
@@ -214,6 +218,8 @@ Interval Point::ball_intersection_interval(const distance_t distance_sqr, const 
                 
         return Interval(std::max(parameter_t(0), lambda1), std::min(parameter_t(1), lambda2));
     }
+
+
 
 
 // Default point distance metrics

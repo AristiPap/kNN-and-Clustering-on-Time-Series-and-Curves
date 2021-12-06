@@ -19,6 +19,11 @@ private:
     parameter_t dim;
 public:
     Curve(/* args */);
+    ~Curve();
+
+    // getters
+    std::string getId(void);
+
     unsigned long complexity() const; 
     int dimensions() const;
     std::vector<Point> getCurvePoints() const;
