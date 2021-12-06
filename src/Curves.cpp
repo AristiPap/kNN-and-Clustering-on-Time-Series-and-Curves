@@ -12,7 +12,10 @@ Curve::Curve(string _id, CurveDistMetric _curveDist, vector<Point> _curve)
 :   id{_id}, 
     curveDist{_curveDist}, 
     curve{_curve}
-{}
+{
+    dim = curve.size() ? curve.front().getDims() : 0;
+    _complexity = curve.size();
+}
 
 Curve::~Curve(){}
 
@@ -29,6 +32,8 @@ std::vector<Point> Curve::getCurvePoints() const{
 }
 
 void Curve::AddToCurve(Point* p){
+    if (!dim) dim = p->getDims();
+    
     assert(p->getDims() == this->dim);
     this->_complexity++;
     curve.push_back(*p);

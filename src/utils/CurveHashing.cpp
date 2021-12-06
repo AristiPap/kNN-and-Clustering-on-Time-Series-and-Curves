@@ -22,14 +22,17 @@ uint32_t HashingCurve :: estimate_delta(std::list<Curve*>& dataset){return 10;}
 
 HashingCurve::HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
    
-    double num = generateNumber(0,dim);
 
-    for (int i=0; i<dim; i++)
+    for (int i=0; i<dim; i++) {
+        double num = generateNumber(0,delta);
         this->t.push_back(num);
+        cout << num << " ";
+    }
+    cout << endl;
 }
 
 DLSHHashingCurve::DLSHHashingCurve(double delta, int32_t k, int32_t w, int32_t dim,int32_t max_curve_len)
-:HashingCurve(delta, k, w, dim, max_curve_len){}
+:HashingCurve(delta, dim, w, k, max_curve_len){}
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
@@ -61,9 +64,14 @@ Curve* HashingCurve::curveHashing(const Curve &curve){
         Point *hash = new Point("-1",0,this->distMetric);
         int i = 0;
         for(auto it2 : x){
-            hash->addCoordinate(floor(it2/delta + 1/2) * delta + t.at(i));
+            hash->addCoordinate(floor(it2/delta + 0.5) * delta + t.at(i));
+            #ifdef VERBOSE
+            cout << "floor("<<it2/delta << "+ 1/2) * " << delta << " + " << t.at(i) << " = " << floor(it2/delta + 0.5) * delta + t.at(i) << endl;
+            #endif
+            
             i++;
         }
+        
         //avoid duplicates
         if (hash == previousMinPoint){
             previousMinPoint = hash;
