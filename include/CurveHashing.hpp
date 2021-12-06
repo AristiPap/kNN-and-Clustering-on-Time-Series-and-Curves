@@ -21,6 +21,7 @@ class HashingCurve {
     int32_t k;
     vector<double> t;
     DistanceMetric distMetric;
+    
    public:
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
