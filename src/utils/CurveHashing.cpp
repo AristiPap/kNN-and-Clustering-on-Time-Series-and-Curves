@@ -18,22 +18,39 @@ double generateNumber(double const& lower,double const& upper){
 
 }
 
-HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k):dim(dim), w(w), k(k){
-   
-    double num = generateNumber(0,dim);
-
-    //for(int j=0; j<L; j++){
-    //    vector<double> t;
-        for (int i=0; i<dim; i++)
-           this->t.push_back(num);
-        
-       // Grid g_j(delta,dim,t);
-       // grids.push_back(g_j);
-    //}
+double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query){
+    int32_t _dim = dataset_input.front()->dimensions();
+    
+    //m1 is the average of the complexities of the input curve dataset
+    double m1 = 0;
+    int counter_input = 0;
+    for(auto it:dataset_input)
+        counter_input += it->complexity();
+    m1 = counter_input / dataset_input.size();
+    //m2 is the average of the complexities of the query curve dataset
+    double m2 = 0;
+    int counter_query = 0;
+    for(auto it2:dataset_query)
+        counter_query += it2->complexity();
+    m2 = counter_query / dataset_query.size();
+    
+    double _delta = 4 * _dim * min(m1,m2);
+    return _delta;
 }
 
-DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim)
-:HashingCurve(k, w, dim){}
+HashingCurve::HashingCurve(double delta, int32_t dim, int32_t w, int32_t k, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
+   
+
+    for (int i=0; i<dim; i++) {
+        double num = generateNumber(0,delta);
+        this->t.push_back(num);
+        cout << num << " ";
+    }
+    cout << endl;
+}
+
+DLSHHashingCurve::DLSHHashingCurve(double delta, int32_t k, int32_t w, int32_t dim,int32_t max_curve_len)
+:HashingCurve(delta, dim, w, k, max_curve_len){}
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
@@ -42,105 +59,57 @@ Point * DLSHHashingCurve::operator()(Curve *curve) {
     //create grid curve
     Curve* hashedCurve = curveHashing(*curve);
     //convert hashed curve to point
-    Point *p = vectorCurveToPoint(hashedCurve,curve);
+    Point *p = squeeze(hashedCurve,curve);
     //add padding
-    p->padding(dim);
+    p->padding(dim*max_curve_len);
 
     return p;
 }
 
-static uint32_t calculate_h(int dim,int M, int w, Point *p){
-    double *s = new double[dim];
-    int *m = new int[dim];
-    
-    for (int i=0; i<dim; i++)
-        s[i] = generateNumber(0,dim);
-    
-    
-    for (int i=2; i<dim; i++)
-        m[i] = (m[i-1]*m[1]) % M;
-    
-    vector<int> a;
-    // Compute the a_i's
-    // a_i = floor( (x_i - s_i)/w )
-    int counter = 0;
-    for (auto it:p->getCoordinates()){
-        if(counter >= dim)
-            break;
-        a.push_back(floor((it - s[counter])/(double)w)); 
-        counter ++;
-    }   
-    // h(p) = [ a_(d-1) + m a_(d-2) + ... + m^(d-1) a_0 ] mod M
-    uint32_t hp = 0;
-    for (int i=0; i<dim; i++){
-        hp += mod(mod(a.at(dim-i-1),M)*m[i],M);
-        hp = mod(hp,M);
-    }
-    return hp;
-}
-
-
-// returns the distance between two points
-static double euclid_dist(double x1, double x2){
-    return sqrt(pow(x2 - x1, 2));
-}
-
-
-//indeed curve hashing
 Curve* HashingCurve::curveHashing(const Curve &curve){
+
+    // iterate through the points of the input curve
+    // implement hash 
+    //add new point to hashed curve
     
-    // cpoints -> get number of coordinates of curve parameter
-    int cpoints = curve.getCurvePoints().size(); 
-    
-    //iterate through the points of the curve
-    // divide point with delta and the quotient will show to which bucket of the grid it belongs.
-    // find the minimum from the top of the bottom of the bucket
-    //===============================================================================================
-    
-    double x;
-    double previousMinX = numeric_limits<double>::min();;   // stores minX of the previous point of curve
-    Point *aPoint;
-    Curve* hashedCurve = new Curve();   // creating a vector to store all hashed points
+    Point * previousMinPoint = NULL;   // stores previous min point
+    Curve* gridCurve = new Curve();   // creating a vector to store all grid points
     
     for(auto it:curve.getCurvePoints()){
         Point *p1 = &it;
-        x = p1->getCoordinate(0);
-        int StartOfBucket = (x-t.at(0))/delta;      
+        vector <double> x = p1->getCoordinates();
         
-        double start  = StartOfBucket * delta; //start of bucket
-        double end  = (StartOfBucket+1) * delta; //end of bucket
-    
-        double min_dist = start;
-        
-        
-        if (euclid_dist(x, min_dist) > euclid_dist(x,end))
-            min_dist = end;
+        Point *hash = new Point("-1",0,this->distMetric);
+        int i = 0;
+        for(auto it2 : x){
+            hash->addCoordinate(floor(it2/delta + 0.5) * delta + t.at(i));
+            #ifdef VERBOSE
+            cout << "floor("<<it2/delta << "+ 1/2) * " << delta << " + " << t.at(i) << " = " << floor(it2/delta + 0.5) * delta + t.at(i) << endl;
+            #endif
             
-        if (min_dist == previousMinX){
-            previousMinX = min_dist;
+            i++;
+        }
+        
+        //avoid duplicates
+        if (hash == previousMinPoint){
+            previousMinPoint = hash;
             continue;
         }
-        else{
-            
-            Point *temp_Point = new Point("-1",this->dim,this->distMetric);
-            temp_Point->addCoordinate(min_dist);  
-            hashedCurve->AddToCurve(temp_Point);
-            previousMinX = min_dist;
-        }
-            
-    }
+        
+        gridCurve->AddToCurve(hash);
+        
+    }   
     
-    return hashedCurve;   
+    return gridCurve;   
 }
 
-Point* HashingCurve::vectorCurveToPoint(Curve* hashedCurve, Curve *origin){
+Point* HashingCurve::squeeze(Curve* gridCurve, Curve *origin){
     // create new point to represent vector of curve with the same id as the curve
-    Point* newPoint;
-    newPoint = new Point(origin->getId(),this->dim,this->distMetric); 
+    Point* newPoint = new Point(origin->getId(),0,this->distMetric); 
     
-    int coordinatesCounter=0;
-    for(auto it:hashedCurve->getCurvePoints())
-        newPoint->addCoordinate(it.getCoordinate(0));
+    for(auto it:gridCurve->getCurvePoints())
+        for(int i = 0; i< it.getDims(); i++)
+            newPoint->addCoordinate(it.getCoordinate(i));
     
     newPoint->setInitial(origin);
     

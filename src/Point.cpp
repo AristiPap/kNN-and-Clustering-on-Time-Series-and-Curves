@@ -44,11 +44,9 @@ void Point::setInitial(Curve *curve){
 }
 
 void Point::padding(int new_d){
-
     int space = new_d-this->getDims();
     for (int i=0; i < space ; i++)
         this->addCoordinate(0);
-
 }
 
 void Point::addCoordinate(double x) {

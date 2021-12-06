@@ -4,7 +4,7 @@ PROGRAM := lsh
 
 CFLAGS += -D NN
 
-CUR-OBJS += $(BUILD)/LSHNearestNeighbours.o $(BUILD)/lsh_main.o
+CUR-OBJS += $(BUILD)/LSHNearestNeighbours.o $(BUILD)/curve_lsh.o
 
 include $(SRC)/rules.inc 
 

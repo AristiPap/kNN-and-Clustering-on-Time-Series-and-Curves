@@ -28,9 +28,9 @@ struct my_less{
 };
 
 // compare (curve, frechet-dist from query) tuples 
-struct curve_compare {
-    bool operator()(const std::pair<Curve*, double>& l, const std::pair<Curve*, double>& r);
-};
+// struct curve_compare {
+//     bool operator()(const std::pair<Curve*, double>& l, const std::pair<Curve*, double>& r);
+// };
 
 
 constexpr int64_t mod(int64_t a, int64_t b) { return (a % b + b) % b; }
