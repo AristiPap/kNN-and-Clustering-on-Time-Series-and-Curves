@@ -105,7 +105,7 @@ Curve* HashingCurve::curveHashing(const Curve &curve){
 
 Point* HashingCurve::squeeze(Curve* gridCurve, Curve *origin){
     // create new point to represent vector of curve with the same id as the curve
-    Point* newPoint = new Point(origin->getId(),0,this->distMetric); 
+    Point* newPoint = new Point(origin->getId(), 0, InitialCurveDF); 
     
     for(auto it:gridCurve->getCurvePoints())
         for(int i = 0; i< it.getDims(); i++)
