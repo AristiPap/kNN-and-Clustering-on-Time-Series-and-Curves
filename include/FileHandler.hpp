@@ -23,6 +23,7 @@ class FileHandler{
         ifstream in;
         string inputPath;
         std::list<Point *> *db;
+        std::list<Curve *> *curve_db;
         DistanceMetric distMetric;
         double f_sample;
     public:
@@ -31,6 +32,7 @@ class FileHandler{
         int OpenFile(string inputFile);
         void CloseFile();
         std::list<Point *> * create_dbPoints();
+        std::list<Curve *> * create_dbCurves();
         void cleardb(void);
         static void print_to_file(
             ofstream &out, const Point &p, string method,
