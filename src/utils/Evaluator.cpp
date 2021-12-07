@@ -75,9 +75,9 @@ void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_
     FileHandler::print_to_file(out_file, q, method_name, res, in_range, _true, N, knn_dur, real_dur);
 
     #ifdef VERBOSE
-    acc_sum += this->get_accuracy(*_true, *res);
+    acc_sum += get_accuracy<Point *>(*_true, *res);
     true_approx_time_ratio_sum += real_dur / knn_dur;
-    this->dist_metrics(*_true, *res);
+    dist_metrics<Point *>(*_true, *res);
     #endif
 
     delete in_range;
@@ -105,11 +105,32 @@ Neighbours* Evaluator::nearestNeighboursBruteForce(const DataList &dataset, cons
     return closest;
 }
 
+list<CurveNeighbour>* Evaluator::nearestNeighboursBruteForce(const list<Curve *> &dataset, const Curve& c, int k) {
+    set<CurveNeighbour, curve_compare> sorted_neighbours;
+    auto closest = new list<CurveNeighbour>();
+
+    for (auto it1 : dataset) {
+        double dist = c.dist(*it1);
+        sorted_neighbours.insert(make_pair(it1, dist));
+    }
+
+    int counter = 0;
+    for (auto it2 : sorted_neighbours) {
+        closest->push_back(make_pair(it2.first, it2.second));
+        counter++;
+        if (counter == k) break;
+    }
+
+    return closest;
+}
+
+
 // estimate accuracy of algorithm based on true results (ground truth)
-double Evaluator::get_accuracy(Neighbours &__true, Neighbours &_res) {
+template<class T>
+double get_accuracy(list<pair<T, double>> &__true, list<pair<T, double>> &_res) {
     // estimate how many datapoints did the algorithm lost. 
     // Count how many points of _true exist in _res
-    set<Neighbour> _true;
+    set<pair<T, double>> _true;
     for (auto p: __true) _true.insert(make_pair(p.first, p.second));
 
     uint32_t n = _true.size();
@@ -122,7 +143,9 @@ double Evaluator::get_accuracy(Neighbours &__true, Neighbours &_res) {
     return (double)( ((double)found) / (double)n );
 }
 
-void Evaluator::dist_metrics(Neighbours &__true, Neighbours &_res) {
+
+template<class T>
+static void dist_metrics(list<pair<T, double>> &__true, list<pair<T, double>>  &_res) {
     auto it_true = __true.begin();
     auto it_res = _res.begin();
 
@@ -171,3 +194,66 @@ void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_n
 }
 
 #endif
+
+//////////////////////////////
+//  2nd Assignment Add-Ons  //
+//////////////////////////////
+// add-ons for curve evaluation
+
+
+// same evaluation process, but for curves
+void Evaluator::evaluate_from_file(const list<Curve *> &dataset, const list<Curve *> &queries, std::string method_name, CurveNearestNeighboursSolver &solver, std::string out_file, const uint32_t N) {
+    // try to open the file 
+    ofstream out_file_stream;
+    out_file_stream.open(out_file, ios::out);
+
+    if (!out_file_stream) {cerr << "Problem opening '" << out_file << endl; return;}
+
+    // evaluate all queries 
+    for (auto q_i = queries.begin(); q_i != queries.end(); q_i++) {
+        // evaluate each query point separetely
+        this->evaluate(dataset, **q_i, method_name, solver, out_file_stream, N);
+    }
+
+    #ifdef VERBOSE 
+    out_file_stream << "\nTotal Stats: " << endl;
+    out_file_stream << "Average per point accuracy: " << acc_sum/queries->size() << endl;
+    out_file_stream << "Average brute_KNN/approx_KNN time ratio: " << true_approx_time_ratio_sum/queries->size() << endl;
+    out_file_stream << "Average approx_KNN dist / true_KNN dist error: " << approx_true_dist_ratio_sum/queries->size() - 1 << endl;
+    out_file_stream << "Max approx_KNN dist / true_KNN dist: " << approx_true_dist_ratio_max << endl; 
+    #endif
+}
+
+
+void Evaluator::evaluate(const list<Curve*>& dataset, Curve &q, std::string method_name, CurveNearestNeighboursSolver &solver, ofstream& out_file_stream, uint32_t N) {
+    // get approximate nearest neighbours
+    profiler_init();
+    profiler_start();
+
+    list<CurveNeighbour> *res = solver.kNearestNeighbours(q, N);
+
+    profiler_stop();
+    double knn_dur = profiler_get_duration();
+
+    // get true nearest neighbours
+    profiler_init();
+    profiler_start();
+
+    list<CurveNeighbour> *_true = this->nearestNeighboursBruteForce(dataset, q, N);
+
+    profiler_stop();
+    double real_dur = profiler_get_duration();
+
+    FileHandler::print_to_file(out_file_stream, q, method_name, res, _true,
+                               N, knn_dur, real_dur);
+
+#ifdef VERBOSE
+    acc_sum += get_accuracy<Point *>(*_true, *res);
+    true_approx_time_ratio_sum += real_dur / knn_dur;
+    dist_metrics<Point *>(*_true, *res);
+#endif
+
+    delete res;
+    delete _true;
+}
+

@@ -32,5 +32,5 @@ public:
     void AddToCurve(Point* p);
 
     // estimate the distance of 2 curves, given the dist metric by the user
-    double dist(Curve& curve);
+    double dist(Curve& curve) const;
 };

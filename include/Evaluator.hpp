@@ -6,6 +6,7 @@
 #endif 
 
 #include "NearestNeighboursSolver.hpp"
+#include "CurveNearestNeighbours.hpp"
 #include "Utilities.hpp"
 #include "Point.hpp"
 
@@ -22,9 +23,9 @@ class Evaluator {
 
     // use brute force O(n*logn) algorithm to calculate nearest neighbours
     Neighbours* nearestNeighboursBruteForce(const DataList &dataset, const Point& p, int k);
-    // evaluate accuracy of NN-RS results
-    double get_accuracy(Neighbours &__true, Neighbours &_res);
-   void dist_metrics(Neighbours &__true, Neighbours &_res);
+    list<CurveNeighbour>* nearestNeighboursBruteForce(const list<Curve *> &dataset, const Curve& c, int k);
+
+
    public:
     Evaluator();
     ~Evaluator();
@@ -55,4 +56,24 @@ class Evaluator {
     void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete);
 
     #endif
+
+    // add-ons for curve evaluation
+    void evaluate_from_file(
+        const list<Curve *>& dataset,   // the training dataset
+        const list<Curve *>& queries,   // the query dataset
+        std::string method_name,        // the method name: [Vector-like | Discrete/Continuous LSH] w\ LSH/Hypercube storage
+        CurveNearestNeighboursSolver& solver,
+        std::string out_file,           // name of output file
+        const uint32_t N=1              // number of top nearest neighbours to search for
+    );
+
+    // test a specific curve
+    void evaluate(const list<Curve*>& dataset, Curve &q, std::string method_name, CurveNearestNeighboursSolver& solver, ofstream& out_file_stream, uint32_t N);
 };
+
+template <class T>
+static void dist_metrics(list<pair<T, double>>& __true, list<pair<T, double>>& _res);
+
+// evaluate accuracy of NN-RS results
+template <class T>
+double get_accuracy(list<pair<T, double>>& __true, list<pair<T, double>>& _res);

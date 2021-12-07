@@ -10,6 +10,7 @@
 #include <list>
 #include "Utilities.hpp"
 #include "Point.hpp"
+#include "Curves.hpp"
 
 #ifndef NN
 #include "ClusterSolver.hpp"
@@ -31,9 +32,19 @@ class FileHandler{
         void CloseFile();
         std::list<Point *> * create_dbPoints();
         void cleardb(void);
-        static void print_to_file(ofstream &out,const Point &p,string method,std::list<pair<Point *, double>>* neighbors,std::list<pair<Point *, double>>* rneighbors,std::list<pair<Point *, double>>* brute_neighbors,int k,double time, double brute_time);
-        
-        #ifndef NN
+        static void print_to_file(
+            ofstream &out, const Point &p, string method,
+            std::list<pair<Point *, double>> *neighbors,
+            std::list<pair<Point *, double>> *rneighbors,
+            std::list<pair<Point *, double>> *brute_neighbors, int k,
+            double time, double brute_time);
+        static void print_to_file(
+            ofstream &out, const Curve &p, string method,
+            std::list<pair<Curve *, double>> *neighbors,
+            std::list<pair<Curve *, double>> *brute_neighbors, int k,
+            double time, double brute_time);
+
+#ifndef NN
         static void print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete);
         #endif
 };        

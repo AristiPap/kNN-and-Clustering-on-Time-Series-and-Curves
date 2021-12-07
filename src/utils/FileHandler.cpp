@@ -107,6 +107,33 @@ void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::
     out << endl;
 }
 
+
+// add on for the second assignment
+void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
+                          std::list<pair<Curve *, double>> *neighbors,
+                          std::list<pair<Curve *, double>> *brute_neighbors,
+                          int k, double time, double brute_time) 
+{
+    if (!out) {
+        cerr << "Cannot write to of stream. Exiting..." << endl;
+        return;
+    }
+
+    out << "Query: " << p.getId() << endl;
+    int counter = 1;
+    auto it2 = brute_neighbors->begin();
+    for (auto it1 : *neighbors) {
+        out << "Nearest neighbour-" << counter++ << ": " << it1.first->getId()
+            << endl;
+        out << "distance" << method << ": " << it1.second << endl;
+        out << "distanceTrue: " << it2->second << endl;
+        advance(it2, 1);
+    }
+
+    out << "t" << method << ": " << time << " ms" << endl;
+    out << "tTrue: " << brute_time << " ms" << endl;
+}
+
 #ifndef NN
 void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete){
     

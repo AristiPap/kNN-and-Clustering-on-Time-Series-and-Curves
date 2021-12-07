@@ -40,7 +40,7 @@ void Curve::AddToCurve(Point* p){
     curve.push_back(*p);
 }
 
-double Curve::dist(Curve& curve) {
+double Curve::dist(Curve& curve) const{
     assert(curve.dimensions() == this->dimensions());
 
     return this->curveDist(*this, curve);
