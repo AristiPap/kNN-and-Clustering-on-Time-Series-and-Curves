@@ -14,7 +14,7 @@ int FileHandler:: OpenFile(string inputFile){
     
     if (!in){
         cerr << "Cannot open the input file " << inputFile <<  endl;
-        return 1;
+        exit(1);
     }
     
     return 0;
@@ -76,6 +76,60 @@ std::list<Point *> *FileHandler::create_dbPoints(){
     
     //return list of points    
     return this->db;
+}
+
+std::list<Curve *> *FileHandler::create_dbCurves(){
+    
+    this->curve_db = new list<Curve *> ();
+    int _ratio = int(1 / this->f_sample);
+    string str;
+    //get curve
+    while (getline(in,str,'\n')){
+        if ( !str.empty() && str.back() == '\r' ) 
+            str.erase( str.size() - 1 );
+         
+        stringstream linestream(str);
+        string id;
+        string word;
+        //find how many tabs exist in line read. tabs == points 
+        size_t tabs = count(str.begin(), str.end(),'\t'); 
+        //get id
+        getline(linestream, id, '\t');
+        Curve *tmp_Curve = new Curve();
+        tmp_Curve->setId(id); 
+        cout<<"id is:"<<id<<" and ratio" << _ratio <<endl;
+        
+        double y;
+        int _id = 1;
+        
+        for (int i=0; i< tabs; i++){   
+            getline(linestream, word, '\t'); 
+            //cast string value to double
+            y = std::stod(word.c_str());
+
+            Point *p = new Point(id,0,this->distMetric);               
+            cout << "x and y: " << _id << "," << y << endl;
+            //add x coordinate -> number of time column
+            p->addCoordinate(double(_id));                   
+            //add y coordinate -> value of xij
+            p->addCoordinate(y);                      
+            
+            tmp_Curve->AddToCurve(p);
+            _id ++;
+            
+            //move to the prev of the next point of sample
+            if(_ratio > 1){
+                for(int j=0; j < _ratio - 1; j++){
+                    getline(linestream, word, '\t');
+                    i++;
+                    _id++;
+                } 
+            }           
+            
+        }
+        this->curve_db->push_back(tmp_Curve);   
+    }
+    return this->curve_db;
 }
 
 void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::list<pair<Point *, double>>* neighbors,std::list<pair<Point *, double>>* rneighbors,std::list<pair<Point *, double>>* brute_neighbors,int k,double time, double brute_time)

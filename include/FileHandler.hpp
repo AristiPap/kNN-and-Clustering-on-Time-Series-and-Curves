@@ -10,6 +10,7 @@
 #include <list>
 #include "Utilities.hpp"
 #include "Point.hpp"
+#include "Curves.hpp"
 
 #ifndef NN
 #include "ClusterSolver.hpp"
@@ -22,6 +23,7 @@ class FileHandler{
         ifstream in;
         string inputPath;
         std::list<Point *> *db;
+        std::list<Curve *> *curve_db;
         DistanceMetric distMetric;
         double f_sample;
     public:
@@ -30,6 +32,7 @@ class FileHandler{
         int OpenFile(string inputFile);
         void CloseFile();
         std::list<Point *> * create_dbPoints();
+        std::list<Curve *> * create_dbCurves();
         void cleardb(void);
         static void print_to_file(ofstream &out,const Point &p,string method,std::list<pair<Point *, double>>* neighbors,std::list<pair<Point *, double>>* rneighbors,std::list<pair<Point *, double>>* brute_neighbors,int k,double time, double brute_time);
         
