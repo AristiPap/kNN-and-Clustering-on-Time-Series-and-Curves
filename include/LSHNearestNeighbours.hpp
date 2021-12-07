@@ -1,4 +1,4 @@
-
+#pragma once
 
 #include "Hashing.hpp"
 #include "Utilities.hpp"

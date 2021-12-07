@@ -1,10 +1,12 @@
 #include "FileHandler.hpp"
 
-FileHandler::FileHandler(DistanceMetric distMetric, double f_sample){
+FileHandler::FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample){
     this->db = nullptr;
     this->distMetric = distMetric;
     this->f_sample = f_sample;
+    this->curveDistMetric = curveDistMetric;
 };
+
 FileHandler::~FileHandler(){};
 
 int FileHandler:: OpenFile(string inputFile){

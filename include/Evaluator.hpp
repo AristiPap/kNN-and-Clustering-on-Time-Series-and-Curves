@@ -38,7 +38,8 @@ class Evaluator {
         std::string query_file,          // file with query points
         std::string out_file = "stdout", // default fout is stdout
         const uint32_t N = 1,            // number of neighbours to find
-        const double R = -1.0           // default is no range search, change to R>=0 to range search
+        const double R = -1.0,           // default is no range search, change to R>=0 to range search
+        double f_sample = 1.0
     );
 
     void evaluate(

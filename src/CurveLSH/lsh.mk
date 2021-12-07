@@ -4,7 +4,7 @@ PROGRAM := discrete-frechet-lsh
 
 CFLAGS += -D NN
 
-CUR-OBJS += $(BUILD)/LSHNearestNeighbours.o $(BUILD)/curve_lsh.o
+CUR-OBJS += $(BUILD)/LSHNearestNeighbours.o $(BUILD)/hypercube.o $(BUILD)/curve_lsh.o
 
 include $(SRC)/rules.inc 
 

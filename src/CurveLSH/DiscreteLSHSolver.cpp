@@ -37,9 +37,9 @@ std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(const Curve &q,
         NearestNeighboursSolver *solver = this->solvers[i];
 
         // get the snapped curve in concatenated form
-        Point x = grid_hash(q);
+        Point *x = grid_hash(q);
         // get the k nearest neighbours
-        list<Neighbour> *cur_neighbours = solver->kNearestNeighbours(x, N);
+        list<Neighbour> *cur_neighbours = solver->kNearestNeighbours(*x, N);
     
         for (auto n_i = cur_neighbours->begin(); n_i != cur_neighbours->end(); n_i++) {
             neighbours.insert(make_pair(n_i->first->getCurve(), n_i->second));
@@ -61,7 +61,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
                                                uint32_t probes) 
 {
     // create a curve hashing mechanism
-    this->grid_hashes.push_back(DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta));
+    this->grid_hashes.push_back(DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
     
     // transform all data
     transform_dataset(dataset, this->grid_hashes.back());

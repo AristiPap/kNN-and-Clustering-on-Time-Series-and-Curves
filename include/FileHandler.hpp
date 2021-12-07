@@ -25,15 +25,19 @@ class FileHandler{
         std::list<Point *> *db;
         std::list<Curve *> *curve_db;
         DistanceMetric distMetric;
+        CurveDistMetric curveDistMetric;
         double f_sample;
     public:
-        FileHandler(DistanceMetric distMetric, double f_sample);
+        FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample);
         ~FileHandler();
         int OpenFile(string inputFile);
         void CloseFile();
         std::list<Point *> * create_dbPoints();
         std::list<Curve *> * create_dbCurves();
         void cleardb(void);
+        
+        
+
         static void print_to_file(
             ofstream &out, const Point &p, string method,
             std::list<pair<Point *, double>> *neighbors,

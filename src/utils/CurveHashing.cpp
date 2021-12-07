@@ -53,12 +53,12 @@ DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delt
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
-Point * DLSHHashingCurve::operator()(Curve *curve) {
+Point * DLSHHashingCurve::operator()(const Curve &curve) {
     
     //create grid curve
-    Curve* hashedCurve = curveHashing(*curve);
+    Curve* hashedCurve = curveHashing(curve);
     //convert hashed curve to point
-    Point *p = squeeze(hashedCurve,curve);
+    Point *p = squeeze(hashedCurve, &curve);
     //add padding
     p->padding(dim*max_curve_len);
 
