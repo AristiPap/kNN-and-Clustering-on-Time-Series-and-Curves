@@ -35,5 +35,5 @@ int main(void) {
     file_handler.OpenFile("/home/aristi/Desktop/kNN-and-Clustering-on-Time-Series-and-Curves/nasdaq2017_LQ.csv");
     dataset = file_handler.create_dbCurves();
     file_handler.CloseFile();
-    cout << dataset->front()->getCurvePoints()[0]<< endl;
+    cout << dataset->front()->getCurvePoints()[1]<< endl;
 }

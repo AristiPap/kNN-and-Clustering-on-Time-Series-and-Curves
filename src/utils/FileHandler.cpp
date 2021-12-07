@@ -97,7 +97,7 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
         getline(linestream, id, '\t');
         Curve *tmp_Curve = new Curve();
         tmp_Curve->setId(id); 
-        cout<<"id is:"<<id<<" and ratio" << _ratio <<endl;
+        //cout<<"id is:"<<id<<" and ratio" << _ratio <<endl;
         
         double y;
         int _id = 1;
@@ -108,9 +108,11 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
             y = std::stod(word.c_str());
 
             Point *p = new Point(id,0,this->distMetric);               
-            cout << "x and y: " << _id << "," << y << endl;
+            //cout << "x and y: " << _id << "," << y << endl;
+            
             //add x coordinate -> number of time column
             p->addCoordinate(double(_id));                   
+            
             //add y coordinate -> value of xij
             p->addCoordinate(y);                      
             
