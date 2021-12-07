@@ -33,4 +33,7 @@ public:
 
     // estimate the distance of 2 curves, given the dist metric by the user
     double dist(Curve& curve) const;
+
+    // transform the current continuous curve into a discrete curve and return a pointer to it
+    Curve *Curve::filter(void);
 };
