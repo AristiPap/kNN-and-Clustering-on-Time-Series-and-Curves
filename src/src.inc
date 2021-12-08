@@ -11,3 +11,4 @@ OBJS += $(BUILD)/Profiler.o
 OBJS += $(BUILD)/frechet.o
 OBJS += $(BUILD)/config.o
 OBJS += $(BUILD)/interval.o
+OBJS += $(BUILD)/CurveNearestNeighboursSolver.o

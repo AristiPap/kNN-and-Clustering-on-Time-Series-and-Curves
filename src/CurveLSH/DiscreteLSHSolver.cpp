@@ -26,7 +26,7 @@ DiscreteLSHSolver::~DiscreteLSHSolver() {
 }
 
 // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
-std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(const Curve &q, uint N) {
+std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(Curve &q, uint N) {
     // we will search all L hash tables
     // save the resulted curves into a neighbours set and return top k
 
@@ -48,11 +48,18 @@ std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(const Curve &q,
         free(cur_neighbours);
     }
 
+    list<CurveNeighbour> *closest = new list<CurveNeighbour>();
+    int k_counter = 1;
+    for (auto it_2 : neighbours) {
+        if (k_counter > N) break;
+        closest->push_back(make_pair(it_2.first, it_2.second));
+        k_counter++;
+    }
+
+    return closest;
 }
 
-// Find all neighbours in range R. Returns list of <Curve *, dist from q>.
-std::list<CurveNeighbour> *DiscreteLSHSolver::nearestNeighbours_w_rangeSearch(
-    const Curve &q, double R) {}
+
 
 void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
                                                std::string storage_type,
@@ -84,7 +91,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
 
 }
 
-void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, const DLSHHashingCurve& grid_hash) {
+void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, DLSHHashingCurve& grid_hash) {
     // add a new transformed dataset list 
     this->dataset_transformed.push_back(list<Point *>());
     list<Point *>& dt = this->dataset_transformed.back();
@@ -93,7 +100,7 @@ void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, const DLSHHashi
     
     for (auto dp_i = dataset.begin(); dp_i != dataset.end(); dp_i++) {
         // snap the curve into the grid 
-        Point * concated_grid_curve = grid_hash(*dp_i);
+        Point * concated_grid_curve = grid_hash(**dp_i);
         // add the point/concated snapped curve into the transformed dataset
         dt.push_back(concated_grid_curve); 
     }

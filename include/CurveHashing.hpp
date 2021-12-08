@@ -28,11 +28,11 @@ class HashingCurve {
    public:
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
-    virtual Point * operator()(Curve *curve) = 0;
+    virtual Point * operator()(Curve &curve) = 0;
     HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len);
     ~HashingCurve();
-    Point* squeeze(Curve* hashedCurve, Curve *origin);
-    Curve* curveHashing(const Curve &curve);
+    Point* squeeze(Curve& hashedCurve, Curve *origin);
+    Curve* curveHashing(Curve &curve);
     double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
 };
 
@@ -42,7 +42,7 @@ class DLSHHashingCurve : public HashingCurve {
     vector<double> t;
 
    public:
-    Point * operator()(Curve *curve);
+    Point* operator()(Curve& curve);
     DLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len);
     ~DLSHHashingCurve();
 };
@@ -52,7 +52,7 @@ class CLSHHashingCurve : public HashingCurve {
     vector<double> t;
     
    public:
-    Point * operator()(Curve *curve);
+    Point* operator()(Curve& curve);
     CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len);
     ~CLSHHashingCurve();
 

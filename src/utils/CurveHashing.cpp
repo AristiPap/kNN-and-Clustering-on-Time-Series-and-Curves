@@ -53,19 +53,19 @@ DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delt
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
-Point * DLSHHashingCurve::operator()(Curve *curve) {
+Point * DLSHHashingCurve::operator()(Curve &curve) {
     
     //create grid curve
-    Curve* hashedCurve = curveHashing(*curve);
+    Curve* hashedCurve = curveHashing(curve);
     //convert hashed curve to point
-    Point *p = squeeze(hashedCurve,curve);
+    Point *p = squeeze(*hashedCurve, &curve);
     //add padding
     p->padding(dim*max_curve_len);
 
     return p;
 }
 
-Curve* HashingCurve::curveHashing(const Curve &curve){
+Curve* HashingCurve::curveHashing(Curve &curve){
 
     // iterate through the points of the input curve
     // implement hash 
@@ -102,11 +102,11 @@ Curve* HashingCurve::curveHashing(const Curve &curve){
     return gridCurve;   
 }
 
-Point* HashingCurve::squeeze(Curve* gridCurve, Curve *origin){
+Point* HashingCurve::squeeze(Curve& gridCurve, Curve *origin){
     // create new point to represent vector of curve with the same id as the curve
     Point* newPoint = new Point(origin->getId(), 0, InitialCurveDF); 
     
-    for(auto it:gridCurve->getCurvePoints())
+    for(auto it:gridCurve.getCurvePoints())
         for(int i = 0; i< it.getDims(); i++)
             newPoint->addCoordinate(it.getCoordinate(i));
     
@@ -123,17 +123,17 @@ CLSHHashingCurve::CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double del
 
 CLSHHashingCurve::~CLSHHashingCurve(){}
 
-Point* CLSHHashingCurve::operator()(Curve* curve) {
+Point* CLSHHashingCurve::operator()(Curve& curve) {
     // First filter the continuous curve
-    Curve *filtered_curve = this->filter(*curve);
+    Curve *filtered_curve = this->filter(curve);
 
     // snap the curve onto the grid
-    Curve *grid_curve = this->curveHashing(*curve);
+    Curve *grid_curve = this->curveHashing(curve);
     delete filtered_curve;
 
     // keep only the sequences of min and maxes
     auto curve_points = grid_curve->getCurvePoints();
-    Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve->getId(), FrechetDistContinuous, {curve_points.front()}); 
+    Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve.getId(), FrechetDistContinuous, {curve_points.front()}); 
     for (auto p_i = curve_points.begin()+1; p_i+1 != curve_points.end(); p_i++) {
         // add the point in i only if p_i \not-in (min(p_{i-1}, p_{i+1}), max(p_{i-1}, p_{i+1}))
         double v = p_i->getCoordinate(1);
@@ -150,7 +150,7 @@ Point* CLSHHashingCurve::operator()(Curve* curve) {
     delete grid_curve;
 
     // squeeze the point and return the vector x with padding
-    Point* p = squeeze(&min_max_sequence_curve, curve);
+    Point* p = squeeze(min_max_sequence_curve, &curve);
     // add padding
     p->padding(dim * max_curve_len);
 
