@@ -11,6 +11,7 @@ typedef Point TimeSeries;
 typedef double (*CurveDistMetric)(const Curve&, const Curve&);
 
 double FrechetDistDiscrete(const Curve& c1, const Curve& c2);
+double FrechetDistContinuous(const Curve& c1, const Curve& c2);
 
 class Curve
 {
@@ -26,14 +27,11 @@ public:
 
     unsigned long complexity() const; 
     int dimensions() const;
-    std::vector<Point> getCurvePoints() const;
+    const std::vector<Point>& getCurvePoints() const;
     void setId(std::string id);
     std::string getId() const;
     void AddToCurve(Point* p);
 
     // estimate the distance of 2 curves, given the dist metric by the user
     double dist(Curve& curve) const;
-
-    // transform the current continuous curve into a discrete curve and return a pointer to it
-    Curve *filter(void);
 };

@@ -11,7 +11,9 @@
 #include "global_variables_namespace.hpp"
 #include "Curves.hpp"
 
-#define BIGINT 4294967291
+// epsilon of filtering
+#define EPSILON 1
+
 // Basic Hashing interface
 class HashingCurve {
    protected:
@@ -26,26 +28,26 @@ class HashingCurve {
    public:
     // every hashing subclass must implement the () operator overloading to
     // enable hashing activity
-    virtual Point * operator()(const Curve &curve) = 0;
+    virtual Point * operator()(Curve *curve) = 0;
     HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len);
     ~HashingCurve();
     Point* squeeze(Curve* hashedCurve, Curve *origin);
     Curve* curveHashing(const Curve &curve);
-    static double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
+    double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
 };
 
 // Hashing class for LSH algorithm
-class DLSHHashingCurve : HashingCurve {
+class DLSHHashingCurve : public HashingCurve {
    private:
     vector<double> t;
 
    public:
-    Point * operator()(const Curve &curve);
+    Point * operator()(Curve *curve);
     DLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len);
     ~DLSHHashingCurve();
 };
 
-class CLSHHashingCurve : HashingCurve {
+class CLSHHashingCurve : public HashingCurve {
    private:
     vector<double> t;
     
@@ -53,4 +55,8 @@ class CLSHHashingCurve : HashingCurve {
     Point * operator()(Curve *curve);
     CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len);
     ~CLSHHashingCurve();
+
+    // Filter a continuous curve to a discrete curve
+    // Returns the filtered curve, malloc'd instance. User got to free by himself
+    Curve* filter(Curve& c);
 };

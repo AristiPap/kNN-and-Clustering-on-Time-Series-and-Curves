@@ -53,12 +53,12 @@ DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delt
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
-Point * DLSHHashingCurve::operator()(const Curve &curve) {
+Point * DLSHHashingCurve::operator()(Curve *curve) {
     
     //create grid curve
-    Curve* hashedCurve = curveHashing(curve);
+    Curve* hashedCurve = curveHashing(*curve);
     //convert hashed curve to point
-    Point *p = squeeze(hashedCurve, &curve);
+    Point *p = squeeze(hashedCurve,curve);
     //add padding
     p->padding(dim*max_curve_len);
 
@@ -78,7 +78,7 @@ Curve* HashingCurve::curveHashing(const Curve &curve){
         Point *p1 = &it;
         vector <double> x = p1->getCoordinates();
         
-        Point *hash = new Point("-1",0,this->distMetric);
+        Point *hash = new Point("<snapped-point>",0,this->distMetric);
         int i = 0;
         for(auto it2 : x){
             hash->addCoordinate(floor(it2/delta + 0.5) * delta + t.at(i));
@@ -113,4 +113,91 @@ Point* HashingCurve::squeeze(Curve* gridCurve, Curve *origin){
     newPoint->setInitial(origin);
     
     return newPoint;
+}
+
+
+// Continuous LSH implementation
+CLSHHashingCurve::CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len) 
+: HashingCurve(dim, w, k, delta, max_curve_len)
+{} 
+
+CLSHHashingCurve::~CLSHHashingCurve(){}
+
+Point* CLSHHashingCurve::operator()(Curve* curve) {
+    // First filter the continuous curve
+    Curve *filtered_curve = this->filter(*curve);
+
+    // snap the curve onto the grid
+    Curve *grid_curve = this->curveHashing(*curve);
+    delete filtered_curve;
+
+    // keep only the sequences of min and maxes
+    auto curve_points = grid_curve->getCurvePoints();
+    Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve->getId(), FrechetDistContinuous, {curve_points.front()}); 
+    for (auto p_i = curve_points.begin()+1; p_i+1 != curve_points.end(); p_i++) {
+        // add the point in i only if p_i \not-in (min(p_{i-1}, p_{i+1}), max(p_{i-1}, p_{i+1}))
+        double v = p_i->getCoordinate(1);
+        double prev_v = (p_i-1)->getCoordinate(1);
+        double next_v = (p_i+1)->getCoordinate(1);
+        double min_v = min(prev_v, next_v);
+        double max_v = max(prev_v, next_v);
+        if (v - min_v < 0 || max_v - v < 0) {
+            // the point with value v is a local maxima/minima
+            // so add it in the curve
+            min_max_sequence_curve.AddToCurve(&(*p_i));
+        }
+    }
+    delete grid_curve;
+
+    // squeeze the point and return the vector x with padding
+    Point* p = squeeze(&min_max_sequence_curve, curve);
+    // add padding
+    p->padding(dim * max_curve_len);
+
+    return p;
+}
+
+// // function to filter ONLY continues curves on 2D-plane
+Curve* CLSHHashingCurve::filter(Curve &c) {
+    assert(c.complexity() > 1);
+    assert(c.dimensions() > 0);
+
+    // if the curve has less that 3 points then there is no reason to filter
+    if (c.complexity() < 3) return new Curve(c);
+
+    auto curve_points = c.getCurvePoints();
+    auto a_i = curve_points.begin(), b_i = curve_points.begin(), c_i = curve_points.begin();
+    b_i++; c_i++; c_i++;
+
+    // initiate the new curve
+    Curve *filtered_curve = new Curve("<filtered>"+c.getId(), FrechetDistContinuous, {*a_i});
+
+    // Pass all the curves-points, do:
+    while (a_i != curve_points.end() && b_i != curve_points.end() && c_i != curve_points.end()) {
+        // 1. Check if |a-b| < e and |b-c| < e, for given points where a, b, c are the
+        //  values of the time series in specific timestamps
+        double a = (*a_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
+        double b = (*b_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
+        double c = (*c_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
+        if (abs(a-b) <= EPSILON && abs(b-c) <= EPSILON) {
+            // we eliminate the point in b_i
+            // by proceeding to the next points for b and c
+            b_i++;
+            c_i++;
+        } else {
+            // the point in b must be in the curve since it cannot be filtered
+            filtered_curve->AddToCurve(&(*b_i));
+            // 2. merge the points if prev-condition is true and set a_i = b_i,
+            // b_i = b_i + 1, c_i = c_i + 1, and restart the process
+            a_i = b_i;
+            b_i++;
+            c_i++;
+        }
+    }
+    
+    // 3. at the end of the procedure we have the last point in the curve at c_i. Add it into the filtered curve
+    filtered_curve->AddToCurve(&curve_points.back());
+
+    // 4. return the new curve
+    return filtered_curve;
 }
