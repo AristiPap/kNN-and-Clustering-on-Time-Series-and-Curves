@@ -19,6 +19,9 @@ double generateNumber(double const& lower,double const& upper){
 }
 
 double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query){
+    assert(dataset_input.size() > 1);
+    assert(dataset_query.size() > 1);
+    
     int32_t _dim = dataset_input.front()->dimensions();
     
     //m1 is the average of the complexities of the input curve dataset
@@ -147,6 +150,9 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
             min_max_sequence_curve.AddToCurve(&(*p_i));
         }
     }
+
+    //add the last point of the curve
+    min_max_sequence_curve.AddToCurve(&(curve_points.back()));
     delete grid_curve;
 
     // squeeze the point and return the vector x with padding

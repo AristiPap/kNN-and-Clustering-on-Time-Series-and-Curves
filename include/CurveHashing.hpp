@@ -33,7 +33,7 @@ class HashingCurve {
     ~HashingCurve();
     Point* squeeze(Curve& hashedCurve, Curve *origin);
     Curve* curveHashing(Curve &curve);
-    double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
+    static double estimate_delta(std::list<Curve*>& dataset_input, std::list<Curve*>& dataset_query);
 };
 
 // Hashing class for LSH algorithm
