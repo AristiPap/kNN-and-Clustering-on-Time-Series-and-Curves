@@ -97,8 +97,8 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
         size_t tabs = count(str.begin(), str.end(),'\t'); 
         //get id
         getline(linestream, id, '\t');
-        Curve *tmp_Curve = new Curve();
-        tmp_Curve->setId(id); 
+        Curve *tmp_Curve = new Curve(id, this->curveDistMetric);
+
         //cout<<"id is:"<<id<<" and ratio" << _ratio <<endl;
         
         double y;
