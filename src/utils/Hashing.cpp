@@ -74,7 +74,7 @@ uint32_t LSHHashing::estimate_w(list<Point *> &dataset) {
         advance(it2, i2);
 
         // calculate dist and update min/max distances
-        double dist = (*it1)->dist(*(*it2));
+        double dist = L2_norm(**it1, **it2);
         avg_dist += dist;
 
     }

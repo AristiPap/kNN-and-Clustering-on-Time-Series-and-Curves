@@ -33,11 +33,11 @@ std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(Curve &q, uint 
     set<pair<Curve *, double>, curve_compare> neighbours;
 
     for (auto i = 0; i < this->_curve_L; i++) {
-        DLSHHashingCurve &grid_hash = this->grid_hashes[i];
+        DLSHHashingCurve &h = this->grid_hashes[i];
         NearestNeighboursSolver *solver = this->solvers[i];
 
         // get the snapped curve in concatenated form
-        Point *x = grid_hash(q);
+        Point *x = h(q);
         // get the k nearest neighbours
         list<Neighbour> *cur_neighbours = solver->kNearestNeighbours(*x, N);
     
@@ -79,7 +79,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
     // create solver and initialize given the snapped curves for the specific grid hash
     if (storage_type == "LSH")
         this->solvers.push_back(new LSHNearestNeighbours(
-            this->dataset_transformed.back(), this->dataset_transformed.back().size()/8, k, w, _L)
+            this->dataset_transformed.back(), max(this->dataset_transformed.back().size()/8, (unsigned long)1), k, w, _L)
             );
     else if (storage_type == "Hypercube")
         this->solvers.push_back(
@@ -91,7 +91,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
 
 }
 
-void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, DLSHHashingCurve& grid_hash) {
+void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, DLSHHashingCurve& h) {
     // add a new transformed dataset list 
     this->dataset_transformed.push_back(list<Point *>());
     list<Point *>& dt = this->dataset_transformed.back();
@@ -99,8 +99,8 @@ void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, DLSHHashingCurv
     assert(dt.size() == 0); // sanity check
     
     for (auto dp_i = dataset.begin(); dp_i != dataset.end(); dp_i++) {
-        // snap the curve into the grid 
-        Point * concated_grid_curve = grid_hash(**dp_i);
+        // hash the curve
+        Point * concated_grid_curve = h(**dp_i);
         // add the point/concated snapped curve into the transformed dataset
         dt.push_back(concated_grid_curve); 
     }

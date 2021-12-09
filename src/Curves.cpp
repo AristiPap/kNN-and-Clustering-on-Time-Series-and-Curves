@@ -46,6 +46,7 @@ double Curve::dist(Curve& curve) const{
 
 // metrics to estimate curve distance
 double FrechetDistDiscrete(const Curve& c1, const Curve& c2) {
+    cout << "distance between: " << c1.getId() << " and " << c2.getId() << endl;
     return Frechet::Discrete::distance(c1, c2).value;
 }
 
