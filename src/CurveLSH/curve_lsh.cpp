@@ -170,8 +170,8 @@ static void demo_frechet(list<Curve *> *dataset, double f_sample) {
     // estimate delta TODO:
     if (delta == 0)
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
-
-    DiscreteLSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(), "LSH", 1, 1);
+    
+    DiscreteLSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(), "LSH", 1, 1, metric == FrechetDistContinuous);
 
     evaluator.evaluate_from_file(*dataset, *query_list, algorithm, solver, outfile_name, N);
 
