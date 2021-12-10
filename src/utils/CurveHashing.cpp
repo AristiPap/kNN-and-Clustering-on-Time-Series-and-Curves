@@ -38,7 +38,7 @@ double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::lis
     m2 = counter_query / dataset_query.size();
     
     double _delta = 4 * _dim * min(m1,m2);
-    return _delta;
+    return _delta/100;
 }
 
 HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
@@ -46,9 +46,7 @@ HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int3
     for (int i=0; i<dim; i++) {
         double num = generateNumber(0,delta);
         this->t.push_back(num);
-        cout << num << " ";
     }
-    cout << endl;
 }
 
 DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delta, int32_t max_curve_len)
@@ -69,7 +67,6 @@ Point * DLSHHashingCurve::operator()(Curve &curve) {
 }
 
 Curve* HashingCurve::curveHashing(Curve &curve){
-
     // iterate through the points of the input curve
     // implement hash 
     //add new point to hashed curve
@@ -93,10 +90,10 @@ Curve* HashingCurve::curveHashing(Curve &curve){
         }
         
         //avoid duplicates
-        if (hash == previousMinPoint){
-            previousMinPoint = hash;
+        if (previousMinPoint && hash->getCoordinates() == previousMinPoint->getCoordinates()){
             continue;
-        }
+        } else 
+            previousMinPoint = hash;
         
         gridCurve->AddToCurve(hash);
         

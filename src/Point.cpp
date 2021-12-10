@@ -54,8 +54,9 @@ void Point::setInitial(Curve *curve){
 
 void Point::padding(int new_d){
     int space = new_d-this->getDims();
+    cout << space << endl;
     for (int i=0; i < space ; i++)
-        this->addCoordinate(0);
+        this->addCoordinate(std::numeric_limits<double>::max());
 }
 
 void Point::addCoordinate(double x) {

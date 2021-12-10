@@ -6,7 +6,7 @@
 #include "FileHandler.hpp"
 #include "LSHNearestNeighbours.hpp"
 #include "hyper_cube.hpp"
-#include "DiscreteLSHSolver.hpp"
+#include "GenericLSHSolver.hpp"
 
 using namespace std;
 
@@ -170,8 +170,9 @@ static void demo_frechet(list<Curve *> *dataset, double f_sample) {
     // estimate delta TODO:
     if (delta == 0)
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
-    
-    DiscreteLSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(), "LSH", 1, 1, metric == FrechetDistContinuous);
+
+    LSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(),
+                     int(metric == FrechetDistContinuous), "LSH", 1, 1);
 
     evaluator.evaluate_from_file(*dataset, *query_list, algorithm, solver, outfile_name, N);
 
@@ -204,7 +205,7 @@ int main(int argc, char **argv) {
         set_up();
         cout << "Ready to run " << algorithm << "-Solver with arguments: {k: " << k
              << ", L: " << L << ", N: " << N << ", M: " << M << ", probes: "<< probes << \
-             ", delta: " << delta << ", metric: " << (metric == FrechetDistContinuous ? "discrete" : "continuous") << "} for" << endl
+             ", delta: " << delta << ", metric: " << (metric == FrechetDistDiscrete ? "discrete" : "continuous") << "} for" << endl
              << "Input File: " << infile_name << endl
              << "Query File: " << query_file_name << endl
              << "Output File: " << outfile_name << endl;

@@ -11,10 +11,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <vector>
 #include <limits>
 #include <ctime>
-
+#include <list>
 #include "frechet.hpp"
 
 namespace Frechet {
+// add ons for Project 2
+bool backtrace = false;
+list<pair<const Point *, const Point *>> optimal_traversal;
 
 namespace Continuous {
     
@@ -246,14 +249,20 @@ distance_t _projective_lower_bound(const Curve &curve1, const Curve &curve2) {
 } // end namespace Continuous
 
 namespace Discrete {
-    
+
+
 std::string Distance::repr() const {
     std::stringstream ss;
     ss << value;
     return ss.str();
 }
-    
+
 Distance distance(const Curve &curve1, const Curve &curve2) {
+    // add ons for project 2
+    if (backtrace)
+        optimal_traversal.push_back(make_pair(&curve1.getCurvePoints()[0], &curve2.getCurvePoints()[0]));
+    // end of add on
+
     Distance result;
     const auto start = std::clock();
     
@@ -274,6 +283,13 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
             else if (i > 0 and j == 0) a[i][j] = std::max(a[i-1][j], dists[i][j]);
             else {
                 a[i][j] = std::max(std::min(std::min(a[i-1][j], a[i-1][j-1]), a[i][j-1]), dists[i][j]);
+
+                // add ons for project 2
+                if (backtrace)
+                    optimal_traversal.push_back(
+                        make_pair(&curve1.getCurvePoints()[0],
+                                  &curve2.getCurvePoints()[0]));
+                // end of add on
             }
         }
     }

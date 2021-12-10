@@ -1,21 +1,20 @@
-#include "DiscreteLSHSolver.hpp"
+#include "GenericLSHSolver.hpp"
 #include <set>
 
-DiscreteLSHSolver::DiscreteLSHSolver(std::list<Curve *> &dataset,
-                                     uint32_t curve_L, uint32_t curve_delta,
-                                     uint32_t curve_d, string storage_type,
-                                     uint32_t _L, uint32_t k, uint32_t dd,
-                                     uint32_t M, uint32_t probes)
+LSHSolver::LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L,
+                     uint32_t curve_delta, uint32_t curve_d, int flag,
+                     string storage_type, uint32_t _L, uint32_t k, uint32_t dd,
+                     uint32_t M, uint32_t probes)
     : CurveNearestNeighboursSolver(dataset, curve_L, curve_delta, curve_d) {
     this->dataset_transformed.clear();
-
+    cout << "flag = " << flag << endl;
     // set up the proper ammount of Discrete lsh hash objs and vector solvers
     for (auto i = 0; i < curve_L; i++) {
-        insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes);
+        insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes, flag);
     }
 }
 
-DiscreteLSHSolver::~DiscreteLSHSolver() {
+LSHSolver::~LSHSolver() {
     for (auto solver : solvers) {
         delete solver;
     }
@@ -26,14 +25,14 @@ DiscreteLSHSolver::~DiscreteLSHSolver() {
 }
 
 // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
-std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(Curve &q, uint N) {
+std::list<CurveNeighbour> *LSHSolver::kNearestNeighbours(Curve &q, uint N) {
     // we will search all L hash tables
     // save the resulted curves into a neighbours set and return top k
 
     set<pair<Curve *, double>, curve_compare> neighbours;
 
     for (auto i = 0; i < this->_curve_L; i++) {
-        DLSHHashingCurve &h = this->grid_hashes[i];
+        HashingCurve &h = *this->grid_hashes[i];
         NearestNeighboursSolver *solver = this->solvers[i];
 
         // get the snapped curve in concatenated form
@@ -61,17 +60,25 @@ std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(Curve &q, uint 
 
 
 
-void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
+void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
                                                std::string storage_type,
                                                uint32_t _L, uint32_t k,
                                                uint32_t dd, uint32_t M,
-                                               uint32_t probes) 
+                                               uint32_t probes,
+                                               int flag) 
 {
     // create a curve hashing mechanism
-    this->grid_hashes.push_back(DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
+    
+    //DLSH hashing Curves
+    if(flag == 0)
+        this->grid_hashes.push_back(new DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
+
+    //Continuous LSH hashing Curves
+    else if(flag == 1)
+        this->grid_hashes.push_back(new CLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
     
     // transform all data
-    transform_dataset(dataset, this->grid_hashes.back());
+    transform_dataset(dataset, *this->grid_hashes.back());
 
     // estimate w for given curve storage solver
     uint32_t w = LSHHashing::estimate_w(this->dataset_transformed.back());
@@ -91,7 +98,7 @@ void DiscreteLSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
 
 }
 
-void DiscreteLSHSolver::transform_dataset(list<Curve*>& dataset, DLSHHashingCurve& h) {
+void LSHSolver::transform_dataset(list<Curve*>& dataset, HashingCurve& h) {
     // add a new transformed dataset list 
     this->dataset_transformed.push_back(list<Point *>());
     list<Point *>& dt = this->dataset_transformed.back();
