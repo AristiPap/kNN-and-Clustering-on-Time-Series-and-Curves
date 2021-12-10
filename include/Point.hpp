@@ -40,6 +40,7 @@ class Point{
         Point(DistanceMetric distMetric);
         Point(std::string id, int dims, DistanceMetric distMetric);
         Point(std::string id, vector<double> p, DistanceMetric distMetric);
+        Point(const Point& p);
         //setters
         void setId(std::string id);
         void setDims(int dim_num);

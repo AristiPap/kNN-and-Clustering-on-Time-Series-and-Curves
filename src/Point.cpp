@@ -14,6 +14,15 @@ Point::Point(string id, int dims, DistanceMetric distMetric)
 Point::Point(string id, vector<double> p, DistanceMetric distMetric)
     : distMetric(distMetric), id(id), dims(p.size()), coords(p), marked(false), cluster_id(-1), initial(NULL) {}
 
+Point::Point(const Point& p)
+    : distMetric(p.distMetric),
+      id("copy"+p.id),
+      dims(p.dims),
+      coords(p.coords),
+      marked(false),
+      cluster_id(-1),
+      initial(p.initial) {}
+
 //setters
 void Point::setId(string id){
     this->id = id;
@@ -141,7 +150,7 @@ ostream& operator<<(ostream& os, const Point& p) {
 Point Point::operator-(const Point p) const{
     assert(this->coords.size() == p.coords.size());
 
-    Point sub{"after sub", this->dims, this->distMetric};
+    Point sub{"<"+id+" - "+p.id+">", 0, this->distMetric};
 
     for (uint32_t i = 0; i < this->coords.size(); i++)
         sub.addCoordinate(this->coords[i] - p.getCoordinate(i));
@@ -152,7 +161,7 @@ Point Point::operator-(const Point p) const{
 Point Point::operator+(const Point p) const{
     assert(this->coords.size() == p.coords.size());
 
-    Point sub{"after sub", this->dims, this->distMetric};
+    Point sub{"<"+id+" + "+p.id+">", 0, this->distMetric};
 
     for (uint32_t i = 0; i < this->coords.size(); i++)
         sub.addCoordinate(this->coords[i] + p.getCoordinate(i));

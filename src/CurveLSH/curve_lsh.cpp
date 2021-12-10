@@ -53,7 +53,7 @@ void set_var(string arg_name, string arg_val) {
         if (arg_val == "discrete")
             metric = FrechetDistDiscrete;
         else if (arg_val == "continuous")
-            metric = FrechetDistDiscrete;
+            metric = FrechetDistContinuous;
         else {
             cerr << "Defaulting metric for frechet algorithm: Discrete case." << endl;
             metric = FrechetDistDiscrete;
@@ -204,7 +204,7 @@ int main(int argc, char **argv) {
         set_up();
         cout << "Ready to run " << algorithm << "-Solver with arguments: {k: " << k
              << ", L: " << L << ", N: " << N << ", M: " << M << ", probes: "<< probes << \
-             ", delta: " << delta << ", metric: " << metric << "} for" << endl
+             ", delta: " << delta << ", metric: " << (metric == FrechetDistContinuous ? "discrete" : "continuous") << "} for" << endl
              << "Input File: " << infile_name << endl
              << "Query File: " << query_file_name << endl
              << "Output File: " << outfile_name << endl;

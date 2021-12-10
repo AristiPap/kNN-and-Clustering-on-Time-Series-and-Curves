@@ -45,7 +45,7 @@ std::list<CurveNeighbour> *DiscreteLSHSolver::kNearestNeighbours(Curve &q, uint 
             neighbours.insert(make_pair(n_i->first->getCurve(), n_i->second));
         }
 
-        free(cur_neighbours);
+        delete cur_neighbours;
     }
 
     list<CurveNeighbour> *closest = new list<CurveNeighbour>();
