@@ -279,7 +279,7 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     std::vector<std::vector<distance_t>> dists(curve1.complexity(), std::vector<distance_t>(curve2.complexity()));
     
     // predecessor table
-    vector<vector<pair<curve_size_t, curve_size_t>>> predecessor;
+    vector<vector<pair<int, int>>> predecessor;
     if (backtrace) {
         predecessor.resize(curve1.complexity());
         for (auto i = 0; i < curve1.complexity(); i++) predecessor[i].resize(curve2.complexity());
@@ -350,15 +350,18 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
         unsigned long c1 = curve1.complexity() - 1;
         unsigned long c2 = curve2.complexity() - 1;
         
-        curve_size_t i = c1, j = c2;
+        int i = c1, j = c2;
         
-        while(i != -1 && j != -1 ){
+        while(i !=-1 && j != -1 ){
             optimal_traversal.push_front(make_pair(&curve_p1.at(i),&curve_p2.at(j)));
-            i = predecessor[i][j].first;
-            j = predecessor[i][j].second;
+            cout << "Predecessor at:"<< i << "," << j << " is:"<<predecessor[i][j].first<<","<<predecessor[i][j].second<<endl;
+            auto _i = predecessor[i][j].first;
+            auto _j = predecessor[i][j].second;
+            i = _i;
+            j = _j;
         }
         for(auto it:optimal_traversal){
-            cout<<"("<<it.first << ", "<< it.second << ")  " ; 
+            cout<<"("<<*it.first << ", "<< *it.second << ")  " ; 
         }
         cout<<endl;
         
