@@ -354,15 +354,15 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
         
         while(i !=-1 && j != -1 ){
             optimal_traversal.push_front(make_pair(&curve_p1.at(i),&curve_p2.at(j)));
-            cout << "Predecessor at:"<< i << "," << j << " is:"<<predecessor[i][j].first<<","<<predecessor[i][j].second<<endl;
+           // cout << "Predecessor at:"<< i << "," << j << " is:"<<predecessor[i][j].first<<","<<predecessor[i][j].second<<endl;
             auto _i = predecessor[i][j].first;
             auto _j = predecessor[i][j].second;
             i = _i;
             j = _j;
         }
-        for(auto it:optimal_traversal){
+       /* for(auto it:optimal_traversal){
             cout<<"("<<*it.first << ", "<< *it.second << ")  " ; 
-        }
+        }*/
         cout<<endl;
         
     }
