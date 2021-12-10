@@ -19,7 +19,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 namespace Frechet {
 // add ons for Project 2
-bool backtrace = false;
+bool backtrace = true;
 list<pair<const Point *, const Point *>> optimal_traversal;
 
 namespace Continuous {
@@ -346,6 +346,22 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     if (backtrace) {
         auto curve_p1 = curve1.getCurvePoints();
         auto curve_p2 = curve2.getCurvePoints();    
+        
+        unsigned long c1 = curve1.complexity() - 1;
+        unsigned long c2 = curve2.complexity() - 1;
+        
+        curve_size_t i = c1, j = c2;
+        
+        while(i != -1 && j != -1 ){
+            optimal_traversal.push_front(make_pair(&curve_p1.at(i),&curve_p2.at(j)));
+            i = predecessor[i][j].first;
+            j = predecessor[i][j].second;
+        }
+        for(auto it:optimal_traversal){
+            cout<<"("<<it.first << ", "<< it.second << ")  " ; 
+        }
+        cout<<endl;
+        
     }
         return result;
     }
