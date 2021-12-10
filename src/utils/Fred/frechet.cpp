@@ -12,6 +12,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <limits>
 #include <ctime>
 #include <list>
+
+#include <iostream>
+
 #include "frechet.hpp"
 
 namespace Frechet {
@@ -259,8 +262,14 @@ std::string Distance::repr() const {
 
 Distance distance(const Curve &curve1, const Curve &curve2) {
     // add ons for project 2
-    if (backtrace)
-        optimal_traversal.push_back(make_pair(&curve1.getCurvePoints()[0], &curve2.getCurvePoints()[0]));
+    if (backtrace){
+        optimal_traversal.clear();
+        // // we know that the start and the ending curve are always part of the traversal
+        // optimal_traversal.push_back(make_pair(&curve1.getCurvePoints()[0],
+        //                                       &curve2.getCurvePoints()[0]));
+        // optimal_traversal.push_back(make_pair(&curve1.getCurvePoints().back(),
+        //                                       &curve2.getCurvePoints().back()));
+    }
     // end of add on
 
     Distance result;
@@ -269,7 +278,13 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     std::vector<std::vector<distance_t>> a(curve1.complexity(), std::vector<distance_t>(curve2.complexity()));
     std::vector<std::vector<distance_t>> dists(curve1.complexity(), std::vector<distance_t>(curve2.complexity()));
     
-    #pragma omp parallel for collapse(2)
+    // predecessor table
+    vector<vector<pair<curve_size_t, curve_size_t>>> predecessor;
+    if (backtrace) {
+        predecessor.resize(curve1.complexity());
+        for (auto i = 0; i < curve1.complexity(); i++) predecessor[i].resize(curve2.complexity());
+    }
+
     for (curve_size_t i = 0; i < curve1.complexity(); ++i) {
         for (curve_size_t j = 0; j < curve2.complexity(); ++j) {
             dists[i][j] = (curve1.getCurvePoints())[i].dist_sqr((curve2.getCurvePoints())[j]);
@@ -278,19 +293,44 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     
     for (curve_size_t i = 0; i < curve1.complexity(); ++i) {
         for (curve_size_t j = 0; j < curve2.complexity(); ++j) {
-            if (i == 0 and j == 0) a[i][j] = dists[i][j];
-            else if (i == 0 and j > 0) a[i][j] = std::max(a[i][j-1], dists[i][j]);
-            else if (i > 0 and j == 0) a[i][j] = std::max(a[i-1][j], dists[i][j]);
+            if (i == 0 and j == 0) {
+                a[i][j] = dists[i][j];
+                if (backtrace) predecessor[i][j] = make_pair(-1, -1);
+            }
+            else if (i == 0 and j > 0) {
+                a[i][j] = std::max(a[i][j-1], dists[i][j]);
+                if (backtrace) predecessor[i][j] = make_pair(i, j-1);
+
+            }
+            else if (i > 0 and j == 0) {
+                a[i][j] = std::max(a[i-1][j], dists[i][j]);
+                if (backtrace) predecessor[i][j] = make_pair(i-1, j);
+            }
             else {
                 a[i][j] = std::max(std::min(std::min(a[i-1][j], a[i-1][j-1]), a[i][j-1]), dists[i][j]);
-
-                // add ons for project 2
-                if (backtrace)
-                    optimal_traversal.push_back(
-                        make_pair(&curve1.getCurvePoints()[0],
-                                  &curve2.getCurvePoints()[0]));
-                // end of add on
+                if (backtrace){
+                    curve_size_t _i=i, _j=j;
+                    if (a[i-1][j-1] > a[i][j-1]) {
+                        if (a[i][j-1] > a[i-1][j]) {
+                            _i = i-1;
+                            _j = j;
+                        } else {
+                            _i = i;
+                            _j = j-1;
+                        }
+                    } else {
+                        if (a[i-1][j-1] > a[i-1][j]) {
+                            _i = i-1;
+                            _j = j;
+                        } else {
+                            _i = i-1;
+                            _j = j-1;
+                        }
+                    }
+                    predecessor[i][j] = make_pair(_i, _j);
+                }
             }
+            
         }
     }
     
@@ -300,9 +340,15 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     
     result.time = (end - start) / CLOCKS_PER_SEC;
     result.value = value;
-    return result;
-    
-}
+
+
+    // backtracking
+    if (backtrace) {
+        auto curve_p1 = curve1.getCurvePoints();
+        auto curve_p2 = curve2.getCurvePoints();    
+    }
+        return result;
+    }
 
 } // end namespace Discrete
 
