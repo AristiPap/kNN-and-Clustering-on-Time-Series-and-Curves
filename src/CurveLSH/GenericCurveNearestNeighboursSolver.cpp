@@ -7,7 +7,6 @@ LSHSolver::LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L,
                      uint32_t M, uint32_t probes)
     : CurveNearestNeighboursSolver(dataset, curve_L, curve_delta, curve_d) {
     this->dataset_transformed.clear();
-    cout << "flag = " << flag << endl;
     // set up the proper ammount of Discrete lsh hash objs and vector solvers
     for (auto i = 0; i < curve_L; i++) {
         insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes, flag);

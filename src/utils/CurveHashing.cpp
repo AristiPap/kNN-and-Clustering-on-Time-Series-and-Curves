@@ -38,7 +38,7 @@ double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::lis
     m2 = counter_query / dataset_query.size();
     
     double _delta = 4 * _dim * min(m1,m2);
-    return _delta/100;
+    return _delta/1000;
 }
 
 HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
@@ -82,9 +82,6 @@ Curve* HashingCurve::curveHashing(Curve &curve){
         int i = 0;
         for(auto it2 : x){
             hash->addCoordinate(floor(it2/delta + 0.5) * delta + t.at(i));
-            #ifdef VERBOSE
-            cout << "floor("<<it2/delta << "+ 1/2) * " << delta << " + " << t.at(i) << " = " << floor(it2/delta + 0.5) * delta + t.at(i) << endl;
-            #endif
             
             i++;
         }

@@ -1,6 +1,6 @@
 # lsh make file
 
-PROGRAM := discrete-frechet-lsh
+PROGRAM := search
 
 CFLAGS += -D NN
 

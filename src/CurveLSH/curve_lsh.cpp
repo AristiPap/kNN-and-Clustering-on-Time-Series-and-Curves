@@ -26,7 +26,7 @@ using namespace std;
 string infile_name;
 string query_file_name;
 string outfile_name;
-u_int32_t k = -1, L = DEFAULT_L, N = DEFAULT_N, M = DEFAULT_M, probes = DEFAULT_PROBES;
+u_int32_t k = 3, L = DEFAULT_L, N = DEFAULT_N, M = DEFAULT_M, probes = DEFAULT_PROBES;
 string algorithm;
 CurveDistMetric metric = FrechetDistDiscrete;
 
@@ -148,7 +148,7 @@ static void demo_lsh(list<Point *>* dataset) {
     // create the solver and evaluate the algorithm
     uint32_t w = LSHHashing::estimate_w(*dataset);
     LSHNearestNeighbours solver{*dataset, dataset->size() / 8, k, w, L};
-    evaluator.evaluate_from_file(*dataset, "LSH", solver, query_file_name, outfile_name, N, 0); // last argument @R is 0 since we dont care about it
+    evaluator.evaluate_from_file(*dataset, "LSH_Vector", solver, query_file_name, outfile_name, N, 0); // last argument @R is 0 since we dont care about it
 }
 
 static void demo_hypercube(list<Point *> *dataset) {
@@ -157,7 +157,7 @@ static void demo_hypercube(list<Point *> *dataset) {
     uint32_t dims = dataset->front()->getDims();
     uint32_t w = LSHHashing::estimate_w(*dataset);
     HyperCube solver{w, dims, k, probes, M, *dataset};
-    evaluator.evaluate_from_file(*dataset, "HP", solver, query_file_name, outfile_name, N, 0);
+    evaluator.evaluate_from_file(*dataset, "Hypercube", solver, query_file_name, outfile_name, N, 0);
 }
 
 static void demo_frechet(list<Curve *> *dataset, double f_sample) {
@@ -172,9 +172,11 @@ static void demo_frechet(list<Curve *> *dataset, double f_sample) {
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
 
     LSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(),
-                     int(metric == FrechetDistContinuous), "LSH", 1, 1);
+                     int(metric == FrechetDistContinuous),
+                     "LSH",
+                     1, k, k, M, probes);
 
-    evaluator.evaluate_from_file(*dataset, *query_list, algorithm, solver, outfile_name, N);
+    evaluator.evaluate_from_file(*dataset, *query_list, (metric == FrechetDistContinuous ? "LSH_Frechet_Continuous" : "LSH_Frechet_Discrete"), solver, outfile_name, N);
 
     fh.cleardb();
 
