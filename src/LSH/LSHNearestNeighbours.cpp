@@ -84,7 +84,7 @@ std::list<Neighbour>* LSHNearestNeighbours::__k_nearest_neighbours(const Point& 
 
         // get the bucket and from that get the list of all points with same LSH ID
         list<Point *> &bucket = ht[bucket_id][id];
-
+        
         for (auto data : bucket)    
             __lsh_nn_step__(q, data, N, neighbours, dist_b, R, is_range_search);    
 

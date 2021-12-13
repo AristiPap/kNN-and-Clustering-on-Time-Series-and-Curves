@@ -81,8 +81,7 @@ Curve* HashingCurve::curveHashing(Curve &curve){
         Point *hash = new Point("<snapped-point>",0,this->distMetric);
         int i = 0;
         for(auto it2 : x){
-            hash->addCoordinate(floor(it2/delta + 0.5) * delta + t.at(i));
-            
+            hash->addCoordinate(floor((it2-t[i])/delta + 0.5) * delta + t.at(i));
             i++;
         }
         
