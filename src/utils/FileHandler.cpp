@@ -47,8 +47,6 @@ std::list<Point *> *FileHandler::create_dbPoints(){
             // sample with the given sampling rate
                 coords.push_back(stod(token));
                 
-        if (coords.size() != 120)
-            cout << "coords size: " << coords.size() << " " << id << endl;
 
         Point p1(id, coords, this->distMetric);
         this->db->push_back(new Point(p1));
@@ -69,8 +67,6 @@ std::list<Point *> *FileHandler::create_dbPoints(){
             // sample with the given sampling rate
                 coords.push_back(stod(token));
 
-        if (coords.size() != 120)
-            cout << "coords size: " << coords.size() << " " << id << endl;
         Point p(id, coords, this->distMetric);
         this->db->push_back(new Point(p));
         coords.clear();
@@ -144,25 +140,17 @@ void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::
     }
     
     out << "Query: " << p.getId() << endl;
+    out << "Algorithm: " << method << endl;
     int counter =1;
     auto it2 = brute_neighbors->begin();
     for(auto it1 : *neighbors){
-        out << "Nearest neighbour-"<< counter++ <<": "<< it1.first->getId() << endl;
-        out << "distance"<<method<<": "<<it1.second << endl;
+        out << "Aproximate Nearest neighbour-"<< counter++ <<": "<< it1.first->getId() << endl;
+        out << "True Nearest neighbour-"<< counter++ <<": "<< it2->first->getId() << endl;
+        out << "distanceAproximate: "<<it1.second << endl;
         out << "distanceTrue: " << it2->second << endl;
         advance(it2,1);
     }
     
-    out << "t"<<method<<": "<< time << " ms" << endl;
-    out << "tTrue: " << brute_time << " ms" << endl;
-    
-    // r-near neighbors:
-    if ((*rneighbors).size()>0){
-        out << "R-near neighbours:" << endl;
-        for(auto it3 : *rneighbors)
-            out << it3.first->getId() <<endl;
-    }
-    out << endl;
 }
 
 
@@ -178,18 +166,18 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
     }
 
     out << "Query: " << p.getId() << endl;
-    int counter = 1;
+    out << "Algorithm: " << method << endl;
+    int counter =1;
     auto it2 = brute_neighbors->begin();
-    for (auto it1 : *neighbors) {
-        out << "Nearest neighbour-" << counter++ << ": " << it1.first->getId()
-            << endl;
-        out << "distance" << method << ": " << it1.second << endl;
+    for(auto it1 : *neighbors){
+        out << "Aproximate Nearest neighbour-"<< counter++ <<": "<< it1.first->getId() << endl;
+        out << "True Nearest neighbour-"<< counter++ <<": "<< it2->first->getId() << endl;
+        out << "distanceAproximate: "<<it1.second << endl;
         out << "distanceTrue: " << it2->second << endl;
-        advance(it2, 1);
+        advance(it2,1);
     }
 
-    out << "t" << method << ": " << time << " ms" << endl;
-    out << "tTrue: " << brute_time << " ms" << endl;
+    out <<endl;
 }
 
 #ifndef NN

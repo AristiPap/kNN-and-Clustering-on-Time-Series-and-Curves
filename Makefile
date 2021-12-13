@@ -37,25 +37,8 @@ include $(SRC)/src.inc
 # export variables to make it easier 
 export MAKE-DIR CC CFLAGS LIBS OBJS SRC BUILD BIN
 
-.PHONY : all
-all : lsh hypercube
-
-
-.PHONY : lsh
-lsh :
-	@echo VERBOSE: $(VERBOSE_MSG)
-	@echo DEBUG: $(DEBUG_MSG)
-	@$(MAKE) -C $(SRC)/LSH -f lsh.mk 
-	
-
-.PHONY : hypercube 
-hypercube:
-	@echo VERBOSE: $(VERBOSE_MSG)
-	@echo DEBUG: $(DEBUG_MSG)
-	@$(MAKE) -C $(SRC)/HyperCube -f hypercube.mk 
-
-.PHONY : discrete-frechet-lsh
-discrete-frechet-lsh :
+.PHONY : search
+search :
 	@echo VERBOSE: $(VERBOSE_MSG)
 	@echo DEBUG: $(DEBUG_MSG)
 	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk 
@@ -69,8 +52,7 @@ clustering:
 
 PHONY : clean
 clean :
-	@$(MAKE) -C $(SRC)/LSH -f lsh.mk clean
-	@$(MAKE) -C $(SRC)/HyperCube -f hypercube.mk clean
+	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk clean
 	@$(MAKE) -C $(SRC)/Clustering -f clustering.mk clean
 	$(RM) -f $(OBJS)
 

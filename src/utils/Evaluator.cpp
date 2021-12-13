@@ -9,7 +9,10 @@ using namespace std;
 static double true_approx_time_ratio_sum = 0.0;
 static double acc_sum = 0.0;
 static double approx_true_dist_ratio_sum = 0.0;
-static double approx_true_dist_ratio_max = 0.0;
+static double maf = -1.0;
+static double t_approx_sum = 0.0;
+static double t_true_sum = 0.0; 
+
 
 Evaluator::Evaluator() {}
 
@@ -40,12 +43,15 @@ void Evaluator::evaluate_from_file(const DataList& dataset, string method_name, 
     file_handler.CloseFile();
     file_handler.cleardb();
 
+    out_file_stream << "tApproximateAverage: " << t_approx_sum / (queries->size()*1.0) << "ms" << endl;
+    out_file_stream << "tTrueAverage: " << t_true_sum / (queries->size() * 1.0) << "ms" << endl;
+    out_file_stream << "MAF: " << maf << endl; 
+
     #ifdef VERBOSE 
     out_file_stream << "\nTotal Stats: " << endl;
     out_file_stream << "Average per point accuracy: " << acc_sum/queries->size() << endl;
     out_file_stream << "Average brute_KNN/approx_KNN time ratio: " << true_approx_time_ratio_sum/queries->size() << endl;
     out_file_stream << "Average approx_KNN dist / true_KNN dist error: " << approx_true_dist_ratio_sum/queries->size() - 1 << endl;
-    out_file_stream << "Max approx_KNN dist / true_KNN dist: " << approx_true_dist_ratio_max << endl; 
     #endif
 }
 
@@ -74,10 +80,13 @@ void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_
 
     FileHandler::print_to_file(out_file, q, method_name, res, in_range, _true, N, knn_dur, real_dur);
 
+    t_approx_sum += knn_dur;
+    t_true_sum += real_dur;
+    dist_metrics<Point *>(*_true, *res);
+
     #ifdef VERBOSE
     acc_sum += get_accuracy<Point *>(*_true, *res);
     true_approx_time_ratio_sum += real_dur / knn_dur;
-    dist_metrics<Point *>(*_true, *res);
     #endif
 
     delete in_range;
@@ -154,9 +163,10 @@ static void dist_metrics(list<pair<T, double>> &__true, list<pair<T, double>>  &
     while (it_true != __true.end() && it_res != _res.end()) {
         n++;
         appr_true_dist_sum += it_res->second / it_true->second;
-        approx_true_dist_ratio_max = max(approx_true_dist_ratio_max, it_res->second / it_true->second);    
+        maf = max(maf, it_res->second / it_true->second);    
         it_true++;
         it_res++;
+
     }
     if (n) approx_true_dist_ratio_sum += appr_true_dist_sum / n;
 }
@@ -215,12 +225,15 @@ void Evaluator::evaluate_from_file(const list<Curve *> &dataset, const list<Curv
         this->evaluate(dataset, **q_i, method_name, solver, out_file_stream, N);
     }
 
+    out_file_stream << "tApproximateAverage: " << t_approx_sum / (queries.size()*1.0) << "ms" << endl;
+    out_file_stream << "tTrueAverage: " << t_true_sum / (queries.size() * 1.0) << "ms" << endl;
+    out_file_stream << "MAF: " << maf << endl; 
+
     #ifdef VERBOSE 
     out_file_stream << "\nTotal Stats: " << endl;
-    out_file_stream << "Average per point accuracy: " << acc_sum/queries->size() << endl;
-    out_file_stream << "Average brute_KNN/approx_KNN time ratio: " << true_approx_time_ratio_sum/queries->size() << endl;
-    out_file_stream << "Average approx_KNN dist / true_KNN dist error: " << approx_true_dist_ratio_sum/queries->size() - 1 << endl;
-    out_file_stream << "Max approx_KNN dist / true_KNN dist: " << approx_true_dist_ratio_max << endl; 
+    out_file_stream << "Average per point accuracy: " << acc_sum/queries.size() << endl;
+    out_file_stream << "Average brute_KNN/approx_KNN time ratio: " << true_approx_time_ratio_sum/queries.size() << endl;
+    out_file_stream << "Average approx_KNN dist / true_KNN dist error: " << approx_true_dist_ratio_sum/queries.size() - 1 << endl;
     #endif
 }
 
@@ -247,10 +260,13 @@ void Evaluator::evaluate(const list<Curve*>& dataset, Curve &q, std::string meth
     FileHandler::print_to_file(out_file_stream, q, method_name, res, _true,
                                N, knn_dur, real_dur);
 
+    t_approx_sum += knn_dur;
+    t_true_sum += real_dur;
+    dist_metrics<Curve *>(*_true, *res);
+
 #ifdef VERBOSE
-    acc_sum += get_accuracy<Point *>(*_true, *res);
+    acc_sum += get_accuracy<Curve *>(*_true, *res);
     true_approx_time_ratio_sum += real_dur / knn_dur;
-    dist_metrics<Point *>(*_true, *res);
 #endif
 
     delete res;
