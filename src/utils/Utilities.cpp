@@ -1,4 +1,5 @@
 #include "Utilities.hpp"
+#include <list>
 
 using namespace std;
 
@@ -54,4 +55,56 @@ bool curve_compare::operator()(const pair<Curve *, double>& l, const pair<Curve 
     return l.second - r.second < 0   ? true
         : l.second - r.second > 0 ? false
             : l.first->getId().size() - r.first->getId().size() < 0;
+}
+
+
+Curve *getMeanCurve(list<pair<const Point *, const Point *>> optimal_traversal){
+
+    Curve *c = new Curve();
+    for(auto it:optimal_traversal){
+        Point p = *it.first + *it.second;
+        p /= 2;
+        c->AddToCurve(&p);
+    }
+    return c;
+}
+
+Curve *getMeanCurve(Curve *c1, Curve *c2){
+
+    Curve *c = nullptr;
+    Frechet::backtrace = true; // set backtracing to true
+    // find frechet dist between 2 curves
+    c1->dist(*c2);
+    
+    // get mean curve
+    c = getMeanCurve(Frechet::optimal_traversal);
+    
+    // turn backtracing off
+    Frechet::backtrace = false;
+    
+    return c;
+}
+
+Curve *getMeanCurve(vector<Curve *> CurveTree){
+
+    Curve *c = nullptr;
+    int step = 1;
+    
+    while(step <= CurveTree.size()- 1){
+        // get first element
+        int counter = 0;
+        for(auto it1=CurveTree.begin(); it1!=CurveTree.end(); it1 +=step+1){
+            auto it2 = it1 + step;
+            c = getMeanCurve(*it1,*it2);
+            CurveTree[counter] = c;
+            if(step > 1)
+                delete CurveTree[counter + step];
+        
+            CurveTree.at(counter + step) = NULL;
+            counter += step + 1;
+        }
+        step *= 2;
+    }
+    
+    return CurveTree.front();
 }

@@ -44,6 +44,31 @@ double Curve::dist(Curve& curve) const{
     return this->curveDist(*this, curve);
 }
 
+void Curve::setMarked(bool flg){
+    this->marked = flg;
+}
+
+void Curve::setCluster(int cluster_id){
+    this->cluster_id = cluster_id;
+}
+
+void Curve::setSecCluster(int scluster_id){
+    this->s_cluster_id = scluster_id;
+}
+
+void Curve::setPoints(const Curve * c) {
+    assert(this->dimensions() == c->dimensions());
+    this->curve = c->curve;
+}
+
+int Curve::getCluster() const {
+  return this->cluster_id;
+}
+
+int Curve::getSecCluster() const {
+  return this->s_cluster_id;
+}
+
 // metrics to estimate curve distance
 double FrechetDistDiscrete(const Curve& c1, const Curve& c2) {
     return Frechet::Discrete::distance(c1, c2).value;

@@ -15,8 +15,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include "Point.hpp"
 #include "interval.hpp"
 #include "Curves.hpp"
+#include <list>
 
 namespace Frechet {
+// add ons for Project 2
+extern bool backtrace;
+extern list<pair<const Point *, const Point *>> optimal_traversal;
 namespace Continuous {
     
     extern distance_t error;

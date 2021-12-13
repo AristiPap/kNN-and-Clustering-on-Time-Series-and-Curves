@@ -18,3 +18,6 @@ $(BUILD)/%.o : $(SRC)/utils/Fred/%.cpp
 	
 $(BUILD)/%.o : $(SRC)/CurveLSH/%.cpp
 	@$(CC) $(CFLAGS) -c $< -o $@
+	
+$(BUILD)/%.o : $(SRC)/CurveCluster/%.cpp
+	@$(CC) $(CFLAGS) -c $< -o $@

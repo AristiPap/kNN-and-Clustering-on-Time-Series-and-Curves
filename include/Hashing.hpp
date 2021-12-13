@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utilities.hpp"
-#include "global_variables_namespace.hpp"
 #include "Point.hpp"
 #include <random>
 #include <vector>

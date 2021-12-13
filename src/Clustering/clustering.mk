@@ -2,11 +2,7 @@
 
 PROGRAM := cluster
 
-CUR-OBJS += $(BUILD)/LSHNearestNeighbours.o \
-			$(BUILD)/hypercube.o \
-			$(BUILD)/KMeans_pp_Solver.o \
-			$(BUILD)/AssignmentStepRoutines.o\
-			$(BUILD)/clustering_main.o
+CUR-OBJS += $(BUILD)/curve_lsh.o
 
 include $(SRC)/rules.inc 
 

@@ -8,7 +8,6 @@
 
 #include "Point.hpp"
 #include "Utilities.hpp"
-#include "global_variables_namespace.hpp"
 #include "Curves.hpp"
 
 // epsilon of filtering

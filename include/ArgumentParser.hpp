@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "global_variables_namespace.hpp"
+typedef void (*VariableSetter) (std::string arg_name, std::string arg_val);
+
 
 class ArgumentParser {
     private:

@@ -19,6 +19,7 @@ typedef std::pair<uint32_t ,std::pair<int, double>> Silhouette_type; // point_id
 typedef std::unordered_map<Point *, double> Datapoints;
 typedef std::pair<Point, Datapoints> Centroid; // centroid is a Point (centroid interpretation) and a list of assign cluster points
 typedef uint32_t (*AssignmentStep) (std::vector<Centroid>& centroids, std::list<Point *>& dataset);
+typedef void (*UpdateStep) (std::vector<Centroid>& centroids);
 
 class KMeans_pp_Solver {
 private:
@@ -78,3 +79,5 @@ vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const s
 ostream& operator<<(ostream& os, vector<double> silhouettes);
 
 void insert_in_closest_center(Point *q, vector<Centroid> &centroids);
+
+void update_centroid_curves(vector<Centroid> centroids)

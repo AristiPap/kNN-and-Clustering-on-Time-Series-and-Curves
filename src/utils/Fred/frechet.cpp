@@ -18,8 +18,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include "frechet.hpp"
 
 namespace Frechet {
-// add ons for Project 2
-bool backtrace = true;
+bool backtrace = false;
 list<pair<const Point *, const Point *>> optimal_traversal;
 
 namespace Continuous {
