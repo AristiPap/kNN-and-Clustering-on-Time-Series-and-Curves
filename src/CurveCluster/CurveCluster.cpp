@@ -18,7 +18,7 @@ struct compare_sums {
     bool operator()(const pair<Curve*, double>& lhs, const pair<Curve*, double>& rhs){
         return lhs.second - rhs.second < 0   ? true
                : lhs.second - rhs.second > 0 ? false
-                                         : (lhs.first==nullptr || rhs.first == nullptr || strcmp(lhs.first->getId().c_str(),rhs.first->getId().c_str())); //TODO: WARNING: POSSIBLE SEGFAULT IF ESTIMATED WRONG
+                                         : (lhs.first==nullptr || rhs.first == nullptr || strcmp(lhs.first->getId().c_str(),rhs.first->getId().c_str()) < 0); //TODO: WARNING: POSSIBLE SEGFAULT IF ESTIMATED WRONG
     }
 };
 

@@ -58,6 +58,10 @@ std::list<CurveNeighbour> *LSHSolver::kNearestNeighbours(Curve &q, uint N) {
     return closest;
 }
 
+std::list<CurveNeighbour> *kNearestNeighbours(Curve &q, double R) {
+    
+}
+
 
 
 void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,

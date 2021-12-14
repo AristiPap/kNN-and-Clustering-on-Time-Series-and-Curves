@@ -28,4 +28,6 @@ class CurveNearestNeighboursSolver {
     // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
     virtual std::list<CurveNeighbour> *kNearestNeighbours(Curve &q,
                                                           uint N = 1) = 0;
+    // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
+    virtual std::list<CurveNeighbour> *nearestNeighbours_w_rangeSearch(Curve &q, double R = 10000.0) = 0;
 };

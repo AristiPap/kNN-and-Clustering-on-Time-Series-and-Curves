@@ -19,6 +19,8 @@ public:
     ~LSHSolver();
     // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
     std::list<CurveNeighbour> *kNearestNeighbours(Curve &q, uint N = 1) final;
+    // find R-nearest neighbours of q. Returns list of <Curve *, dist from q>.
+    std::list<CurveNeighbour> *kNearestNeighbours(Curve &q, double R = 10000.0) final;
 };
 
 
