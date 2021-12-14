@@ -5,7 +5,6 @@ OBJS += $(BUILD)/Utilities.o
 OBJS += $(BUILD)/Point.o
 OBJS += $(BUILD)/Curves.o
 OBJS += $(BUILD)/NearestNeighboursSolver.o
-OBJS += $(BUILD)/GenericClusterSolver.o
 OBJS += $(BUILD)/Evaluator.o
 OBJS += $(BUILD)/FileHandler.o
 OBJS += $(BUILD)/Profiler.o

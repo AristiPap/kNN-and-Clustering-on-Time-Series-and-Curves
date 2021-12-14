@@ -58,8 +58,31 @@ std::list<CurveNeighbour> *LSHSolver::kNearestNeighbours(Curve &q, uint N) {
     return closest;
 }
 
-std::list<CurveNeighbour> *kNearestNeighbours(Curve &q, double R) {
-    
+std::list<CurveNeighbour> *LSHSolver::nearestNeighbours_w_rangeSearch(Curve &q, double R = 10000.0) {
+    // we will search all L hash tables
+    // save the resulted curves into a neighbours set and return top k
+
+    list<CurveNeighbour> *neighbours = new list<CurveNeighbour>();
+
+    for (auto i = 0; i < this->_curve_L; i++) {
+        HashingCurve &h = *this->grid_hashes[i];
+        NearestNeighboursSolver *solver = this->solvers[i];
+
+        // get the snapped curve in concatenated form
+        Point *x = h(q);
+        // get the k nearest neighbours
+        list<Neighbour> *cur_neighbours = solver->nearestNeighbours_w_rangeSearch(*x, R);
+
+        for (auto n_i = cur_neighbours->begin(); n_i != cur_neighbours->end();
+             n_i++) {
+            neighbours->push_back(make_pair(n_i->first->getCurve(), n_i->second));
+        }
+
+        delete cur_neighbours;
+    }
+
+
+    return neighbours;
 }
 
 

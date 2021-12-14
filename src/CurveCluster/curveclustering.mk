@@ -2,7 +2,7 @@
 
 PROGRAM := cluster
 
-CUR-OBJS += $(BUILD)/CurveCluster.o
+CUR-OBJS += $(BUILD)/GenericClusterSolver.o $(BUILD)/CurveCluster.o $(BUILD)/CurveAssignmentStep.o $(BUILD)/KMeans_pp_Solver.o $(BUILD)/AssignmentStepRoutines.o
 
 include $(SRC)/rules.inc 
 
