@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "Curves.hpp"
 
+double _pad_num_ = 0;
 
 Point::Point(DistanceMetric distMetric):distMetric(distMetric), dims(0), marked(false), initial(NULL){}
 
@@ -55,7 +56,9 @@ void Point::setInitial(Curve *curve){
 void Point::padding(int new_d){
     int space = new_d-this->getDims();
     for (int i=0; i < space ; i++)
-        this->addCoordinate(std::numeric_limits<double>::max());
+        this->addCoordinate(_pad_num_);
+    // this->coords.insert(this->coords.end(), space, _pad_num_);
+    // this->dims = this->coords.size();
 }
 
 void Point::addCoordinate(double x) {
@@ -239,7 +242,7 @@ double L2_norm(const Point& _p1, const Point& _p2) {
 
     double dist = 0.0;
     for (uint32_t i = 0; i < p1.size(); i++)
-        dist += (p1[i] - p2[i]) * (p1[i] - p2[i]);
+            dist += (p1[i] - p2[i]) * (p1[i] - p2[i]);
 
     return sqrt(dist);
 }

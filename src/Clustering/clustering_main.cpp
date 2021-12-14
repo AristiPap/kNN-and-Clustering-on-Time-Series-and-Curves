@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 
 
     Evaluator evaluator;
-    FileHandler file_handler(L2_norm);
+    FileHandler file_handler(L2_norm, FrechetDistContinuous, 1);
     bool end = false;
     bool start_process;
         // set up variables

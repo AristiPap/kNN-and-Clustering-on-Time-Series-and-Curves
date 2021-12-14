@@ -73,7 +73,7 @@ void set_var(string arg_name, string arg_val) {
         else if (arg_name == "-probes")
             probes = val;
         else if (arg_name == "-delta")
-            delta = val;
+            delta = strtod(arg_val.c_str(), nullptr);
     }
 }
 
@@ -170,6 +170,14 @@ static void demo_frechet(list<Curve *> *dataset, double f_sample) {
     // estimate delta TODO:
     if (delta == 0)
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
+    
+    // set padding number as the highest grid curve coordinate of all points plus a BIG NUMBER
+    _pad_num_ = 0;
+    for (auto c : *dataset)
+        if (rand()%2)
+            for (auto p : c->getCurvePoints())
+                for (auto coord : p.getCoordinates())
+                    _pad_num_ = max(_pad_num_, floor((coord - delta) / delta) * delta + delta + 100);
 
     LSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(),
                      int(metric == FrechetDistContinuous),

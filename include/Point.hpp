@@ -12,6 +12,9 @@
 #include "types.hpp"
 #include "interval.hpp"
 
+// used to pad a point
+extern double _pad_num_;
+
 using namespace std;
 typedef double (*DistanceMetric)(const Point&, const Point&);
 

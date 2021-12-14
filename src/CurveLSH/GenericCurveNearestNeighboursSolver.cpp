@@ -2,11 +2,12 @@
 #include <set>
 
 LSHSolver::LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L,
-                     uint32_t curve_delta, uint32_t curve_d, int flag,
+                     double curve_delta, uint32_t curve_d, int flag,
                      string storage_type, uint32_t _L, uint32_t k, uint32_t dd,
                      uint32_t M, uint32_t probes)
     : CurveNearestNeighboursSolver(dataset, curve_L, curve_delta, curve_d) {
     this->dataset_transformed.clear();
+    cout << "delta: " << _curve_delta << endl;
     // set up the proper ammount of Discrete lsh hash objs and vector solvers
     for (auto i = 0; i < curve_L; i++) {
         insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes, flag);
@@ -67,8 +68,6 @@ void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
                                                int flag) 
 {
     // create a curve hashing mechanism
-    
-    //DLSH hashing Curves
     if(flag == 0)
         this->grid_hashes.push_back(new DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
 
