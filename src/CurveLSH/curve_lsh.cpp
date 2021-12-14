@@ -171,14 +171,14 @@ static void demo_frechet(list<Curve *> *dataset, double f_sample) {
     if (delta == 0)
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
     
-    // set padding number as the highest coordinate of all points
+    // set padding number as the highest grid curve coordinate of all points plus a BIG NUMBER
     _pad_num_ = 0;
     for (auto c : *dataset)
-        for (auto p : c->getCurvePoints())
-            for (auto coord : p.getCoordinates())
-            _pad_num_ = max(_pad_num_, coord+999999);
-    
-    
+        if (rand()%2)
+            for (auto p : c->getCurvePoints())
+                for (auto coord : p.getCoordinates())
+                    _pad_num_ = max(_pad_num_, floor((coord - delta) / delta) * delta + delta + 100);
+
     LSHSolver solver(*dataset, L, delta, dataset->front()->dimensions(),
                      int(metric == FrechetDistContinuous),
                      "LSH",
