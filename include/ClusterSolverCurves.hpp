@@ -1,16 +1,9 @@
 #pragma once
 
-#include "Utilities.hpp"
-#include "CurveNearestNeighbours.hpp"
-#include "Curves.hpp"
-#include <unordered_map>
-
-#define ITER_MAX 300
-#define MIN_UPDATES 5
-#define R_MAX 30000.0
+#include "GenericClusterSolver.hpp"
 
 // static struct to help reverse assignment
-static set<Curve *> unassigned_points;
+static set<Curve *> unassigned_curves;
 
 typedef std::pair<int, double> ClosestCentroid;
 typedef std::pair<std::string ,std::pair<int, double>> Silhouette_type; // point_id,(cluster_id,distance)
@@ -19,33 +12,29 @@ typedef std::pair<Curve, CurveDatapoints> CurveCentroid; // CurveCentroid is a C
 typedef uint32_t (*AssignmentStep) (std::vector<CurveCentroid>& centroids, std::list<Curve *>& dataset);
 typedef void (*UpdateStep) (std::vector<CurveCentroid>& centroids);
 
-class KMeans_pp_Solver_Curves {
+class KMeans_pp_Solver_Curves : public KMeans_Solver {
 private:
     std::list<Curve *>& dataset;
     std::vector<CurveCentroid> centroids; // list of centroids
     AssignmentStep assignment_step; // The function that decides the clustering assignment
     UpdateStep update_step;
-    // clear the centroids
-    void clear_centroids(void);
-
-    // initialize centroids
-    void init_centroids(int K);
-
-    // update centroids after an assginment step
-    void update_centroids_step(void);
-
-    // perform a step of k means ++
-    uint32_t _k_means_step(void);
     
-    uint32_t get_size() const;
+
+    // clear the centroids
+    void clear_centroids(void) final; 
+    
+    // initialize centroids
+    void init_centroids(int K) final; 
+    
+    // update centroids after an assginment step
+    void update_centroids_step(void) final; 
+    
+    // perform a step of k means ++
+    uint32_t _k_means_step(void) final; 
+        
+    uint32_t get_size() const final;
 
 public:
-    // parse config_file
-    static void parse_config_file(std::string file_name);
-    
-    static int K; // number of clusters
-    static int hc_M, hc_probes, hc_k, lsh_L, lsh_k ;
-    
     KMeans_pp_Solver_Curves(std::list<Curve *>& dataset, AssignmentStep __assignment_step,UpdateStep __update_step, int K);
     ~KMeans_pp_Solver_Curves();
 
