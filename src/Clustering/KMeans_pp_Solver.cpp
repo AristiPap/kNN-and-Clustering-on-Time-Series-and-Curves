@@ -5,14 +5,6 @@
 
 using namespace std;
 
-// intialize static members of Kmeans solver
-int KMeans_pp_Solver::hc_k = 3;
-int KMeans_pp_Solver::hc_M = 1400;
-int KMeans_pp_Solver::hc_probes = 14;
-int KMeans_pp_Solver::lsh_k = 4;
-int KMeans_pp_Solver::lsh_L = 6;
-int KMeans_pp_Solver::K = 0;
-
 // define a self-compare
 struct compare_sums {
     bool operator()(const pair<Point*, double>& lhs, const pair<Point*, double>& rhs){
@@ -22,41 +14,8 @@ struct compare_sums {
     }
 };
 
-// parse config_file
-void KMeans_pp_Solver::parse_config_file(std::string file_name) {
-    ifstream in(file_name);
-    if (!in) {
-        cerr << "Cannot open the input file " << file_name << endl;
-        exit(1);
-    }
-    
-    string str = "";
-    int *params[] = {
-        &KMeans_pp_Solver::K,
-        &KMeans_pp_Solver::lsh_L,
-        &KMeans_pp_Solver::lsh_k,
-        &KMeans_pp_Solver::hc_M,
-        &KMeans_pp_Solver::hc_k,
-        &KMeans_pp_Solver::hc_probes
-    };
-    
-    for (int i = 0; i < 6; i++) {
-        try {
-            getline(in, str, '\n');
-            if (!str.empty() && str.back() == '\r') str.erase(str.size() - 1);
-            uint32_t pos = str.find(":");
-            *params[i] = atoi(str.substr(pos+1).c_str());
-            
-        } catch(exception e) {
-            cerr << "Error parsing config file." << endl;
-            exit(1);
-        }
-    }
-
-}
-
 KMeans_pp_Solver::KMeans_pp_Solver(list<Point*>& dataset, AssignmentStep __assignment_step, int K)
-:dataset(dataset), assignment_step(__assignment_step) {KMeans_pp_Solver::K = K;}
+:KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step) {}
 
 KMeans_pp_Solver::~KMeans_pp_Solver() {}
 

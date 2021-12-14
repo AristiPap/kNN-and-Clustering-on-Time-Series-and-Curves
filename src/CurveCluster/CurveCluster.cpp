@@ -5,13 +5,6 @@
 
 using namespace std;
 
-// intialize static members of Kmeans solver
-int KMeans_pp_Solver_Curves::hc_k = 3;
-int KMeans_pp_Solver_Curves::hc_M = 1400;
-int KMeans_pp_Solver_Curves::hc_probes = 14;
-int KMeans_pp_Solver_Curves::lsh_k = 4;
-int KMeans_pp_Solver_Curves::lsh_L = 6;
-int KMeans_pp_Solver_Curves::K = 0;
 
 // define a self-compare
 struct compare_sums {
@@ -22,41 +15,9 @@ struct compare_sums {
     }
 };
 
-// parse config_file
-void KMeans_pp_Solver_Curves::parse_config_file(std::string file_name) {
-    ifstream in(file_name);
-    if (!in) {
-        cerr << "Cannot open the input file " << file_name << endl;
-        exit(1);
-    }
-    
-    string str = "";
-    int *params[] = {
-        &KMeans_pp_Solver_Curves::K,
-        &KMeans_pp_Solver_Curves::lsh_L,
-        &KMeans_pp_Solver_Curves::lsh_k,
-        &KMeans_pp_Solver_Curves::hc_M,
-        &KMeans_pp_Solver_Curves::hc_k,
-        &KMeans_pp_Solver_Curves::hc_probes
-    };
-    
-    for (int i = 0; i < 6; i++) {
-        try {
-            getline(in, str, '\n');
-            if (!str.empty() && str.back() == '\r') str.erase(str.size() - 1);
-            uint32_t pos = str.find(":");
-            *params[i] = atoi(str.substr(pos+1).c_str());
-            
-        } catch(exception e) {
-            cerr << "Error parsing config file." << endl;
-            exit(1);
-        }
-    }
-
-}
 
 KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, AssignmentStep __assignment_step,UpdateStep __update_step, int K)
-:dataset(dataset), assignment_step(__assignment_step),update_step(__update_step) {KMeans_pp_Solver_Curves::K = K;}
+:KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step),update_step(__update_step) {}
 
 KMeans_pp_Solver_Curves::~KMeans_pp_Solver_Curves() {}
 
@@ -243,8 +204,8 @@ std::vector<CurveCentroid>* KMeans_pp_Solver_Curves::get_k_clusters(int iter_max
     }
 
     // after iter_max iterations if any points are unassigned then assign them brute force style
-    if (unassigned_points.size())
-        for (auto p : unassigned_points) {
+    if (unassigned_curves.size())
+        for (auto p : unassigned_curves) {
             insert_in_closest_center(p, centroids);
         }
 

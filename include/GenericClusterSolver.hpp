@@ -1,20 +1,51 @@
 #pragma once
 
+#include "Utilities.hpp"
+#include "NearestNeighboursSolver.hpp"
+#include "CurveNearestNeighbours.hpp"
+#include "Point.hpp"
+#include "Curves.hpp"
+#include <unordered_map>
 
-#include "GenericClusterSolver.hpp"
+#define ITER_MAX 300
+#define MIN_UPDATES 5
+#define R_MAX 30000.0
 
-// static struct to help reverse assignment
-static set<Point *> unassigned_points;
+class KMeans_Solver{
 
-// typedef std::pair<Point *, double> Datapoint;
-typedef std::pair<int, double> ClosestCentroid;
-typedef std::pair<uint32_t ,std::pair<int, double>> Silhouette_type; // point_id,(cluster_id,distance)
-typedef std::unordered_map<Point *, double> Datapoints;
-typedef std::pair<Point, Datapoints> Centroid; // centroid is a Point (centroid interpretation) and a list of assign cluster points
-typedef uint32_t (*AssignmentStep) (std::vector<Centroid>& centroids, std::list<Point *>& dataset);
-typedef void (*UpdateStep) (std::vector<Centroid>& centroids);
+protected:
 
-class KMeans_pp_Solver : public KMeans_Solver {
+public:
+    static int K; // number of clusters 
+    static int hc_M, hc_probes, hc_k, lsh_L, lsh_k ;
+    
+    KMeans_Solver(int K);
+
+    ~KMeans_Solver();
+    
+    // clear the centroids
+    virtual void clear_centroids(void) = 0; 
+
+    // initialize centroids
+    virtual void init_centroids(int K) = 0; 
+
+    // update centroids after an assginment step
+    virtual void update_centroids_step(void) = 0; 
+
+    // perform a step of k means ++
+    virtual uint32_t _k_means_step(void) = 0; 
+    
+    virtual uint32_t get_size() const = 0;
+    
+    void parse_config_file(std::string file_name);
+};
+
+
+
+
+
+
+/*class KMeans_pp_Solver {
 private:
     std::list<Point *>& dataset;
     std::vector<Centroid> centroids; // list of centroids
@@ -22,27 +53,33 @@ private:
 
 
     // clear the centroids
-    void clear_centroids(void) final; 
+    void clear_centroids(void); // pure
 
     // initialize centroids
-    void init_centroids(int K) final; 
+    void init_centroids(int K); // pure
 
     // update centroids after an assginment step
-    void update_centroids_step(void) final; 
+    void update_centroids_step(void); //pure
 
     // perform a step of k means ++
-    uint32_t _k_means_step(void) final; 
+    uint32_t _k_means_step(void); //pure
     
-    uint32_t get_size() const final;
+    uint32_t get_size() const; //pure ///final stis alles
 
 public:
+    // parse config_file
+    static void parse_config_file(std::string file_name); //^
+    
+    static int K; // number of clusters //^
+    static int hc_M, hc_probes, hc_k, lsh_L, lsh_k ; //^
+    
     KMeans_pp_Solver(std::list<Point *>& dataset, AssignmentStep __assignment_step, int K);
     ~KMeans_pp_Solver();
 
     // Perform a clustering with K means:
     // iterate at most iter_max times
     // if less that min_changed_elements change cluster then break loop
-    std::vector<Centroid>* get_k_clusters(int iter_max, uint32_t min_changed_elements);
+    std::vector<Centroid>* get_k_clusters(int iter_max, uint32_t min_changed_elements); //^ virtual
     static void evaluate_w_shilouette(std::vector<Centroid> clusters); // TODO: change
 };
 
@@ -67,4 +104,4 @@ ostream& operator<<(ostream& os, vector<double> silhouettes);
 
 void insert_in_closest_center(Point *q, vector<Centroid> &centroids);
 
-void update_centroid_curves(vector<Centroid> centroids)
+void update_centroid_curves(vector<Centroid> centroids)*/
