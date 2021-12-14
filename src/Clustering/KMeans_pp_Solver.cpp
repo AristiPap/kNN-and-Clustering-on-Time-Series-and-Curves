@@ -1,5 +1,4 @@
 #include "ClusterSolver.hpp"
-#include "Profiler.hpp"
 #include <list>
 #include <set>
 
@@ -395,12 +394,3 @@ vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const s
     return silhouette_dist;
 }
 
-ostream& operator<<(ostream& os, vector<double> silhouettes) {
-    os << "[";
-    uint32_t dims = silhouettes.size();
-    
-    for (uint32_t i = 0; i < dims; i++)
-        os << silhouettes[i] << (i < dims-1 ? ", " : "") ;
-    os << "]" << endl;
-    return os;
-}

@@ -43,7 +43,3 @@ struct curve_compare {
 
 
 constexpr int64_t mod(int64_t a, int64_t b) { return (a % b + b) % b; }
-
-
-template<class T, class CentroidT, class SolverT>
-uint32_t __reverse_assignment__(vector<CentroidT> &centroids, list<T *> &dataset, SolverT &solver, double R_max, set<T *>& unassinged_points);

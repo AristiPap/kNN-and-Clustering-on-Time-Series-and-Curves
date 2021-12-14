@@ -1,15 +1,17 @@
 #pragma once
 
-#include "Utilities.hpp"
 #include "NearestNeighboursSolver.hpp"
 #include "CurveNearestNeighbours.hpp"
-#include "Point.hpp"
-#include "Curves.hpp"
+#include "Profiler.hpp"
+
 #include <unordered_map>
 
 #define ITER_MAX 300
 #define MIN_UPDATES 5
 #define R_MAX 30000.0
+
+typedef std::pair<int, double> ClosestCentroid;
+typedef std::pair<std::string ,std::pair<int, double>> Silhouette_type; // point_id,(cluster_id,distance)
 
 class KMeans_Solver{
 
@@ -40,7 +42,8 @@ public:
     void parse_config_file(std::string file_name);
 };
 
-
+// overload to print silhouette as a vector
+ostream& operator<<(ostream& os, vector<double> silhouettes);
 
 
 

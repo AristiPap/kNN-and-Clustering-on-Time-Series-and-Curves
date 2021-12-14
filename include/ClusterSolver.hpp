@@ -1,18 +1,14 @@
 #pragma once
 
-
 #include "GenericClusterSolver.hpp"
 
 // static struct to help reverse assignment
 static set<Point *> unassigned_points;
 
-// typedef std::pair<Point *, double> Datapoint;
-typedef std::pair<int, double> ClosestCentroid;
-typedef std::pair<uint32_t ,std::pair<int, double>> Silhouette_type; // point_id,(cluster_id,distance)
+
 typedef std::unordered_map<Point *, double> Datapoints;
 typedef std::pair<Point, Datapoints> Centroid; // centroid is a Point (centroid interpretation) and a list of assign cluster points
 typedef uint32_t (*AssignmentStep) (std::vector<Centroid>& centroids, std::list<Point *>& dataset);
-typedef void (*UpdateStep) (std::vector<Centroid>& centroids);
 
 class KMeans_pp_Solver : public KMeans_Solver {
 private:
@@ -52,8 +48,6 @@ uint32_t Lloyd (std::vector<Centroid> &centroids, std::list<Point *> &dataset);
 
 
 // Actual implementation of reverse assignment utilizing a Nearest Neighbour Solver class (either LSH or Hypercube will do).
-uint32_t __reverse_assignment__(std::vector<Centroid> &centroids, std::list<Point *> &dataset, NearestNeighboursSolver &solver);
-
 uint32_t reverse_assignment_lsh(std::vector<Centroid> &centroids, std::list<Point *> &dataset);
 
 uint32_t reverse_assignment_hypercube(std::vector<Centroid> &centroids, std::list<Point *> &dataset);
@@ -62,9 +56,6 @@ uint32_t reverse_assignment_hypercube(std::vector<Centroid> &centroids, std::lis
 vector<double> * evaluate_w_silhouette_per_centroid(std::vector<Centroid> &centroids, const std::list<Point *> &dataset);
 //get average in total 
 vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const std::list<Point *> &dataset);
-// overload to print silhouette as a vector
-ostream& operator<<(ostream& os, vector<double> silhouettes);
+
 
 void insert_in_closest_center(Point *q, vector<Centroid> &centroids);
-
-void update_centroid_curves(vector<Centroid> centroids)

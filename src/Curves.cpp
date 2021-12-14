@@ -69,6 +69,10 @@ int Curve::getSecCluster() const {
   return this->s_cluster_id;
 }
 
+bool Curve::getMarked() const {
+  return this->marked;
+}
+
 // metrics to estimate curve distance
 double FrechetDistDiscrete(const Curve& c1, const Curve& c2) {
     return Frechet::Discrete::distance(c1, c2).value;

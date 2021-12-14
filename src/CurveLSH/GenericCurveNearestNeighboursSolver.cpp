@@ -58,7 +58,7 @@ std::list<CurveNeighbour> *LSHSolver::kNearestNeighbours(Curve &q, uint N) {
     return closest;
 }
 
-std::list<CurveNeighbour> *LSHSolver::nearestNeighbours_w_rangeSearch(Curve &q, double R = 10000.0) {
+std::list<CurveNeighbour> *LSHSolver::nearestNeighbours_w_rangeSearch(Curve &q, double R) {
     // we will search all L hash tables
     // save the resulted curves into a neighbours set and return top k
 

@@ -16,7 +16,7 @@ struct compare_sums {
 };
 
 
-KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, AssignmentStep __assignment_step,UpdateStep __update_step, int K)
+KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, CurveAssignmentStep __assignment_step,CurveUpdateStep __update_step, int K)
 :KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step),update_step(__update_step) {}
 
 KMeans_pp_Solver_Curves::~KMeans_pp_Solver_Curves() {}
@@ -325,7 +325,7 @@ uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &datas
 }
 
 
-vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &centroids, const std::list<Point *> &dataset){
+vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &centroids, const std::list<Curve *> &dataset){
     
     uint32_t _size = dataset.size();
     int K = centroids.size();
@@ -374,7 +374,7 @@ vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &
     return silhouette_dist;
 }
 
-vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, const std::list<Point *> &dataset){
+vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, const std::list<Curve *> &dataset){
     
     vector<double> *silhouette_dist = evaluate_w_silhouette_per_centroid(clusters,dataset);
     int K = clusters.size();
@@ -390,14 +390,4 @@ vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, co
     silhouette_dist->push_back(average_silhouette);
     
     return silhouette_dist;
-}
-
-ostream& operator<<(ostream& os, vector<double> silhouettes) {
-    os << "[";
-    uint32_t dims = silhouettes.size();
-    
-    for (uint32_t i = 0; i < dims; i++)
-        os << silhouettes[i] << (i < dims-1 ? ", " : "") ;
-    os << "]" << endl;
-    return os;
 }

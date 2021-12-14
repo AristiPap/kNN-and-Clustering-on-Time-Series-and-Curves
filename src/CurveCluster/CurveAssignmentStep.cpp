@@ -1,5 +1,7 @@
 #include "ClusterSolverCurves.hpp"
 #include "GenericLSHSolver.hpp"
+#include "ReverseAssignment.hpp"
+
 uint32_t reverse_assignment_lsh_curves(vector<CurveCentroid> &centroids,
                                 list<Curve *> &dataset) {
 

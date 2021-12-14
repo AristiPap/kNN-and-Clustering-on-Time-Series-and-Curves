@@ -14,4 +14,4 @@ OBJS += $(BUILD)/interval.o
 OBJS += $(BUILD)/CurveNearestNeighboursSolver.o
 OBJS += $(BUILD)/GenericCurveNearestNeighboursSolver.o
 OBJS += $(BUILD)/LSHNearestNeighbours.o 
-OBJS+= $(BUILD)/hypercube.o
+OBJS += $(BUILD)/hypercube.o

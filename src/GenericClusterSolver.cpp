@@ -44,3 +44,13 @@ void KMeans_Solver::parse_config_file(std::string file_name){
         }
     }
 }
+
+ostream& operator<<(ostream& os, vector<double> silhouettes) {
+    os << "[";
+    uint32_t dims = silhouettes.size();
+
+    for (uint32_t i = 0; i < dims; i++)
+        os << silhouettes[i] << (i < dims - 1 ? ", " : "");
+    os << "]" << endl;
+    return os;
+}

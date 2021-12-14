@@ -4,11 +4,7 @@
 #include <list>
 
 #include "CurveHashing.hpp"
-#include "Curves.hpp"
-#include "NearestNeighboursSolver.hpp"
-#include "Point.hpp"
 #include "Utilities.hpp"
-#include "frechet.hpp"
 
 using CurveNeighbour = std::pair<Curve *, double>;
 
@@ -29,5 +25,5 @@ class CurveNearestNeighboursSolver {
     virtual std::list<CurveNeighbour> *kNearestNeighbours(Curve &q,
                                                           uint N = 1) = 0;
     // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
-    virtual std::list<CurveNeighbour> *nearestNeighbours_w_rangeSearch(Curve &q, double R = 10000.0) = 0;
+    virtual std::list<CurveNeighbour> *nearestNeighbours_w_rangeSearch(Curve &q, double R) = 0;
 };
