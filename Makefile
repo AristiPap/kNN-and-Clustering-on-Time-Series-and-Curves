@@ -50,6 +50,12 @@ clustering:
 	@echo DEBUG: $(DEBUG_MSG)
 	@$(MAKE) -C $(SRC)/Clustering -f clustering.mk 
 
+.PHONY : curveclustering 
+curveclustering:
+	@echo VERBOSE: $(VERBOSE_MSG)
+	@echo DEBUG: $(DEBUG_MSG)
+	@$(MAKE) -C $(SRC)/CurveCluster -f curveclustering.mk 
+
 PHONY : clean
 clean :
 	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk clean

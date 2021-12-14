@@ -15,7 +15,7 @@ int KMeans_pp_Solver_Curves::K = 0;
 
 // define a self-compare
 struct compare_sums {
-    bool operator()(const pair<Point*, double>& lhs, const pair<Point*, double>& rhs){
+    bool operator()(const pair<Curve*, double>& lhs, const pair<Curve*, double>& rhs){
         return lhs.second - rhs.second < 0   ? true
                : lhs.second - rhs.second > 0 ? false
                                          : (lhs.first==nullptr || rhs.first == nullptr || strcmp(lhs.first->getId().c_str(),rhs.first->getId().c_str())); //TODO: WARNING: POSSIBLE SEGFAULT IF ESTIMATED WRONG

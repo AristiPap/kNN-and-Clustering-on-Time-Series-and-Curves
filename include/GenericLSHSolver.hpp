@@ -3,7 +3,8 @@
 #include "CurveNearestNeighbours.hpp"
 #include "LSHNearestNeighbours.hpp"
 #include "hyper_cube.hpp"
-#include "Hashing.hpp"
+//#include "Hashing.hpp"
+#include "CurveHashing.hpp"
 
 class LSHSolver: public CurveNearestNeighboursSolver{
 private:

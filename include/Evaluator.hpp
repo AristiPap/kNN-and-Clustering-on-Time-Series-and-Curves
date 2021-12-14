@@ -2,7 +2,7 @@
 #include <list>
 
 #ifndef NN
-#include "ClusterSolver.hpp"
+#include "ClusterSolverCurves.hpp"
 #endif 
 
 #include "NearestNeighboursSolver.hpp"
@@ -11,7 +11,7 @@
 #include "Point.hpp"
 
 typedef std::list<Point*> DataList;
-
+typedef std::list<Curve*> DataListCurve;
 typedef std::list<Neighbour> Neighbours;  // list of neighbours
 
 class Evaluator {
@@ -54,8 +54,8 @@ class Evaluator {
 
     #ifndef NN
     // evaluate algorithm performance from queries of a given file
-    void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete);
-
+    //void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete);
+        void evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete);
     #endif
 
     // add-ons for curve evaluation

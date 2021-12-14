@@ -175,7 +175,7 @@ static void dist_metrics(list<pair<T, double>> &__true, list<pair<T, double>>  &
 // CLustering evaluator
 
 // evaluate algorithm performance from queries of a given file
-void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete) {
+void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete) {
     profiler_init();
     profiler_start();
     cout << "Creating Clusters..." << endl;
@@ -195,9 +195,9 @@ void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_n
     cout << "Done in " << profiler_get_duration() << endl;
     #endif
     
-    FileHandler f(dataset.front()->getDistMetric(), nullptr, 1);
-    ofstream f_out(out_file);
-    f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+    //FileHandler f(dataset.front()->getDistMetric(), nullptr, 1);
+    //ofstream f_out(out_file);
+   // f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
 
     delete clusters;
     delete shillouette_eval;

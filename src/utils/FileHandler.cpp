@@ -180,7 +180,7 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
     out <<endl;
 }
 
-#ifndef NN
+/*#ifndef NN
 void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete){
     
     if (!out) {
@@ -217,7 +217,7 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
     
     out << endl;
 }
-#endif
+#endif*/
 
 void FileHandler::cleardb(void) {
     

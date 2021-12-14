@@ -23,7 +23,7 @@ u_int32_t k=DEFAULT_K, L=DEFAULT_L, N=DEFAULT_N;
 double R=DEFAULT_R;
 bool set_if=false, set_of=false, set_conf=false, complete = false;
 
-void set_var(string arg_name, string arg_val) {
+/*void set_var(string arg_name, string arg_val) {
     if (arg_name == "-i") {
         // input file
         infile_name = arg_val;
@@ -85,11 +85,12 @@ static void reset_params() {
 
     // reset the bools
     set_if = set_of = set_conf = false;
-}
+}*/
 
 int main(int argc, char **argv) {
+    cout << "Success"<<endl;
     // create an argument parser and parse arguments
-    string categorical[] = {"-i", "-c", "-o", "-m"};
+    /*string categorical[] = {"-i", "-c", "-o", "-m"};
     string num_args[] = {};
     string flags[] = {"-complete"};
     ArgumentParser arg_parser(5, categorical, 4, num_args, 0, flags, 1, set_var);
@@ -123,7 +124,7 @@ int main(int argc, char **argv) {
         evaluator.evaluate_from_file(*dataset, method, solver, outfile_name, complete);
     }
 
-    file_handler.cleardb();
+    file_handler.cleardb();*/
 }
 
 // /*#include "ClusterSolver.hpp"

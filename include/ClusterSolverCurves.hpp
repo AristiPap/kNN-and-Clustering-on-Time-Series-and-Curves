@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Utilities.hpp"
 #include "CurveNearestNeighbours.hpp"
 #include "Curves.hpp"

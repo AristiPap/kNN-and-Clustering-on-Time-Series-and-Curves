@@ -5,9 +5,6 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
-
-#include "Point.hpp"
-#include "Utilities.hpp"
 #include "Curves.hpp"
 
 // epsilon of filtering

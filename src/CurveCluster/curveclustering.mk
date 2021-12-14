@@ -2,7 +2,7 @@
 
 PROGRAM := cluster
 
-CUR-OBJS += $(BUILD)/clustering_main.o
+CUR-OBJS += $(BUILD)/CurveCluster.o
 
 include $(SRC)/rules.inc 
 
@@ -15,5 +15,3 @@ $(BIN)/$(PROGRAM): $(OBJS) $(CUR-OBJS) $(INCLUDE)
 .PHONY : clean
 clean :
 	$(RM) -f $(MAKE-DIR)/$(PROGRAM) $(BIN)/$(PROGRAM) $(CUR-OBJS)
-
-	

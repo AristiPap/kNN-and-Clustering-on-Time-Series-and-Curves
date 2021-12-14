@@ -13,7 +13,7 @@
 #include "Curves.hpp"
 
 #ifndef NN
-#include "ClusterSolver.hpp"
+#include "ClusterSolverCurves.hpp"
 #endif
 using namespace std;
 
@@ -50,7 +50,7 @@ class FileHandler{
             std::list<pair<Curve *, double>> *brute_neighbors, int k,
             double time, double brute_time);
 
-#ifndef NN
-        static void print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete);
-        #endif
+//#ifndef NN
+//        static void print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete);
+//        #endif
 };        
