@@ -181,7 +181,7 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
 }
 
 #ifndef NN
-void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
+void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<Centroid> &centroids, std::vector<double> * silhouettes, bool complete,bool silhouette){
     
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;
