@@ -26,7 +26,7 @@ double vec_mul(std::vector<double> a, std::vector<double> b);
 //overloads for get mean curve at different hierarchies
 
 // returns a curve where each point is the mean distance between 2 points of a pair from the initial list
-Curve *getMeanCurve(std::list<std::pair<const Point *, const Point *>> optimal_traversal);
+Curve *getMeanCurve(std::list<std::pair<const Point *, const Point *>> &optimal_traversal);
 // returns the mean distance between 2 
 Curve *getMeanCurve(Curve *c1, Curve *c2);
 //returns the mean curve from a complete balanced binary tree of curves 

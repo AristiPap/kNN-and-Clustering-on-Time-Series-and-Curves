@@ -10,6 +10,9 @@ Curve::Curve(string _id, CurveDistMetric _curveDist, vector<Point> _curve)
 {
     dim = curve.size() ? curve.front().getDims() : 0;
     _complexity = curve.size();
+    marked = false;
+    cluster_id = -1;
+    s_cluster_id = -1;
 }
 
 Curve::~Curve(){}

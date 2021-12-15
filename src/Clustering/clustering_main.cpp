@@ -97,7 +97,7 @@ static void set_up(void) {
             cerr << "You cannot use assignment step '" << assignment_method << "' with Mean_Vector update method" << endl;
             exit(1); 
         }
-    } else if (update_method == "Mean_Frechet") {
+    } else if (update_method == "Mean_Curve") {
         if (assignment_method == "Classic")
             curve_assignment_step = Lloyd;
         else if (assignment_method == "LSH_Frechet") 
@@ -191,7 +191,7 @@ int main(int argc, char **argv) {
     if (start_process) {
         if (update_method == "Mean_Vector")
             demo_vector_clustering();
-        else if (update_method == "Mean_Frechet")
+        else if (update_method == "Mean_Curve")
             demo_curve_clustering();
         else {
             cerr << "Error in update method: '" << update_method << "'"<< endl;

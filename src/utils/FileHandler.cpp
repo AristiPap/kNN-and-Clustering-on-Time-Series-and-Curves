@@ -2,6 +2,7 @@
 
 FileHandler::FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample){
     this->db = nullptr;
+    this->curve_db = nullptr;
     this->distMetric = distMetric;
     this->f_sample = f_sample;
     this->curveDistMetric = curveDistMetric;
