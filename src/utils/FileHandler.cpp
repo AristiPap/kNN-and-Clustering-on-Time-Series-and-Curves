@@ -180,15 +180,15 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
     out <<endl;
 }
 
-/*#ifndef NN
-void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete){
+#ifndef NN
+void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
     
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;
         return;
     }
     
-    out << "Algorithm: " << func << endl;
+    out << "Algorithm: A" << Assignment <<"U"<< Update << endl;
     
     for(int i=0; i<k; i++){
         out << "CLUSTER-" << i << " {" ;
@@ -198,9 +198,10 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
     }
     out << "clustering_time:" << time << "s" <<  endl;
     //print vector of silhouettes for each centroid in dataset and the total average
-    out<< "Silhouette:";
-    out << *silhouettes;
-    
+    if(silhouette){
+        out<< "Silhouette:";
+        out << *silhouettes;
+    }
     if(complete){
         out<<endl;
         for(int i=0; i<k; i++){ 
@@ -217,7 +218,56 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
     
     out << endl;
 }
-#endif*/
+
+void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
+    
+    if (!out) {
+        cerr << "Cannot write to of stream. Exiting..." << endl;
+        return;
+    }
+    
+    out << "Algorithm: A" << Assignment <<"U"<< Update << endl;
+    
+    for(int i=0; i<k; i++){
+        out << "CLUSTER-" << i << " {" ;
+        //print table of centroids coordinates
+        out << centroids[i].second.size() << ", "; 
+        for(auto it:centroids[i].first.getCurvePoints()){
+            out <<(out,it) << ",";
+        }
+        out<<"}"<<endl;
+    }
+    out << "clustering_time:" << time << "s" <<  endl;
+    //print vector of silhouettes for each centroid in dataset and the total average
+    if(silhouette){
+        out<< "Silhouette:";
+        out << *silhouettes;
+    }
+    if(complete){
+        out<<endl;
+        for(int i=0; i<k; i++){ 
+            //print table of centroids coordinates
+            //out << centroids[i].second.size() << ", "; 
+            out << "CLUSTER-" << i << " {" ;
+            //print table of centroids coordinates
+            out << centroids[i].second.size() << ",[ "; 
+            for(auto it:centroids[i].first.getCurvePoints()){
+                out<<"[ ";
+                out <<(out,it) << " ],";
+            }
+            out<<"][";
+            for(auto it : centroids[i].second)
+                out<<it.first->getId() << " ";
+            
+            out << "] }" << endl;
+        }
+    }
+    
+    out << endl;
+}
+
+
+#endif
 
 void FileHandler::cleardb(void) {
     
