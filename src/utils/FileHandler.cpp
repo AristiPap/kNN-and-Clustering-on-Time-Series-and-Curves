@@ -221,12 +221,21 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
 
 void FileHandler::cleardb(void) {
     
-    if(this->db == nullptr)
-        return;
-    for (auto p : *this->db) {
-        delete p;
+    if(this->db != nullptr) {
+        for (auto p : *this->db) {
+            delete p;
+        }
+        
+        delete this->db;
+        this->db = nullptr;
     }
-    
-    delete this->db;
-    this->db = nullptr;
+
+    if (this->curve_db != nullptr) {
+        for (auto c : *this->curve_db)
+            delete c;
+
+        delete this->curve_db;
+        this->curve_db = nullptr;
+    }
+
 }
