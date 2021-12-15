@@ -36,7 +36,7 @@ private:
     uint32_t get_size() const final;
 
 public:
-    KMeans_pp_Solver_Curves(std::list<Curve *>& dataset, CurveAssignmentStep __assignment_step, CurveUpdateStep __update_step, int K);
+    KMeans_pp_Solver_Curves(std::list<Curve *>& dataset, CurveAssignmentStep __assignment_step, int K);
     ~KMeans_pp_Solver_Curves();
 
     // Perform a clustering with K means:

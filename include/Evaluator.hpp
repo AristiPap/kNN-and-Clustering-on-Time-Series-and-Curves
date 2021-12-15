@@ -51,8 +51,9 @@ class Evaluator {
     );
 
     // evaluate algorithm performance from queries of a given file
-    //void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete);
-    void evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete);
+    
+    void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete, bool silhouette);
+    void evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete, bool silhouette);
 
     // add-ons for curve evaluation
     void evaluate_from_file(

@@ -136,30 +136,33 @@ void demo_vector_clustering() {
     KMeans_pp_Solver solver(*dataset, vector_assignment_step, KMeans_Solver::K);
 
     // create the solver and evaluate the algorithm
-    evaluator.evaluate_from_file(*dataset, "Mean_Vector-" + assignment_method, solver, outfile_name,
-                                 complete);
+    evaluator.evaluate_from_file(*dataset, "Mean_Vector-" + assignment_method, solver, outfile_name, complete, silhouette);
+
+    file_handler.cleardb();
 }
 
 void demo_curve_clustering() {
     // TODO:change that
     double f_sample = 0.5;
+    
     Evaluator evaluator;
 
     FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
 
     // get dataset
     file_handler.OpenFile(infile_name);
-    DataList *dataset = nullptr;
+    DataListCurve *dataset = nullptr;
 
-    dataset = file_handler.create_dbPoints();
+    dataset = file_handler.create_dbCurves();
 
     file_handler.CloseFile();
     KMeans_Solver::parse_config_file(conf_file_name);
-    KMeans_pp_Solver_Curves solver(*dataset, vector_assignment_step, KMeans_Solver::K);
+    KMeans_pp_Solver_Curves solver(*dataset, curve_assignment_step, KMeans_Solver::K);
 
     // create the solver and evaluate the algorithm
-    evaluator.evaluate_from_file(*dataset, "Mean_Curve-" + assignment_method,
-                                 solver, outfile_name, complete);
+    evaluator.evaluate_from_file(*dataset, "Mean_Curve-" + assignment_method, solver, outfile_name, complete, silhouette);
+
+    file_handler.cleardb();
 }
 
 int main(int argc, char **argv) {

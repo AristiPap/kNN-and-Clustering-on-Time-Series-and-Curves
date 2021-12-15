@@ -175,7 +175,10 @@ static void dist_metrics(list<pair<T, double>> &__true, list<pair<T, double>>  &
 // CLustering evaluator
 
 // evaluate algorithm performance from queries of a given file
-void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete) {
+void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete, bool silhouette) {
+    // TODO: change that 
+    double f_sample = 0.5;
+    
     profiler_init();
     profiler_start();
     cout << "Creating Clusters..." << endl;
@@ -183,24 +186,65 @@ void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string met
     cout << "Done." << endl;
     profiler_stop();
     double dt = profiler_get_duration() / 1000.0;
+    Coordinates * shillouette_eval = nullptr;
 
-    #ifdef VERBOSE
-    profiler_start();
-    cout << "Evaluating Clustering..." << endl;
-    #endif
-    
-    auto shillouette_eval = evaluate_w_silhouette(*clusters, dataset);
-    #ifdef VERBOSE
-    profiler_stop();
-    cout << "Done in " << profiler_get_duration() << endl;
-    #endif
-    
-    //FileHandler f(dataset.front()->getDistMetric(), nullptr, 1);
-    //ofstream f_out(out_file);
-   // f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+    if (silhouette){
+        #ifdef VERBOSE
+        profiler_start();
+        cout << "Evaluating Clustering..." << endl;
+        #endif
+        
+        shillouette_eval = evaluate_w_silhouette(*clusters, dataset);
+        #ifdef VERBOSE
+        profiler_stop();
+        cout << "Done in " << profiler_get_duration() << endl;
+        #endif
+        
+    }
 
-    delete clusters;
+    FileHandler f(L2_norm, FrechetDistDiscrete, f_sample);
+    ofstream f_out(out_file);
+    f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+
+    if (silhouette)
     delete shillouette_eval;
+    delete clusters;
+}
+
+void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete, bool silhouette) {
+    // TODO: change that 
+    double f_sample = 0.5;
+    
+    profiler_init();
+    profiler_start();
+    cout << "Creating Clusters..." << endl;
+    auto clusters = solver.get_k_clusters(ITER_MAX, MIN_UPDATES);
+    cout << "Done." << endl;
+    profiler_stop();
+    double dt = profiler_get_duration() / 1000.0;
+    Coordinates * shillouette_eval = nullptr;
+
+    if (silhouette){
+        #ifdef VERBOSE
+        profiler_start();
+        cout << "Evaluating Clustering..." << endl;
+        #endif
+        
+        shillouette_eval = evaluate_w_silhouette(*clusters, dataset);
+        #ifdef VERBOSE
+        profiler_stop();
+        cout << "Done in " << profiler_get_duration() << endl;
+        #endif
+        
+    }
+
+    FileHandler f(L2_norm, FrechetDistDiscrete, f_sample);
+    ofstream f_out(out_file);
+    f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+
+    if (silhouette)
+    delete shillouette_eval;
+    delete clusters;
 }
 
 #endif
