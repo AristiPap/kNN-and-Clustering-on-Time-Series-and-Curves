@@ -62,7 +62,7 @@ class FileHandler{
             double time, double brute_time);
 
         #ifndef NN
-            static void print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette);
-            static void print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete, bool silhouette);        
+            static void print_to_file(ofstream &out,int k,double time,std::string method,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette);
+            static void print_to_file(ofstream &out,int k,double time,std::string method,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete, bool silhouette);        
         #endif
 };        
