@@ -344,24 +344,27 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
     // backtracking
     if (backtrace) {
 
-        auto curve_p1 = curve1.getCurvePoints();
-        auto curve_p2 = curve2.getCurvePoints();    
-        
+        const vector<Point> & curve_p1 = curve1.getCurvePoints();
+        const vector<Point> & curve_p2 = curve2.getCurvePoints();
+
         unsigned long c1 = curve1.complexity() - 1;
         unsigned long c2 = curve2.complexity() - 1;
         
         int i = c1, j = c2;
         
+
         while(i !=-1 && j != -1 ){
+            
             optimal_traversal.push_front(make_pair(&curve_p1.at(i),&curve_p2.at(j)));
-            auto _i = predecessor[i][j].first;
-            auto _j = predecessor[i][j].second;
+            int _i = predecessor[i][j].first;
+            int _j = predecessor[i][j].second;
             i = _i;
             j = _j;
-        }     
+            
+        }
     }
-        return result;
-    }
+    return result;
+}
 
 } // end namespace Discrete
 

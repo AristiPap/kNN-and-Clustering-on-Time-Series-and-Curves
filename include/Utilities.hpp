@@ -30,7 +30,7 @@ Curve *getMeanCurve(std::list<std::pair<const Point *, const Point *>> &optimal_
 // returns the mean distance between 2 
 Curve *getMeanCurve(Curve *c1, Curve *c2);
 //returns the mean curve from a complete balanced binary tree of curves 
-Curve *getMeanCurve(vector<Curve *> CurveTree);
+Curve *getMeanCurve(vector<Curve *>& CurveTree);
 // compare point, dist-from-query tuples
 struct my_less{
     bool operator()(const std::pair<Point *,double>& l, const std::pair<Point *, double>& r);

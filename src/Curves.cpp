@@ -35,7 +35,7 @@ const std::vector<Point>& Curve::getCurvePoints() const{
 
 void Curve::AddToCurve(Point* p){
     if (!dim) dim = p->getDims();
-    
+
     assert(p->getDims() == this->dim);
     this->_complexity++;
     curve.push_back(*p);
@@ -62,6 +62,7 @@ void Curve::setSecCluster(int scluster_id){
 void Curve::setPoints(const Curve * c) {
     assert(this->dimensions() == c->dimensions());
     this->curve = c->curve;
+    this->_complexity = this->curve.size();
 }
 
 int Curve::getCluster() const {
