@@ -16,8 +16,8 @@ struct compare_sums {
 };
 
 
-KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, CurveAssignmentStep __assignment_step,CurveUpdateStep __update_step, int K)
-:KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step),update_step(__update_step) {}
+KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, CurveAssignmentStep __assignment_step, int K)
+:KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step){}
 
 KMeans_pp_Solver_Curves::~KMeans_pp_Solver_Curves() {}
 
