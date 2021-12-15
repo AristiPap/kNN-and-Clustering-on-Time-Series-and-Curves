@@ -134,9 +134,12 @@ void demo_vector_clustering() {
     file_handler.CloseFile();
     KMeans_Solver::parse_config_file(conf_file_name);
     KMeans_pp_Solver solver(*dataset, vector_assignment_step, KMeans_Solver::K);
-
+    string i = "0";
+    if (assignment_method == "Classic") i = "1";
+    else if (assignment_method == "LSH") i ="2";
+    else if (assignment_method == "Hypercube") i = "3";
     // create the solver and evaluate the algorithm
-    evaluator.evaluate_from_file(*dataset, "Mean_Vector-" + assignment_method, solver, outfile_name, complete, silhouette);
+    evaluator.evaluate_from_file(*dataset, "A" + i + "U1", solver, outfile_name, complete, silhouette);
 
     file_handler.cleardb();
 }
@@ -158,9 +161,13 @@ void demo_curve_clustering() {
     file_handler.CloseFile();
     KMeans_Solver::parse_config_file(conf_file_name);
     KMeans_pp_Solver_Curves solver(*dataset, curve_assignment_step, KMeans_Solver::K);
-
+    string i = "0";
+    if (assignment_method == "Classic")
+        i = "1";
+    else if (assignment_method == "LSH_Frechet")
+        i = "2";
     // create the solver and evaluate the algorithm
-    evaluator.evaluate_from_file(*dataset, "Mean_Curve-" + assignment_method, solver, outfile_name, complete, silhouette);
+    evaluator.evaluate_from_file(*dataset, "A" + i + "U2", solver, outfile_name, complete, silhouette);
 
     file_handler.cleardb();
 }

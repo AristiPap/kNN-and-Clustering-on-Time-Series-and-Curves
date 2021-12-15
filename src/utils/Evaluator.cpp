@@ -204,10 +204,9 @@ void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string met
 
     FileHandler f(L2_norm, FrechetDistDiscrete, f_sample);
     ofstream f_out(out_file);
-    //f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+    f.print_to_file(f_out, clusters->size(), dt, method, *clusters, shillouette_eval, complete, silhouette);
 
-    if (silhouette)
-    delete shillouette_eval;
+    if (silhouette) delete shillouette_eval;
     delete clusters;
 }
 
@@ -240,10 +239,11 @@ void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_n
 
     FileHandler f(L2_norm, FrechetDistDiscrete, f_sample);
     ofstream f_out(out_file);
-    //f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete);
+    int assignment_id = -1;
 
-    if (silhouette)
-    delete shillouette_eval;
+    f.print_to_file(f_out, clusters->size(), dt, method, *clusters, shillouette_eval, complete, silhouette);
+
+    if (silhouette) delete shillouette_eval;
     delete clusters;
 }
 
