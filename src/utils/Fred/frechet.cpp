@@ -343,6 +343,7 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
 
     // backtracking
     if (backtrace) {
+
         auto curve_p1 = curve1.getCurvePoints();
         auto curve_p2 = curve2.getCurvePoints();    
         

@@ -68,7 +68,6 @@ Curve *getMeanCurve(list<pair<const Point *, const Point *>> &optimal_traversal)
     }
 
     cout << "retrieved optimal traversal mean from Frechet" << endl;
-    exit(1);
 
     return c;
 }
@@ -82,9 +81,7 @@ Curve *getMeanCurve(Curve *c1, Curve *c2){
     
     // get mean curve
     c = getMeanCurve(Frechet::optimal_traversal);
-    for (auto p : c->getCurvePoints()) {
-        cout << p << endl;
-    }
+
     // turn backtracing off
     Frechet::backtrace = false;
     
@@ -92,23 +89,25 @@ Curve *getMeanCurve(Curve *c1, Curve *c2){
 }
 
 Curve *getMeanCurve(vector<Curve *> CurveTree){
-
     Curve *c = nullptr;
     int step = 1;
     
     while(step <= CurveTree.size()- 1){
-        // get first element
-        int counter = 0;
-        for(auto it1=CurveTree.begin(); it1+step!=CurveTree.end(); it1 +=step+1){
-            auto it2 = it1 + step;
-            cout << (*it1)->getCurvePoints().size() << " "
-                 << (*it2)->getCurvePoints().size() << endl;
-            continue;
-            c = getMeanCurve(*it1,*it2);
-            CurveTree[counter] = c;
-            
-            CurveTree.at(counter + step) = NULL;
-            counter += step + 1;
+        size_t i = 0;
+        size_t j = i + step;
+        for(i = 0; i < CurveTree.size(); i += step+1){
+            j = i + step;
+            if (j >= CurveTree.size()) break;
+            auto c1 = CurveTree[i];
+            auto c2 = CurveTree[j];
+
+            c = getMeanCurve(c1,c2);
+            if (step > 1) {
+                delete CurveTree[i];
+                delete CurveTree[j];
+            }
+            CurveTree[i] = c;
+            CurveTree[j] = NULL;
         }
         step *= 2;
     }

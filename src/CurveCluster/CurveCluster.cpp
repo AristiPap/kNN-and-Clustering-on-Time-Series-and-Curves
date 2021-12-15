@@ -147,7 +147,6 @@ void KMeans_pp_Solver_Curves::update_centroids_step(void) {
         // remember to unmark any points as you use them to calculate new centroid
         vector<Curve *> Curvetree;
         for(auto it:cluster_points){
-            cout << it.first->getId() << endl;
             Curvetree.push_back(it.first);
         }
         new_c = getMeanCurve(Curvetree);
