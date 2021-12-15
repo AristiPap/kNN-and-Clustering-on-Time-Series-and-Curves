@@ -181,14 +181,14 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
 }
 
 #ifndef NN
-void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<Centroid> &centroids, std::vector<double> * silhouettes, bool complete,bool silhouette){
+void FileHandler::print_to_file(ofstream &out,int k,double time,std::string method,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
     
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;
         return;
     }
     
-    out << "Algorithm: A" << Assignment <<"U"<< Update << endl;
+    out << "Algorithm: " << method << endl;
     
     for(int i=0; i<k; i++){
         out << "CLUSTER-" << i << " {" ;
@@ -219,14 +219,14 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, 
     out << endl;
 }
 
-void FileHandler::print_to_file(ofstream &out,int k,double time,int Assignment, int Update,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
+void FileHandler::print_to_file(ofstream &out,int k,double time,std::string method,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
     
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;
         return;
     }
     
-    out << "Algorithm: A" << Assignment <<"U"<< Update << endl;
+    out << "Algorithm: " << method << endl;
     
     for(int i=0; i<k; i++){
         out << "CLUSTER-" << i << " {" ;
