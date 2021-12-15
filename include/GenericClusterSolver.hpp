@@ -39,7 +39,7 @@ public:
     
     virtual uint32_t get_size() const = 0;
     
-    void parse_config_file(std::string file_name);
+    static void parse_config_file(std::string file_name);
 };
 
 // overload to print silhouette as a vector

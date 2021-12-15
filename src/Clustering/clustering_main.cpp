@@ -3,6 +3,7 @@
 
 #include "Profiler.hpp"
 #include "ClusterSolver.hpp"
+#include "ClusterSolverCurves.hpp"
 #include "FileHandler.hpp"
 #include "Evaluator.hpp"
 #include "ArgumentParser.hpp"
@@ -18,12 +19,15 @@ using namespace std;
 string infile_name;
 string conf_file_name;
 string outfile_name;
-string method;
+string update_method;
+string assignment_method;
 u_int32_t k=DEFAULT_K, L=DEFAULT_L, N=DEFAULT_N;
 double R=DEFAULT_R;
-bool set_if=false, set_of=false, set_conf=false, complete = false;
+bool set_if=false, set_of=false, set_conf=false, complete = false, silhouette = false;
+AssignmentStep vector_assignment_step = nullptr;
+CurveAssignmentStep curve_assignment_step = nullptr;
 
-/*void set_var(string arg_name, string arg_val) {
+void set_var(string arg_name, string arg_val) {
     if (arg_name == "-i") {
         // input file
         infile_name = arg_val;
@@ -36,11 +40,15 @@ bool set_if=false, set_of=false, set_conf=false, complete = false;
         // configuration file
         conf_file_name = arg_val;
         set_conf = true;
-    } else if (arg_name == "-m") {
-        method = arg_val;
+    } else if (arg_name == "-update") {
+        update_method = arg_val;
+    } else if (arg_name == "-assignment") {
+        assignment_method = arg_val;
     } else if (arg_name == "-complete") {
         complete = true;
-    } 
+    } else if (arg_name == "-silhouette") {
+        silhouette = true;
+    }
 }
 
 // retunr 0 for n, 1 for y, -1 for error
@@ -76,6 +84,29 @@ static void set_up(void) {
         cout << "Output File Name: ";
         cin >> outfile_name;
     }
+
+    // set up assignment and update steps
+    if (update_method == "Mean_Vector") {
+        if (assignment_method == "Classsic")
+            vector_assignment_step = Lloyd;
+        else if (assignment_method == "LSH")
+            vector_assignment_step = reverse_assignment_lsh;
+        else if (assignment_method == "Hypercube")
+            vector_assignment_step = reverse_assignment_hypercube;
+        else {
+            cerr << "You cannot use assignment step '" << assignment_method << "' with Mean_Vector update method" << endl;
+            exit(1); 
+        }
+    } else if (update_method == "Mean_Frechet") {
+        if (assignment_method == "Classic")
+            curve_assignment_step = Lloyd;
+        else if (assignment_method == "LSH_Frechet") 
+            curve_assignment_step = reverse_assignment_lsh_curves;
+        else {
+            cerr << "You cannot use assignment step '" << assignment_method << "' with Mean_Curve update method" << endl;
+            exit(1);
+        }
+    }
 }
 
 static void reset_params() {
@@ -85,69 +116,77 @@ static void reset_params() {
 
     // reset the bools
     set_if = set_of = set_conf = false;
-}*/
+}
+
+void demo_vector_clustering() {
+    // TODO:change that
+    double f_sample = 0.5;
+    Evaluator evaluator;
+
+    FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
+
+    // get dataset
+    file_handler.OpenFile(infile_name);
+    DataList *dataset = nullptr;
+
+    dataset = file_handler.create_dbPoints();
+
+    file_handler.CloseFile();
+    KMeans_Solver::parse_config_file(conf_file_name);
+    KMeans_pp_Solver solver(*dataset, vector_assignment_step, KMeans_Solver::K);
+
+    // create the solver and evaluate the algorithm
+    evaluator.evaluate_from_file(*dataset, "Mean_Vector-" + assignment_method, solver, outfile_name,
+                                 complete);
+}
+
+void demo_curve_clustering() {
+    // TODO:change that
+    double f_sample = 0.5;
+    Evaluator evaluator;
+
+    FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
+
+    // get dataset
+    file_handler.OpenFile(infile_name);
+    DataList *dataset = nullptr;
+
+    dataset = file_handler.create_dbPoints();
+
+    file_handler.CloseFile();
+    KMeans_Solver::parse_config_file(conf_file_name);
+    KMeans_pp_Solver_Curves solver(*dataset, vector_assignment_step, KMeans_Solver::K);
+
+    // create the solver and evaluate the algorithm
+    evaluator.evaluate_from_file(*dataset, "Mean_Curve-" + assignment_method,
+                                 solver, outfile_name, complete);
+}
 
 int main(int argc, char **argv) {
-    cout << "Success"<<endl;
     // create an argument parser and parse arguments
-    /*string categorical[] = {"-i", "-c", "-o", "-m"};
+    string categorical[] = {"-i", "-c", "-o", "-update", "-assignment"};
     string num_args[] = {};
-    string flags[] = {"-complete"};
-    ArgumentParser arg_parser(5, categorical, 4, num_args, 0, flags, 1, set_var);
+    string flags[] = {"-complete", "-silhouette"};
+    ArgumentParser arg_parser(7, categorical, 5, num_args, 0, flags, 2, set_var);
     arg_parser.parse_args(argc, argv);
 
-
-    Evaluator evaluator;
-    FileHandler file_handler(L2_norm, FrechetDistContinuous, 1);
-    bool end = false;
     bool start_process;
-        // set up variables
+    // set up variables
     set_up();
-    cout << "Ready to run Cluster-Solver with arguments: {m: " << method << ", complete: " << (complete==true ? "true" : "false") << "}" << endl\
+    cout << "Ready to run Cluster-Solver with arguments: {update: " << update_method << ", assignment: " << assignment_method << ", complete: " << (complete==true ? "true" : "false") << "}" << endl\
     << "Input File: " << infile_name << endl\
     << "Configuration File: " << conf_file_name << endl\
     << "Output File: " << outfile_name << endl;  
     start_process = ask("Initiate evaluation?");
     if (start_process) {
-        // get dataset
-        file_handler.OpenFile(infile_name);
-        DataList *dataset = file_handler.create_dbPoints();
-        file_handler.CloseFile();
-            
-        // create the solver and evaluate the algorithm
-        KMeans_pp_Solver::parse_config_file(conf_file_name);
-        AssignmentStep assignment_step;
-        if (method == "Classic") assignment_step = Lloyd;
-        else if (method == "LSH") assignment_step = reverse_assignment_lsh;
-        else if (method == "Hypercube") assignment_step = reverse_assignment_hypercube;
-        KMeans_pp_Solver solver(*dataset, assignment_step, KMeans_pp_Solver::K);
-        evaluator.evaluate_from_file(*dataset, method, solver, outfile_name, complete);
+        if (update_method == "Mean_Vector")
+            demo_vector_clustering();
+        else if (update_method == "Mean_Frechet")
+            demo_curve_clustering();
+        else {
+            cerr << "Error in update method: '" << update_method << "'"<< endl;
+            exit(1);
+        }
     }
 
-    file_handler.cleardb();*/
 }
-
-// /*#include "ClusterSolver.hpp"
-
-// int main(int argc, char **argv) {
-//     list<Point *>l;
-
-//     l.push_back(new Point(1, {0.5, 8.1}));
-//     l.push_back(new Point(2, {1.1, 2.1}));
-//     l.push_back(new Point(3, {2.1, 2.2}));
-//     l.push_back(new Point(4, {1.9, 2.0}));
-//     l.push_back(new Point(5, {0.9, 9.2}));
-
-//     KMeans_pp_Solver solver(l, Lloyd, 2);
-
-//     vector<Centroid> *C = solver.get_k_clusters(2, 10);
-
-//     for (auto c : *C) {
-//         cout << "Cluster: " << c.first << " with elements: " << endl;
-//         for (auto p : c.second) cout << *p.first << endl;
-//     }
-    
-//     // double avg = evaluate_w_silhouette(cout,*C,l); 
-//     // cout << "DIST: " << avg << endl;
-
-// }
