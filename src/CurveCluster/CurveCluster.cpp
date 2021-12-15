@@ -35,17 +35,6 @@ uint32_t KMeans_pp_Solver_Curves::get_size() const{
     return this->dataset.size();
 }
 
-// static double get_D_i(const vector<Point>& C, Point &point) {
-//     double D_i = numeric_limits<double>::max();
-//     for (auto c : C) {
-//         if (c.getId() == point.getId()) return -1.0; // make sure that we don't count self points 
-        
-//         D_i = min(D_i, point.dist(c));
-//     }
-
-//     return D_i;
-// }
-
 // routine to choose new centroid based on partial sum probabilities
 static Curve* choose_new_centroid(const unordered_map<Curve*, double>& D, const double D_max, const uint32_t n, const uint32_t t) {
     // create the partial sums, P(r) = sum(D(i)) for i = 1, ... r, where r = 1,
@@ -152,6 +141,7 @@ void KMeans_pp_Solver_Curves::update_centroids_step(void) {
         new_c = getMeanCurve(Curvetree);
         
         this->centroids[i].first.setPoints(new_c);
+        delete new_c;
     }
 }
 

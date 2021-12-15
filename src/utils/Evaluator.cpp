@@ -177,8 +177,7 @@ static void dist_metrics(list<pair<T, double>> &__true, list<pair<T, double>>  &
 
 // evaluate algorithm performance from queries of a given file
 void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete, bool silhouette) {
-    // TODO: change that 
-    double f_sample = 0.5;
+
     
     profiler_init();
     profiler_start();
@@ -203,7 +202,7 @@ void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string met
         
     }
 
-    FileHandler f(L2_norm, FrechetDistDiscrete, f_sample);
+    FileHandler f(L2_norm, FrechetDistDiscrete, -1);
     ofstream f_out(out_file);
     f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete, silhouette);
 

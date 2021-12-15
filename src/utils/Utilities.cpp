@@ -114,7 +114,7 @@ Curve *getMeanCurve(vector<Curve *>& CurveTree){
         }
         step *= 2;
     }
-
+    cout << CurveTree.front()->dimensions() << endl;
     return CurveTree.front();
 }
 

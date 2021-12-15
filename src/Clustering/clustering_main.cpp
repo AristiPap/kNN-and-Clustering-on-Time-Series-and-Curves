@@ -109,15 +109,6 @@ static void set_up(void) {
     }
 }
 
-static void reset_params() {
-    infile_name = "";
-    conf_file_name = "";
-    outfile_name = "";
-
-    // reset the bools
-    set_if = set_of = set_conf = false;
-}
-
 void demo_vector_clustering() {
     // TODO:change that
     double f_sample = 0.5;
