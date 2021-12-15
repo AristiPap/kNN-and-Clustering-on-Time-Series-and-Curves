@@ -218,7 +218,7 @@ std::vector<Centroid>* KMeans_pp_Solver::get_k_clusters(int iter_max, uint32_t m
 }
 
 // helper method used to find the closest cluster center to a data point 
-ClosestCentroid find_closest_centroid(Point& q, vector<Centroid> &centroids)
+/*ClosestCentroid find_closest_centroid(Point& q, vector<Centroid> &centroids)
 {
   // find the distance to first centroid 
   int closest_center = 0;
@@ -279,7 +279,7 @@ ClosestCentroid find_second_closest_centroid(Point& q, vector<Centroid> &centroi
     }
   }
 
-  /* return the second closest center */
+  // return the second closest center 
   return make_pair(second_closest_center,sec_min_dist);
 }
 
@@ -392,5 +392,5 @@ vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const s
     silhouette_dist->push_back(average_silhouette);
     
     return silhouette_dist;
-}
+}*/
 

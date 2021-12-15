@@ -3,6 +3,7 @@
 #include "Evaluator.hpp"
 #include "FileHandler.hpp"
 #include "Profiler.hpp"
+#include "LloydTempate.h"
 
 using namespace std;
 

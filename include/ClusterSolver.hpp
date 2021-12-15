@@ -39,11 +39,11 @@ public:
     // iterate at most iter_max times
     // if less that min_changed_elements change cluster then break loop
     std::vector<Centroid>* get_k_clusters(int iter_max, uint32_t min_changed_elements);
-    static void evaluate_w_shilouette(std::vector<Centroid> clusters); // TODO: change
+    //static void evaluate_w_shilouette(std::vector<Centroid> clusters); // TODO: change
 };
 
 //Lloyd function and its helper function to find closest centroids
-ClosestCentroid find_closest_center(Point &q, std::vector<Centroid> &centroids);
+//ClosestCentroid find_closest_center(Point &q, std::vector<Centroid> &centroids);
 uint32_t Lloyd (std::vector<Centroid> &centroids, std::list<Point *> &dataset);
 
 
@@ -53,9 +53,9 @@ uint32_t reverse_assignment_lsh(std::vector<Centroid> &centroids, std::list<Poin
 uint32_t reverse_assignment_hypercube(std::vector<Centroid> &centroids, std::list<Point *> &dataset);
 
 //get average for each centroid
-vector<double> * evaluate_w_silhouette_per_centroid(std::vector<Centroid> &centroids, const std::list<Point *> &dataset);
+//vector<double> * evaluate_w_silhouette_per_centroid(std::vector<Centroid> &centroids, const std::list<Point *> &dataset);
 //get average in total 
-vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const std::list<Point *> &dataset);
+//vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const std::list<Point *> &dataset);
 
 
 void insert_in_closest_center(Point *q, vector<Centroid> &centroids);

@@ -216,7 +216,7 @@ std::vector<CurveCentroid>* KMeans_pp_Solver_Curves::get_k_clusters(int iter_max
 }
 
 // helper method used to find the closest cluster center to a data point 
-ClosestCentroid find_closest_centroid(Curve& q, vector<CurveCentroid> &centroids)
+/*ClosestCentroid find_closest_centroid(Curve& q, vector<CurveCentroid> &centroids)
 {
   // find the distance to first centroid 
   int closest_center = 0;
@@ -277,11 +277,11 @@ ClosestCentroid find_second_closest_centroid(Curve& q, vector<CurveCentroid> &ce
     }
   }
 
-  /* return the second closest center */
+  // return the second closest center
   return make_pair(second_closest_center,sec_min_dist);
-}
+}*/
 
-uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &dataset){
+/*uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &dataset){
 	
     uint32_t points_updated = 0;
     // loop through data points to find the closest cluster center 
@@ -322,10 +322,10 @@ uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &datas
 
     cout << "points_updated: " << points_updated << endl;
     return points_updated;
-}
+}*/
 
 
-vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &centroids, const std::list<Curve *> &dataset){
+/*vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &centroids, const std::list<Curve *> &dataset){
     
     uint32_t _size = dataset.size();
     int K = centroids.size();
@@ -390,4 +390,4 @@ vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, co
     silhouette_dist->push_back(average_silhouette);
     
     return silhouette_dist;
-}
+}*/

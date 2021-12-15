@@ -1,6 +1,7 @@
 #include "ClusterSolverCurves.hpp"
 #include "GenericLSHSolver.hpp"
 #include "ReverseAssignment.hpp"
+#include "LloydTempate.h"
 
 uint32_t reverse_assignment_lsh_curves(vector<CurveCentroid> &centroids,
                                 list<Curve *> &dataset) {
@@ -10,4 +11,8 @@ uint32_t reverse_assignment_lsh_curves(vector<CurveCentroid> &centroids,
     static  LSHSolver solver(dataset, 5, CLUSTERING_DELTA, dataset.front()->dimensions(), 0);
     
     return __reverse_assignment__<Curve, CurveCentroid, LSHSolver>(centroids, dataset, solver, R_MAX, unassigned_curves);
+}
+
+uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &dataset){
+    return __Lloyd__(centroids,dataset);
 }
