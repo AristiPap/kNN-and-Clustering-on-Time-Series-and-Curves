@@ -87,7 +87,7 @@ static void set_up(void) {
 
     // set up assignment and update steps
     if (update_method == "Mean_Vector") {
-        if (assignment_method == "Classsic")
+        if (assignment_method == "Classic")
             vector_assignment_step = Lloyd;
         else if (assignment_method == "LSH")
             vector_assignment_step = reverse_assignment_lsh;
