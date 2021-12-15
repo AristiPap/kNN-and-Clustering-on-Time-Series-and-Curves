@@ -88,6 +88,7 @@ Curve *getMeanCurve(Curve *c1, Curve *c2){
     return c;
 }
 
+// got a bug
 Curve *getMeanCurve(vector<Curve *> CurveTree){
     Curve *c = nullptr;
     int step = 1;
@@ -114,3 +115,4 @@ Curve *getMeanCurve(vector<Curve *> CurveTree){
 
     return CurveTree.front();
 }
+
