@@ -89,7 +89,10 @@ uint32_t __reverse_assignment__(vector<CentroidT> &centroids, list<T *> &dataset
     
     #ifdef VERBOSE
     cout << "points_changes: " << points_changes << ", unassigned points: " << unassigned_points.size() << ", R = " << R << endl;
-    #endif 
+    #endif
+    cout << "points_changes: " << points_changes
+         << ", unassigned points: " << unassigned_points.size() << ", R = " << R
+         << endl;
 
     return points_changes + unassigned_points.size();
 }

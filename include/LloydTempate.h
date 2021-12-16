@@ -146,8 +146,8 @@ vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CentroidsT> &cen
             for (auto it3 : centroids[i].second)
                 dist += (*it2.first).dist(*it3.first);
             
-            double a = dist/(1.0*centroids[i].second.size() - 1.0 );
-            
+            double a = dist/(1.0*centroids[i].second.size() - 1.0 + 1e-8);
+
             // calculate b
             dist = 0.0;
             // number of points in second closest cluster
@@ -155,11 +155,12 @@ vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CentroidsT> &cen
             for (auto it3 : centroids[it2.first->getSecCluster()].second)
                 dist += (*it2.first).dist(*it3.first);
 
-            double b = dist / (1.0 * points);
+            double b = dist / (1.0 * points + 1e-8);
 
             if ((double)std::max(a,b) == 0)
                 continue;
             double avg_pp = (b - a) / ((double)std::max(a,b));
+
             //for each points calculated silhouette distance, save also the cluster id 
             (*silhouette_dist)[i] += avg_pp; 
         }

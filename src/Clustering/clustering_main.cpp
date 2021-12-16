@@ -145,13 +145,13 @@ void demo_curve_clustering() {
     FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
 
     // get dataset
-    file_handler.OpenFile(infile_name);
     DataListCurve *dataset = nullptr;
-
+    file_handler.OpenFile(infile_name);
     dataset = file_handler.create_dbCurves();
-
     file_handler.CloseFile();
+
     KMeans_Solver::parse_config_file(conf_file_name);
+    
     KMeans_pp_Solver_Curves solver(*dataset, curve_assignment_step, KMeans_Solver::K);
     string i = "0";
     if (assignment_method == "Classic")

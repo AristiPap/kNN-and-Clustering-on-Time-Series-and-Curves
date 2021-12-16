@@ -184,7 +184,6 @@ distance_t Point::length_sqr() const {
 
 distance_t Point::dist_sqr(const Point &point) const {
     distance_t result = 0, temp;
-    #pragma omp simd private(temp) reduction(+: result)
     for (dimensions_t i = 0; i < this->dims; i++){
         temp = this->coords[i] - point.getCoordinate(i);//operator[](i) - point[i];
         result += temp * temp;

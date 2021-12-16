@@ -4,13 +4,13 @@
 LSHSolver::LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L,
                      double curve_delta, uint32_t curve_d, int flag,
                      string storage_type, uint32_t _L, uint32_t k, uint32_t dd,
-                     uint32_t M, uint32_t probes)
+                     uint32_t M, uint32_t probes, int32_t maxCurveLength)
     : CurveNearestNeighboursSolver(dataset, curve_L, curve_delta, curve_d) {
     this->dataset_transformed.clear();
     cout << "delta: " << _curve_delta << endl;
     // set up the proper ammount of Discrete lsh hash objs and vector solvers
     for (auto i = 0; i < curve_L; i++) {
-        insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes, flag);
+        insert_in_grid_storage(dataset, storage_type, _L, k, dd, M, probes, flag, maxCurveLength);
     }
 }
 
@@ -85,22 +85,22 @@ std::list<CurveNeighbour> *LSHSolver::nearestNeighbours_w_rangeSearch(Curve &q, 
     return neighbours;
 }
 
-
-
 void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
-                                               std::string storage_type,
-                                               uint32_t _L, uint32_t k,
-                                               uint32_t dd, uint32_t M,
-                                               uint32_t probes,
-                                               int flag) 
-{
+                                       std::string storage_type, uint32_t _L,
+                                       uint32_t k, uint32_t dd, uint32_t M,
+                                       uint32_t probes, int flag,
+                                       int32_t maxCurveLength) {
+
+    // set up max_curve length based on user preferences
+    int32_t max_curve_len = maxCurveLength == -1 ? dataset.front()->complexity() : maxCurveLength;
+
     // create a curve hashing mechanism
     if(flag == 0)
-        this->grid_hashes.push_back(new DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
+        this->grid_hashes.push_back(new DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
 
     //Continuous LSH hashing Curves
     else if(flag == 1)
-        this->grid_hashes.push_back(new CLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, dataset.front()->complexity()));
+        this->grid_hashes.push_back(new CLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
     
     // transform all data
     transform_dataset(dataset, *this->grid_hashes.back());
@@ -120,7 +120,6 @@ void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
     else {
         cerr << "The standard convolution hashing storage solver is not implemented. Try 'LSH' or 'Hypercube'" << endl;
     }
-
 }
 
 void LSHSolver::transform_dataset(list<Curve*>& dataset, HashingCurve& h) {
