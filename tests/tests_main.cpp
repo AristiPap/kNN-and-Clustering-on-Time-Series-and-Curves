@@ -102,6 +102,7 @@ void test_MeanCurve(){
 
     Curve c3("c3", FrechetDistDiscrete, {point7, point8, point9});
     
+    //calculated expected result and saved in correct_mean curve
     Point point10("10",{1,10.05},L2_norm);
     Point point11("11", {2, 10.05}, L2_norm);
     Point point12("12", {3, 20.125}, L2_norm);
