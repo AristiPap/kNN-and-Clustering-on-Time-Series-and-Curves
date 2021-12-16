@@ -180,7 +180,7 @@ void test_MeanCurve() {
     Point point12("12", {3, 20.125}, L2_norm);
 
     Curve correct_mean("correct_mean", FrechetDistDiscrete,
-                       {point10, point11, point12});
+                       {});
 
     std::vector<Curve> CurveTree;
     CurveTree.push_back(c1);
@@ -188,7 +188,7 @@ void test_MeanCurve() {
     CurveTree.push_back(c3);
 
     Curve c_mean = getMeanCurve(CurveTree);
-    CU_ASSERT(c_mean.getCurvePoints() == correct_mean.getCurvePoints());
+    CU_ASSERT(c_mean.getCurvePoints() == vector<Point>({point10, point11, point12}));
 }
 
 int main(void) {
@@ -208,7 +208,7 @@ int main(void) {
              test_DFOptimalTraversal);
     add_test(pSuite, "LSH w\\ Constinuous Frechet - Test", test_CLSH);
     add_test(pSuite, "LSH w\\ Discrete Frechet - Test", test_DLSH);
-     add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
+    add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
 
     /* Run all tests using the CUnit Basic interface */
     CU_basic_set_mode(CU_BRM_VERBOSE);
