@@ -2,6 +2,7 @@
 
 FileHandler::FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample){
     this->db = nullptr;
+    this->curve_db = nullptr;
     this->distMetric = distMetric;
     this->f_sample = f_sample;
     this->curveDistMetric = curveDistMetric;
@@ -181,14 +182,14 @@ void FileHandler::print_to_file(ofstream &out, const Curve &p, string method,
 }
 
 #ifndef NN
-void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete){
+void FileHandler::print_to_file(ofstream &out,int k,double time,std::string method,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
     
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;
         return;
     }
     
-    out << "Algorithm: " << func << endl;
+    out << "Algorithm: " << method << endl;
     
     for(int i=0; i<k; i++){
         out << "CLUSTER-" << i << " {" ;
@@ -198,9 +199,10 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
     }
     out << "clustering_time:" << time << "s" <<  endl;
     //print vector of silhouettes for each centroid in dataset and the total average
-    out<< "Silhouette:";
-    out << *silhouettes;
-    
+    if(silhouette){
+        out<< "Silhouette:";
+        out << *silhouettes;
+    }
     if(complete){
         out<<endl;
         for(int i=0; i<k; i++){ 
@@ -217,16 +219,74 @@ void FileHandler::print_to_file(ofstream &out,int k,double time,string func,std:
     
     out << endl;
 }
+
+void FileHandler::print_to_file(ofstream &out,int k,double time,std::string method,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette){
+    
+    if (!out) {
+        cerr << "Cannot write to of stream. Exiting..." << endl;
+        return;
+    }
+    
+    out << "Algorithm: " << method << endl;
+    
+    for(int i=0; i<k; i++){
+        out << "CLUSTER-" << i << " {" ;
+        //print table of centroids coordinates
+        out << centroids[i].second.size() << ", "; 
+        for(auto it:centroids[i].first.getCurvePoints()){
+            out <<(out,it) << ",";
+        }
+        out<<"}"<<endl;
+    }
+    out << "clustering_time:" << time << "s" <<  endl;
+    //print vector of silhouettes for each centroid in dataset and the total average
+    if(silhouette){
+        out<< "Silhouette:";
+        out << *silhouettes;
+    }
+    if(complete){
+        out<<endl;
+        for(int i=0; i<k; i++){ 
+            //print table of centroids coordinates
+            //out << centroids[i].second.size() << ", "; 
+            out << "CLUSTER-" << i << " {" ;
+            //print table of centroids coordinates
+            out << centroids[i].second.size() << ",[ "; 
+            for(auto it:centroids[i].first.getCurvePoints()){
+                out<<"[ ";
+                out <<(out,it) << " ],";
+            }
+            out<<"][";
+            for(auto it : centroids[i].second)
+                out<<it.first->getId() << " ";
+            
+            out << "] }" << endl;
+        }
+    }
+    
+    out << endl;
+}
+
+
 #endif
 
 void FileHandler::cleardb(void) {
     
-    if(this->db == nullptr)
-        return;
-    for (auto p : *this->db) {
-        delete p;
+    if(this->db != nullptr) {
+        for (auto p : *this->db) {
+            delete p;
+        }
+        
+        delete this->db;
+        this->db = nullptr;
     }
-    
-    delete this->db;
-    this->db = nullptr;
+
+    if (this->curve_db != nullptr) {
+        for (auto c : *this->curve_db)
+            delete c;
+
+        delete this->curve_db;
+        this->curve_db = nullptr;
+    }
+
 }

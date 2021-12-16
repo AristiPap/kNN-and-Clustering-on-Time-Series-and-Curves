@@ -10,6 +10,9 @@ Curve::Curve(string _id, CurveDistMetric _curveDist, vector<Point> _curve)
 {
     dim = curve.size() ? curve.front().getDims() : 0;
     _complexity = curve.size();
+    marked = false;
+    cluster_id = -1;
+    s_cluster_id = -1;
 }
 
 Curve::~Curve(){}
@@ -32,7 +35,7 @@ const std::vector<Point>& Curve::getCurvePoints() const{
 
 void Curve::AddToCurve(Point* p){
     if (!dim) dim = p->getDims();
-    
+
     assert(p->getDims() == this->dim);
     this->_complexity++;
     curve.push_back(*p);
@@ -40,7 +43,6 @@ void Curve::AddToCurve(Point* p){
 
 double Curve::dist(Curve& curve) const{
     assert(curve.dimensions() == this->dimensions());
-
     return this->curveDist(*this, curve);
 }
 
@@ -59,6 +61,7 @@ void Curve::setSecCluster(int scluster_id){
 void Curve::setPoints(const Curve * c) {
     assert(this->dimensions() == c->dimensions());
     this->curve = c->curve;
+    this->_complexity = this->curve.size();
 }
 
 int Curve::getCluster() const {
@@ -67,6 +70,10 @@ int Curve::getCluster() const {
 
 int Curve::getSecCluster() const {
   return this->s_cluster_id;
+}
+
+bool Curve::getMarked() const {
+  return this->marked;
 }
 
 // metrics to estimate curve distance

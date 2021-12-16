@@ -13,9 +13,20 @@
 #include "Curves.hpp"
 
 #ifndef NN
+#include "ClusterSolverCurves.hpp"
 #include "ClusterSolver.hpp"
 #endif
 using namespace std;
+
+//Assignments
+#define Lloyds_assignment 1
+#define LSH_frechet 2
+#define LSH_vector 3
+#define Hypercube 4
+
+//Update
+#define MeanVector 1
+#define MeanCurve 2
 
 class FileHandler{
 
@@ -50,7 +61,8 @@ class FileHandler{
             std::list<pair<Curve *, double>> *brute_neighbors, int k,
             double time, double brute_time);
 
-#ifndef NN
-        static void print_to_file(ofstream &out,int k,double time,string func,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete);
+        #ifndef NN
+            static void print_to_file(ofstream &out,int k,double time,std::string method,std::vector<Centroid> &centroids,std::vector<double> * silhouettes, bool complete,bool silhouette);
+            static void print_to_file(ofstream &out,int k,double time,std::string method,std::vector<CurveCentroid> &centroids,std::vector<double> * silhouettes, bool complete, bool silhouette);        
         #endif
 };        

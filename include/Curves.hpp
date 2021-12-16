@@ -39,6 +39,7 @@ public:
     std::string getId() const;
     int getCluster() const;
     int getSecCluster() const;
+    bool getMarked() const;
     void AddToCurve(Point* p);
     void setPoints(const Curve * c);
     // estimate the distance of 2 curves, given the dist metric by the user

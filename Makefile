@@ -48,12 +48,12 @@ search :
 clustering:
 	@echo VERBOSE: $(VERBOSE_MSG)
 	@echo DEBUG: $(DEBUG_MSG)
-	@$(MAKE) -C $(SRC)/Clustering -f clustering.mk 
+	@$(MAKE) -C $(SRC)/CurveCluster -f curveclustering.mk 
 
 PHONY : clean
 clean :
 	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk clean
-	@$(MAKE) -C $(SRC)/Clustering -f clustering.mk clean
+	@$(MAKE) -C $(SRC)/CurveCluster -f curveclustering.mk clean
 	$(RM) -f $(OBJS)
 
 

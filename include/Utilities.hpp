@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <assert.h>
+#include <set>
 
 #include "Point.hpp"
 #include "Curves.hpp"
@@ -25,11 +26,11 @@ double vec_mul(std::vector<double> a, std::vector<double> b);
 //overloads for get mean curve at different hierarchies
 
 // returns a curve where each point is the mean distance between 2 points of a pair from the initial list
-Curve *getMeanCurve(std::list<std::pair<const Point *, const Point *>> optimal_traversal);
+Curve *getMeanCurve(std::list<std::pair<const Point *, const Point *>> &optimal_traversal);
 // returns the mean distance between 2 
 Curve *getMeanCurve(Curve *c1, Curve *c2);
 //returns the mean curve from a complete balanced binary tree of curves 
-Curve *getMeanCurve(vector<Curve *> CurveTree);
+Curve getMeanCurve(vector<Curve>& CurveTree);
 // compare point, dist-from-query tuples
 struct my_less{
     bool operator()(const std::pair<Point *,double>& l, const std::pair<Point *, double>& r);

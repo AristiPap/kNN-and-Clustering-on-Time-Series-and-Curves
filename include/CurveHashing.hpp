@@ -5,13 +5,10 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
-
-#include "Point.hpp"
-#include "Utilities.hpp"
 #include "Curves.hpp"
 
 // epsilon of filtering
-#define EPSILON 1
+#define EPSILON 10
 
 // Basic Hashing interface
 class HashingCurve {

@@ -2,7 +2,7 @@
 
 PROGRAM := cluster
 
-CUR-OBJS += $(BUILD)/curve_lsh.o
+CUR-OBJS += $(BUILD)/clustering_main.o
 
 include $(SRC)/rules.inc 
 

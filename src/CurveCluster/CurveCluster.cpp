@@ -5,58 +5,19 @@
 
 using namespace std;
 
-// intialize static members of Kmeans solver
-int KMeans_pp_Solver_Curves::hc_k = 3;
-int KMeans_pp_Solver_Curves::hc_M = 1400;
-int KMeans_pp_Solver_Curves::hc_probes = 14;
-int KMeans_pp_Solver_Curves::lsh_k = 4;
-int KMeans_pp_Solver_Curves::lsh_L = 6;
-int KMeans_pp_Solver_Curves::K = 0;
 
 // define a self-compare
 struct compare_sums {
-    bool operator()(const pair<Point*, double>& lhs, const pair<Point*, double>& rhs){
+    bool operator()(const pair<Curve*, double>& lhs, const pair<Curve*, double>& rhs){
         return lhs.second - rhs.second < 0   ? true
                : lhs.second - rhs.second > 0 ? false
-                                         : (lhs.first==nullptr || rhs.first == nullptr || strcmp(lhs.first->getId().c_str(),rhs.first->getId().c_str())); //TODO: WARNING: POSSIBLE SEGFAULT IF ESTIMATED WRONG
+                                         : (lhs.first==nullptr || rhs.first == nullptr || strcmp(lhs.first->getId().c_str(),rhs.first->getId().c_str()) < 0); //TODO: WARNING: POSSIBLE SEGFAULT IF ESTIMATED WRONG
     }
 };
 
-// parse config_file
-void KMeans_pp_Solver_Curves::parse_config_file(std::string file_name) {
-    ifstream in(file_name);
-    if (!in) {
-        cerr << "Cannot open the input file " << file_name << endl;
-        exit(1);
-    }
-    
-    string str = "";
-    int *params[] = {
-        &KMeans_pp_Solver_Curves::K,
-        &KMeans_pp_Solver_Curves::lsh_L,
-        &KMeans_pp_Solver_Curves::lsh_k,
-        &KMeans_pp_Solver_Curves::hc_M,
-        &KMeans_pp_Solver_Curves::hc_k,
-        &KMeans_pp_Solver_Curves::hc_probes
-    };
-    
-    for (int i = 0; i < 6; i++) {
-        try {
-            getline(in, str, '\n');
-            if (!str.empty() && str.back() == '\r') str.erase(str.size() - 1);
-            uint32_t pos = str.find(":");
-            *params[i] = atoi(str.substr(pos+1).c_str());
-            
-        } catch(exception e) {
-            cerr << "Error parsing config file." << endl;
-            exit(1);
-        }
-    }
 
-}
-
-KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, AssignmentStep __assignment_step,UpdateStep __update_step, int K)
-:dataset(dataset), assignment_step(__assignment_step),update_step(__update_step) {KMeans_pp_Solver_Curves::K = K;}
+KMeans_pp_Solver_Curves::KMeans_pp_Solver_Curves(list<Curve*>& dataset, CurveAssignmentStep __assignment_step, int K)
+:KMeans_Solver(K),dataset(dataset), assignment_step(__assignment_step){}
 
 KMeans_pp_Solver_Curves::~KMeans_pp_Solver_Curves() {}
 
@@ -73,17 +34,6 @@ void KMeans_pp_Solver_Curves::clear_centroids(void) {
 uint32_t KMeans_pp_Solver_Curves::get_size() const{
     return this->dataset.size();
 }
-
-// static double get_D_i(const vector<Point>& C, Point &point) {
-//     double D_i = numeric_limits<double>::max();
-//     for (auto c : C) {
-//         if (c.getId() == point.getId()) return -1.0; // make sure that we don't count self points 
-        
-//         D_i = min(D_i, point.dist(c));
-//     }
-
-//     return D_i;
-// }
 
 // routine to choose new centroid based on partial sum probabilities
 static Curve* choose_new_centroid(const unordered_map<Curve*, double>& D, const double D_max, const uint32_t n, const uint32_t t) {
@@ -178,19 +128,18 @@ void KMeans_pp_Solver_Curves::update_centroids_step(void) {
     
     for (uint32_t i = 0; i < this->centroids.size(); i++) {
         auto c = this->centroids[i];
-        Curve * new_c = nullptr;
         CurveDatapoints& cluster_points = c.second;
         
         if (cluster_points.size() == 0) continue;
 
         // remember to unmark any points as you use them to calculate new centroid
-        vector<Curve *> Curvetree;
+        vector<Curve> Curvetree;
         for(auto it:cluster_points){
-            Curvetree.push_back(it.first);
+            Curvetree.push_back(*it.first);
         }
-        new_c = getMeanCurve(Curvetree);
+        Curve new_c = getMeanCurve(Curvetree);
         
-        this->centroids[i].first.setPoints(new_c);
+        this->centroids[i].first.setPoints(&new_c);
     }
 }
 
@@ -203,27 +152,6 @@ uint32_t KMeans_pp_Solver_Curves::_k_means_step(void) {
     return points_changed;
 }
 
-void insert_in_closest_center(Curve *q, vector<CurveCentroid> &centroids) {
-    // find the distance to first centroid
-    int closest_center = 0;
-    double min_distance = q->dist(centroids[0].first);
-    int K = centroids.size();
-
-    // compare with the rest cluster centers
-    for (int i = 1; i < K; i++) {
-        double distance = q->dist(centroids[i].first);
-        if (distance < min_distance) {
-            closest_center = i;
-            min_distance = distance;
-        }
-    }
-
-    // insert it
-    centroids[closest_center].second[q] = min_distance;
-    q->setMarked(true);
-    q->setCluster(closest_center);
-}
-
 // Perform a clustering with K means:
 // iterate at most iter_max times
 // if less that min_changed_elements change cluster then break loop
@@ -231,10 +159,6 @@ std::vector<CurveCentroid>* KMeans_pp_Solver_Curves::get_k_clusters(int iter_max
     // initiate the centroids
     this->init_centroids(K);
 
-    #ifdef VERBOSE
-    cout << "Init Clusters:" << endl;
-    for (int i = 0; i < K; i++) cout << this->centroids[i].first << endl;
-    #endif
     int iter = 0;
     uint32_t points_changed = min_changed_elements;
     // loop for at most iter_max times
@@ -243,8 +167,8 @@ std::vector<CurveCentroid>* KMeans_pp_Solver_Curves::get_k_clusters(int iter_max
     }
 
     // after iter_max iterations if any points are unassigned then assign them brute force style
-    if (unassigned_points.size())
-        for (auto p : unassigned_points) {
+    if (unassigned_curves.size())
+        for (auto p : unassigned_curves) {
             insert_in_closest_center(p, centroids);
         }
 
@@ -252,191 +176,4 @@ std::vector<CurveCentroid>* KMeans_pp_Solver_Curves::get_k_clusters(int iter_max
     auto* clusters = new vector<CurveCentroid>(this->centroids);
 
     return clusters;
-}
-
-// helper method used to find the closest cluster center to a data point 
-ClosestCentroid find_closest_centroid(Curve& q, vector<CurveCentroid> &centroids)
-{
-  // find the distance to first centroid 
-  int closest_center = 0;
-  double min_distance = q.dist(centroids[0].first);
-  int K = centroids.size();
-
-  // compare with the rest cluster centers
-  for (int i = 1; i < K; i++)
-  {
-    double distance = q.dist(centroids[i].first);
-    if (distance < min_distance)
-    {
-      closest_center = i;
-      min_distance = distance;
-    }
-  }
-
-  return make_pair(closest_center,min_distance);
-}
-
-
-ClosestCentroid find_second_closest_centroid(Curve& q, vector<CurveCentroid> &centroids){
-  
-  int closest_center = -1, second_closest_center= -1;
-  double min_dist = -1, sec_min_dist = -1;
-  int K = centroids.size();
-  
-  // check which of the first 2 clusters are closer
-  if (q.dist(centroids[0].first) < q.dist(centroids[1].first)){
-    second_closest_center = 1;
-    closest_center = 0;
-    sec_min_dist = q.dist(centroids[1].first);
-    min_dist = q.dist(centroids[0].first);
-  }
-  else{
-    second_closest_center = 0;
-    closest_center = 1;
-    sec_min_dist = q.dist(centroids[0].first);
-    min_dist = q.dist(centroids[1].first);
-  }
-
-  // compare with the rest of the centroids 
-  for (int c = 2; c < K; c++)
-  {
-    // compute the distance to the current center
-    double dist = q.dist(centroids[c].first);
-
-    // check if the new center is closest or second closest 
-    if (dist <= min_dist ){
-      second_closest_center = closest_center;
-      closest_center = c;
-      sec_min_dist = min_dist;
-      min_dist = dist;
-    }
-    else if (dist <= sec_min_dist){
-      second_closest_center = c;
-      sec_min_dist = dist;
-    }
-  }
-
-  /* return the second closest center */
-  return make_pair(second_closest_center,sec_min_dist);
-}
-
-uint32_t Lloyd (std::vector<CurveCentroid> &centroids, std::list<Curve *> &dataset){
-	
-    uint32_t points_updated = 0;
-    // loop through data points to find the closest cluster center 
-    for (auto it : dataset) {
-        // find the closest centroid for training example i 
-        ClosestCentroid closest_center = find_closest_centroid(*it, centroids);
-        
-        if (it->getCluster() == -1){
-          // add data point to the cluster 
-            centroids[closest_center.first].second[it] = closest_center.second;
-          // mark it 
-            it->setMarked(true);
-            it->setCluster(closest_center.first);
-            points_updated++; 
-        }
-        //if its assigned to a centroid then we are at the recalibration stage of the clusters
-        else{
-            //update distance of point to centroid
-            if(it->getCluster() == closest_center.first)
-                centroids[closest_center.first].second[it] = closest_center.second;
-            
-            else{
-                //add point to new centroid
-                centroids[closest_center.first].second[it] = closest_center.second;
-                //keep statistics
-                points_updated ++;
-                
-                //delete point from old centroid
-                centroids[it->getCluster()].first.setMarked(false);
-                centroids[it->getCluster()].second.erase(it);
-
-                //update reverse mapping
-                it->setMarked(true);
-                it->setCluster(closest_center.first);
-            }
-        }    
-    }
-
-    cout << "points_updated: " << points_updated << endl;
-    return points_updated;
-}
-
-
-vector<double> * evaluate_w_silhouette_per_centroid(std::vector<CurveCentroid> &centroids, const std::list<Point *> &dataset){
-    
-    uint32_t _size = dataset.size();
-    int K = centroids.size();
-    //result array that contains the silhouette function results
-    vector<double> * silhouette_dist = new vector<double> ();
-    
-    double dist;
-    silhouette_dist->resize(K, 0);
-    
-    // Following loops evaluate:
-    // 1) second closest centroid of each point
-    // 2) average distance between points of the same cluster
-    // 3) calculate the average distance of the clusters point from the points of the second closest cluster
-    
-    for (int i = 0; i < K; i++){
-        uint32_t points = 0;
-        for(auto it2 : centroids[i].second){
-            //get points, second closest centroid
-            ClosestCentroid sec_closest_center = find_second_closest_centroid(*it2.first, centroids);
-            it2.first->setSecCluster(sec_closest_center.first);
-            // calcucate a
-            dist = 0.0;
-            for (auto it3 : centroids[i].second)
-                dist += (*it2.first).dist(*it3.first);
-            
-            double a = dist/(1.0*centroids[i].second.size() - 1.0 );
-            
-            // calculate b
-            dist = 0.0;
-            // number of points in second closest cluster
-            points = centroids[it2.first->getSecCluster()].second.size();
-            for (auto it3 : centroids[it2.first->getSecCluster()].second)
-                dist += (*it2.first).dist(*it3.first);
-
-            double b = dist / (1.0 * points);
-
-            if ((double)std::max(a,b) == 0)
-                continue;
-            double avg_pp = (b - a) / ((double)std::max(a,b));
-            //for each points calculated silhouette distance, save also the cluster id 
-            (*silhouette_dist)[i] += avg_pp; 
-        }
-        (*silhouette_dist)[i] = (*silhouette_dist)[i] / (centroids[i].second.size() * 1.0);
-    }
-    
-    return silhouette_dist;
-}
-
-vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, const std::list<Point *> &dataset){
-    
-    vector<double> *silhouette_dist = evaluate_w_silhouette_per_centroid(clusters,dataset);
-    int K = clusters.size();
-    
-    //compute the sum of all the silhouettes in order to later compute the average 
-    double sum = 0.0;
-    for (int i = 0; i < K; i++)
-        sum += (*silhouette_dist)[i];
-        
-    // compute average silhouette
-    double average_silhouette = ((double) sum) / (1.0*silhouette_dist->size());
-    
-    silhouette_dist->push_back(average_silhouette);
-    
-    return silhouette_dist;
-}
-
-ostream& operator<<(ostream& os, vector<double> silhouettes) {
-    os << "[";
-    uint32_t dims = silhouettes.size();
-    
-    for (uint32_t i = 0; i < dims; i++)
-        os << silhouettes[i] << (i < dims-1 ? ", " : "") ;
-    os << "]" << endl;
-    return os;
 }

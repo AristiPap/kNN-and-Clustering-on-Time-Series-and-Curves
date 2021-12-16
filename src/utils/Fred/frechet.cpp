@@ -119,7 +119,6 @@ bool _less_than_or_equal(const distance_t distance, Curve const& curve1, Curve c
 
     if (Config::verbosity > 2) std::cout << "CFD: resetting old FSD" << std::endl;
     
-    #pragma omp parallel for collapse(2) if (n1 * n2 > 1000)
     for (curve_size_t i = 0; i < n1; ++i) {
         for (curve_size_t j = 0; j < n2; ++j) {
             if (i < n1 - 1) reachable1[i][j] = infty;
@@ -143,7 +142,6 @@ bool _less_than_or_equal(const distance_t distance, Curve const& curve1, Curve c
     
     if (Config::verbosity > 2) std::cout << "CFD: computing free space" << std::endl;
     
-    #pragma omp parallel for collapse(2) if (n1 * n2 > 1000)
     for (curve_size_t i = 0; i < n1; ++i) {
         for (curve_size_t j = 0; j < n2; ++j) {
             if ((i < n1 - 1) and (j > 0)) {
@@ -218,7 +216,6 @@ distance_t _projective_lower_bound(const Curve &curve1, const Curve &curve2) {
     std::vector<distance_t> distances1_sqr = std::vector<distance_t>(curve2.complexity() - 1), distances2_sqr = std::vector<distance_t>(curve1.complexity() + curve2.complexity() + 2);
     
     for (curve_size_t i = 0; i < curve1.complexity(); ++i) {
-        #pragma omp parallel for
         for (curve_size_t j = 0; j < curve2.complexity() - 1; ++j) {
             if ((curve2.getCurvePoints())[j].dist_sqr((curve2.getCurvePoints())[j+1]) > 0) {
                 distances1_sqr[j] = (curve1.getCurvePoints())[i].line_segment_dist_sqr((curve2.getCurvePoints())[j], (curve2.getCurvePoints())[j+1]);
@@ -232,7 +229,6 @@ distance_t _projective_lower_bound(const Curve &curve1, const Curve &curve2) {
     distances1_sqr = std::vector<distance_t>(curve1.complexity() - 1);
     
     for (curve_size_t i = 0; i < curve2.complexity(); ++i) {
-        #pragma omp parallel for
         for (curve_size_t j = 0; j < curve1.complexity() - 1; ++j) {
             if ((curve1.getCurvePoints())[j].dist_sqr((curve1.getCurvePoints())[j+1]) > 0) {
                 distances1_sqr[j] = (curve2.getCurvePoints())[i].line_segment_dist_sqr((curve1.getCurvePoints())[j], (curve1.getCurvePoints())[j+1]);
@@ -343,24 +339,28 @@ Distance distance(const Curve &curve1, const Curve &curve2) {
 
     // backtracking
     if (backtrace) {
-        auto curve_p1 = curve1.getCurvePoints();
-        auto curve_p2 = curve2.getCurvePoints();    
-        
+
+        const vector<Point> & curve_p1 = curve1.getCurvePoints();
+        const vector<Point> & curve_p2 = curve2.getCurvePoints();
+
         unsigned long c1 = curve1.complexity() - 1;
         unsigned long c2 = curve2.complexity() - 1;
         
         int i = c1, j = c2;
         
+
         while(i !=-1 && j != -1 ){
+            
             optimal_traversal.push_front(make_pair(&curve_p1.at(i),&curve_p2.at(j)));
-            auto _i = predecessor[i][j].first;
-            auto _j = predecessor[i][j].second;
+            int _i = predecessor[i][j].first;
+            int _j = predecessor[i][j].second;
             i = _i;
             j = _j;
-        }     
+            
+        }
     }
-        return result;
-    }
+    return result;
+}
 
 } // end namespace Discrete
 

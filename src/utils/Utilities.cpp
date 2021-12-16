@@ -58,53 +58,59 @@ bool curve_compare::operator()(const pair<Curve *, double>& l, const pair<Curve 
 }
 
 
-Curve *getMeanCurve(list<pair<const Point *, const Point *>> optimal_traversal){
-
-    Curve *c = new Curve();
+Curve *getMeanCurve(list<pair<const Point *, const Point *>> &optimal_traversal){
+    
+    Curve *c = new Curve("Mean Curve");
     for(auto it:optimal_traversal){
         Point p = *it.first + *it.second;
         p /= 2;
         c->AddToCurve(&p);
     }
+
     return c;
 }
 
 Curve *getMeanCurve(Curve *c1, Curve *c2){
+    assert(c1 && c2);
 
     Curve *c = nullptr;
     Frechet::backtrace = true; // set backtracing to true
     // find frechet dist between 2 curves
+
     c1->dist(*c2);
-    
     // get mean curve
     c = getMeanCurve(Frechet::optimal_traversal);
-    
+
     // turn backtracing off
     Frechet::backtrace = false;
     
     return c;
 }
 
-Curve *getMeanCurve(vector<Curve *> CurveTree){
-
-    Curve *c = nullptr;
+// got a bug
+Curve getMeanCurve(vector<Curve>& CurveTree){
     int step = 1;
     
     while(step <= CurveTree.size()- 1){
-        // get first element
-        int counter = 0;
-        for(auto it1=CurveTree.begin(); it1!=CurveTree.end(); it1 +=step+1){
-            auto it2 = it1 + step;
-            c = getMeanCurve(*it1,*it2);
-            CurveTree[counter] = c;
-            if(step > 1)
-                delete CurveTree[counter + step];
-        
-            CurveTree.at(counter + step) = NULL;
-            counter += step + 1;
+        size_t i = 0;
+        size_t j = 0;
+        for(i = 0; i < CurveTree.size(); i += step*2){
+            j = i + step;
+
+            if (j >= CurveTree.size()) break;
+            auto c1 = CurveTree[i];
+            auto c2 = CurveTree[j];
+            assert(c1.getId() != "<useless>" && c2.getId() != "<useless>");
+
+            Curve *c = getMeanCurve(&c1,&c2);
+
+            CurveTree[i].setPoints(c);
+            CurveTree[j].setId("<useless>");
+
+            delete c;
         }
         step *= 2;
     }
-    
     return CurveTree.front();
 }
+

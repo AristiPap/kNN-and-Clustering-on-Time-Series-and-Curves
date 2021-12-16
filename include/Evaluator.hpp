@@ -1,17 +1,15 @@
 #pragma once
 #include <list>
 
-#ifndef NN
+
+#include "ClusterSolverCurves.hpp"
 #include "ClusterSolver.hpp"
-#endif 
 
 #include "NearestNeighboursSolver.hpp"
 #include "CurveNearestNeighbours.hpp"
-#include "Utilities.hpp"
-#include "Point.hpp"
 
 typedef std::list<Point*> DataList;
-
+typedef std::list<Curve*> DataListCurve;
 typedef std::list<Neighbour> Neighbours;  // list of neighbours
 
 class Evaluator {
@@ -52,11 +50,10 @@ class Evaluator {
         const double R = -1.0           // R for range search. If R>= 0 then we activate range_search
     );
 
-    #ifndef NN
     // evaluate algorithm performance from queries of a given file
-    void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete);
-
-    #endif
+    
+    void evaluate_from_file(const DataList& dataset, std::string method_name, KMeans_pp_Solver& solver, std::string out_file, bool complete, bool silhouette);
+    void evaluate_from_file(const DataListCurve& dataset, std::string method_name, KMeans_pp_Solver_Curves& solver, std::string out_file, bool complete, bool silhouette);
 
     // add-ons for curve evaluation
     void evaluate_from_file(
