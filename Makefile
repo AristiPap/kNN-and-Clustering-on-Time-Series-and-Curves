@@ -35,7 +35,7 @@ endif
 include $(SRC)/src.inc 
 
 # export variables to make it easier 
-export MAKE-DIR CC CFLAGS LIBS OBJS SRC BUILD BIN
+export MAKE-DIR CC CFLAGS LIBS OBJS SRC BUILD BIN TESTS
 
 .PHONY : search
 search :
