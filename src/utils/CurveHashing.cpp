@@ -41,7 +41,7 @@ double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::lis
     return _delta/1000;
 }
 
-HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):delta(delta), dim(dim), w(w), k(k), max_curve_len(max_curve_len){
+HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):dim(dim), delta(delta), w(w), k(k), max_curve_len(max_curve_len){
 
     for (int i=0; i<dim; i++) {
         double num = generateNumber(0,delta);
@@ -130,7 +130,7 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
     // keep only the sequences of min and maxes
     auto curve_points = grid_curve->getCurvePoints();
     Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve.getId(), FrechetDistContinuous, {curve_points.front()}); 
-    for (auto p_i = curve_points.begin()+1; p_i+1 != curve_points.end(); p_i++) {
+    for (auto p_i = curve_points.begin()+1; p_i+1 != curve_points.end() && p_i != curve_points.end(); p_i++) {
         // add the point in i only if p_i \not-in (min(p_{i-1}, p_{i+1}), max(p_{i-1}, p_{i+1}))
         double v = p_i->getCoordinate(this->dim-1);
         double prev_v = (p_i-1)->getCoordinate(this->dim-1);
