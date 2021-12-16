@@ -1,5 +1,7 @@
 #include <iostream>
-#include <CUnit/CUnit.h>
+#include <CUnit/Basic.h>
+#include "CurveHashing.hpp"
+#include "Hashing.hpp"
 using namespace std;
 
 
@@ -18,6 +20,33 @@ CU_ErrorCode add_test(CU_pSuite pSuite, const char* msg, CU_TestFunc testF) {
     }
 }
 
+void test_DLSH(){
+    Point point1("1",{1,9.1},L2_norm);
+    Point point2("2", {2, 10}, L2_norm);
+    Point point3("3", {3, 20}, L2_norm);
+
+    Curve c1("c1", FrechetDistDiscrete, {point1, point2, point3});
+    
+    Point point4("4",{1,10.1},L2_norm);
+    Point point5("5", {2, 9.8}, L2_norm);
+    Point point6("6", {3, 19.5}, L2_norm);
+
+    Curve c2("c2", FrechetDistDiscrete, {point4, point5, point6});
+    int suc =0;
+    for(auto i =0; i<1000; i++){
+        DLSHHashingCurve h(1,1,2,1,3);
+        Point * gc1 = h(c1);
+        Point * gc2 = h(c2);
+        auto w = L2_norm(*gc1,*gc2);
+        LSHHashing g(3,w,gc1->getDims());
+        if(g(*gc1) == g(*gc2))
+            suc++;
+        delete gc1;
+        delete gc2;
+    }
+    CU_ASSERT((suc*1.0)/(1.0*1000) >= 0.5);
+}
+
 int main(void) {
     CU_pSuite pSuite = NULL;
 
@@ -31,12 +60,14 @@ int main(void) {
         return CU_get_error();
     }
 
-    add_test(pSuite, "Discrete Frechet Optimal Path - Test", test_DFOptimalTraversal);
-    add_test(pSuite, "LSH w\\ Constinuous Frechet - Test", test_CLSH);
+    //add_test(pSuite, "Discrete Frechet Optimal Path - Test", test_DFOptimalTraversal);
+    //add_test(pSuite, "LSH w\\ Constinuous Frechet - Test", test_CLSH);
     add_test(pSuite, "LSH w\\ Discrete Frechet - Test", test_DLSH);
-    add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
+    //add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
 
     /* Run all tests using the CUnit Basic interface */
+    CU_basic_set_mode(CU_BRM_VERBOSE);
+    CU_basic_run_tests();
     CU_run_all_tests();
     CU_cleanup_registry();
     CU_get_error();
