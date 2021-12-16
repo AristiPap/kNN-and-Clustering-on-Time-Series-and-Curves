@@ -5,7 +5,7 @@ SRC = $(MAKE-DIR)/src
 INCLUDE = $(MAKE-DIR)/include
 BIN = $(MAKE-DIR)/bin
 BUILD = $(MAKE-DIR)/build
-
+TESTS = $(MAKE-DIR)/tests
 # compiler flags
 CC = g++
 LIBS = -lm
@@ -50,12 +50,16 @@ clustering:
 	@echo DEBUG: $(DEBUG_MSG)
 	@$(MAKE) -C $(SRC)/CurveCluster -f curveclustering.mk 
 
-PHONY : clean
+.PHONY : tests
+tests:
+	@$(MAKE) -C $(TESTS) -f tests.mk 
+
+.PHONY : clean
 clean :
 	@$(MAKE) -C $(SRC)/CurveLSH -f lsh.mk clean
 	@$(MAKE) -C $(SRC)/CurveCluster -f curveclustering.mk clean
+	@$(MAKE) -C $(TESTS) -f tests.mk clean
 	$(RM) -f $(OBJS)
-
 
 
 

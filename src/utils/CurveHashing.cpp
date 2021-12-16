@@ -132,9 +132,9 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
     Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve.getId(), FrechetDistContinuous, {curve_points.front()}); 
     for (auto p_i = curve_points.begin()+1; p_i+1 != curve_points.end(); p_i++) {
         // add the point in i only if p_i \not-in (min(p_{i-1}, p_{i+1}), max(p_{i-1}, p_{i+1}))
-        double v = p_i->getCoordinate(1);
-        double prev_v = (p_i-1)->getCoordinate(1);
-        double next_v = (p_i+1)->getCoordinate(1);
+        double v = p_i->getCoordinate(this->dim-1);
+        double prev_v = (p_i-1)->getCoordinate(this->dim-1);
+        double next_v = (p_i+1)->getCoordinate(this->dim-1);
         double min_v = min(prev_v, next_v);
         double max_v = max(prev_v, next_v);
         if (v - min_v < 0 || max_v - v < 0) {
@@ -175,9 +175,9 @@ Curve* CLSHHashingCurve::filter(Curve &c) {
     while (a_i != curve_points.end() && b_i != curve_points.end() && c_i != curve_points.end()) {
         // 1. Check if |a-b| < e and |b-c| < e, for given points where a, b, c are the
         //  values of the time series in specific timestamps
-        double a = (*a_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
-        double b = (*b_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
-        double c = (*c_i).getCoordinate(1); // get y coordinate: T(t_i), t_i is a timestamp
+        double a = (*a_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
+        double b = (*b_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
+        double c = (*c_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
         if (abs(a-b) <= EPSILON && abs(b-c) <= EPSILON) {
             // we eliminate the point in b_i
             // by proceeding to the next points for b and c
