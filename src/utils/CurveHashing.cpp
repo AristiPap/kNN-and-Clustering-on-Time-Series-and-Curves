@@ -133,8 +133,8 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
 
     // snap the curve onto the grid
     Curve *grid_curve = this->curveHashing(*filtered_curve);
-    delete filtered_curve;
 
+    delete filtered_curve;
     // keep only the sequences of min and maxes
     auto curve_points = grid_curve->getCurvePoints();
     Curve min_max_sequence_curve = Curve("<min-max-sequence>-"+curve.getId(), FrechetDistContinuous, {curve_points.front()}); 
@@ -155,6 +155,7 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
     //add the last point of the curve
     min_max_sequence_curve.AddToCurve(&(curve_points.back()));
     delete grid_curve;
+
 
     // squeeze the point and return the vector x with padding
     Point* p = squeeze(min_max_sequence_curve, &curve);
@@ -205,7 +206,6 @@ Curve* CLSHHashingCurve::filter(Curve &c) {
     
     // 3. at the end of the procedure we have the last point in the curve at c_i. Add it into the filtered curve
     filtered_curve->AddToCurve(&curve_points.back());
-
     // 4. return the new curve
     return filtered_curve;
 }

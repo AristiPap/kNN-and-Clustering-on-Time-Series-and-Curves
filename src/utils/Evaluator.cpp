@@ -66,9 +66,6 @@ void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_
     
     profiler_stop();
     double knn_dur = profiler_get_duration();
-      
-    // get in range neighbours
-    Neighbours *in_range = solver.nearestNeighbours_w_rangeSearch(q, R);
     
    
     // get true nearest neighbours
@@ -80,7 +77,7 @@ void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_
     profiler_stop();
     double real_dur = profiler_get_duration();
 
-    FileHandler::print_to_file(out_file, q, method_name, res, in_range, _true, N, knn_dur, real_dur);
+    FileHandler::print_to_file(out_file, q, method_name, res, _true, N, knn_dur, real_dur);
 
     t_approx_sum += knn_dur;
     t_true_sum += real_dur;
@@ -91,7 +88,6 @@ void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_
     true_approx_time_ratio_sum += real_dur / knn_dur;
     #endif
 
-    delete in_range;
     delete res;
     delete _true;
 

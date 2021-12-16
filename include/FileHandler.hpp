@@ -52,7 +52,6 @@ class FileHandler{
         static void print_to_file(
             ofstream &out, const Point &p, string method,
             std::list<pair<Point *, double>> *neighbors,
-            std::list<pair<Point *, double>> *rneighbors,
             std::list<pair<Point *, double>> *brute_neighbors, int k,
             double time, double brute_time);
         static void print_to_file(

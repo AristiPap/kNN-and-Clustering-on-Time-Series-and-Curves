@@ -134,7 +134,7 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
     return this->curve_db;
 }
 
-void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::list<pair<Point *, double>>* neighbors,std::list<pair<Point *, double>>* rneighbors,std::list<pair<Point *, double>>* brute_neighbors,int k,double time, double brute_time)
+void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::list<pair<Point *, double>>* neighbors, std::list<pair<Point *, double>>* brute_neighbors,int k,double time, double brute_time)
 {    
     if (!out) {
         cerr << "Cannot write to of stream. Exiting..." << endl;

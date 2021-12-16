@@ -8,7 +8,7 @@
 #include "Curves.hpp"
 
 // epsilon of filtering
-#define EPSILON 10
+#define EPSILON 1
 
 // Basic Hashing interface
 class HashingCurve {
