@@ -6,6 +6,7 @@
 #include "Point.hpp"
 #include "Curves.hpp"
 
+//helper method used to find the closest cluster center to a data point
 template<class T, class CentroidsT>
 ClosestCentroid find_closest_centroid(T& q, vector<CentroidsT> &centroids)
 {

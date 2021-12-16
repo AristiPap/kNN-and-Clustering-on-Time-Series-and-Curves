@@ -135,6 +135,7 @@ void demo_vector_clustering() {
     file_handler.cleardb();
 }
 
+
 void demo_curve_clustering() {
     // TODO:change that
     double f_sample = 0.5;

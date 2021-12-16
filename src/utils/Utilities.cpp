@@ -60,7 +60,7 @@ bool curve_compare::operator()(const pair<Curve *, double>& l, const pair<Curve 
 
 Curve *getMeanCurve(list<pair<const Point *, const Point *>> &optimal_traversal){
     
-    Curve *c = new Curve();
+    Curve *c = new Curve("Mean Curve");
     for(auto it:optimal_traversal){
         Point p = *it.first + *it.second;
         p /= 2;
@@ -88,8 +88,7 @@ Curve *getMeanCurve(Curve *c1, Curve *c2){
 }
 
 // got a bug
-Curve *getMeanCurve(vector<Curve *>& CurveTree){
-    Curve *c = nullptr;
+Curve getMeanCurve(vector<Curve>& CurveTree){
     int step = 1;
     
     while(step <= CurveTree.size()- 1){
@@ -101,20 +100,17 @@ Curve *getMeanCurve(vector<Curve *>& CurveTree){
             if (j >= CurveTree.size()) break;
             auto c1 = CurveTree[i];
             auto c2 = CurveTree[j];
-            
-            c = getMeanCurve(c1,c2);
-            
-            if (step > 1) {
-                delete CurveTree[i];
-                delete CurveTree[j];
-            }
+            assert(c1.getId() != "<useless>" && c2.getId() != "<useless>");
 
-            CurveTree[i] = c;
-            CurveTree[j] = NULL;
+            Curve *c = getMeanCurve(&c1,&c2);
+
+            CurveTree[i].setPoints(c);
+            CurveTree[j].setId("<useless>");
+
+            delete c;
         }
         step *= 2;
     }
-    cout << CurveTree.front()->dimensions() << endl;
     return CurveTree.front();
 }
 
