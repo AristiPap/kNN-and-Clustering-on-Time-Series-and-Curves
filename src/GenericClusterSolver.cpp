@@ -5,7 +5,7 @@ int KMeans_Solver::hc_k = 3;
 int KMeans_Solver::hc_M = 1400;
 int KMeans_Solver::hc_probes = 14;
 int KMeans_Solver::lsh_k = 4;
-int KMeans_Solver::lsh_L = 6;
+int KMeans_Solver::lsh_L = 3;
 int KMeans_Solver::K = 0;
 
 KMeans_Solver::KMeans_Solver(int K){

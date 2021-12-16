@@ -3,8 +3,6 @@
 #include <set>
 #include <list>
 #include "GenericClusterSolver.hpp"
-#include "Point.hpp"
-#include "Curves.hpp"
 
 // init radius is min(dist between centroids)/2
 template<class CentroidT>
@@ -47,6 +45,7 @@ void insert_into_cluster(T *p, double dist, int centroid_id, vector<CentroidT> &
     }
 }
 
+
 // Actual implementation of reverse assignment utilizing a Nearest Neighbour Solver class (either LSH or Hypercube will do).
 template<class T, class CentroidT, class SolverT>
 uint32_t __reverse_assignment__(vector<CentroidT> &centroids, list<T *> &dataset, SolverT &solver, double R_max, set<T *>& unassigned_points) {
@@ -66,7 +65,6 @@ uint32_t __reverse_assignment__(vector<CentroidT> &centroids, list<T *> &dataset
     for (auto i = 0; i < centroids.size(); i++) {
         // perform the range query, with center the current centroid
         list<pair<T *, double>> *in_range = solver.nearestNeighbours_w_rangeSearch(centroids[i].first, R);
-            
         // insert all the neighbours in the centroid
         for (auto neighbour_pair : *in_range) {
             T *p = neighbour_pair.first;
@@ -83,16 +81,13 @@ uint32_t __reverse_assignment__(vector<CentroidT> &centroids, list<T *> &dataset
     if (R - R_max > 0) {
         for (auto p = unassigned_points.begin(); p != unassigned_points.end(); p++) {
             insert_in_closest_center(*p, centroids);
-            unassigned_points.erase(*p);
         }
+        unassigned_points.clear();
     }
     
     #ifdef VERBOSE
     cout << "points_changes: " << points_changes << ", unassigned points: " << unassigned_points.size() << ", R = " << R << endl;
     #endif
-    cout << "points_changes: " << points_changes
-         << ", unassigned points: " << unassigned_points.size() << ", R = " << R
-         << endl;
 
     return points_changes + unassigned_points.size();
 }

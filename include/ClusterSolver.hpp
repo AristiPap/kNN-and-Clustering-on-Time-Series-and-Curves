@@ -58,4 +58,4 @@ uint32_t reverse_assignment_hypercube(std::vector<Centroid> &centroids, std::lis
 //vector<double> *  evaluate_w_silhouette(std::vector<Centroid>& clusters, const std::list<Point *> &dataset);
 
 
-void insert_in_closest_center(Point *q, vector<Centroid> &centroids);
+// void insert_in_closest_center(Point *q, vector<Centroid> &centroids);

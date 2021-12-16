@@ -230,7 +230,7 @@ void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_n
         shillouette_eval = evaluate_w_silhouette(*clusters, dataset);
         #ifdef VERBOSE
         profiler_stop();
-        cout << "Done in " << profiler_get_duration() << endl;
+        cout << "Done in " << profiler_get_duration() << "ms" << endl;
         #endif
         
     }

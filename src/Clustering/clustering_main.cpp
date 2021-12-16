@@ -158,6 +158,14 @@ void demo_curve_clustering() {
         i = "1";
     else if (assignment_method == "LSH_Frechet")
         i = "2";
+
+    _pad_num_ = 0;
+    for (auto c : *dataset)
+        if (rand() % 2)
+            for (auto p : c->getCurvePoints())
+                for (auto coord : p.getCoordinates())
+                    _pad_num_ = max(_pad_num_, floor((coord - CLUSTERING_DELTA) / CLUSTERING_DELTA) * CLUSTERING_DELTA + CLUSTERING_DELTA + 100);
+
     // create the solver and evaluate the algorithm
     evaluator.evaluate_from_file(*dataset, "A" + i + "U2", solver, outfile_name, complete, silhouette);
 

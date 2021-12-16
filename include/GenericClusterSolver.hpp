@@ -45,8 +45,27 @@ public:
 // overload to print silhouette as a vector
 ostream& operator<<(ostream& os, vector<double> silhouettes);
 
+template <class T, class CentroidT>
+void insert_in_closest_center(T* q, vector<CentroidT>& centroids) {
+    // find the distance to first centroid
+    int closest_center = 0;
+    double min_distance = q->dist(centroids[0].first);
+    int K = centroids.size();
 
+    // compare with the rest cluster centers
+    for (int i = 1; i < K; i++) {
+        double distance = q->dist(centroids[i].first);
+        if (distance < min_distance) {
+            closest_center = i;
+            min_distance = distance;
+        }
+    }
 
+    // insert it
+    centroids[closest_center].second[q] = min_distance;
+    q->setMarked(true);
+    q->setCluster(closest_center);
+}
 
 /*class KMeans_pp_Solver {
 private:

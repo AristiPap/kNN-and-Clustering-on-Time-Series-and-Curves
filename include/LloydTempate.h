@@ -114,8 +114,9 @@ uint32_t __Lloyd__ (std::vector<CentroidsT> &centroids, std::list<T *> &dataset)
             }
         }    
     }
-
+    #ifdef VERBOSE
     cout << "points_updated: " << points_updated << endl;
+    #endif
     return points_updated;
 }
 

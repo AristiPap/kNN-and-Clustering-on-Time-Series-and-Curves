@@ -60,4 +60,4 @@ uint32_t reverse_assignment_lsh_curves(std::vector<CurveCentroid> &centroids, st
 //vector<double> *  evaluate_w_silhouette(std::vector<CurveCentroid>& clusters, const std::list<Curve *> &dataset);
 
 
-void insert_in_closest_center(Curve *q, vector<CurveCentroid> &centroids);
+// void insert_in_closest_center(Curve *q, vector<CurveCentroid> &centroids);

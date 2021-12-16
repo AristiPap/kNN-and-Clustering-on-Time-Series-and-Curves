@@ -166,27 +166,6 @@ uint32_t KMeans_pp_Solver::_k_means_step(void) {
     return points_changed;
 }
 
-void insert_in_closest_center(Point *q, vector<Centroid> &centroids) {
-    // find the distance to first centroid
-    int closest_center = 0;
-    double min_distance = q->dist(centroids[0].first);
-    int K = centroids.size();
-
-    // compare with the rest cluster centers
-    for (int i = 1; i < K; i++) {
-        double distance = q->dist(centroids[i].first);
-        if (distance < min_distance) {
-            closest_center = i;
-            min_distance = distance;
-        }
-    }
-
-    // insert it
-    centroids[closest_center].second[q] = min_distance;
-    q->setMarked(true);
-    q->setCluster(closest_center);
-}
-
 // Perform a clustering with K means:
 // iterate at most iter_max times
 // if less that min_changed_elements change cluster then break loop
