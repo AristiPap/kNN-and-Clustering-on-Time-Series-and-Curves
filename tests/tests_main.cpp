@@ -115,7 +115,9 @@ void test_MeanCurve(){
     CurveTree.push_back(c3);
     
     Curve c_mean = getMeanCurve(CurveTree);
-    CU_ASSERT(c_mean.getCurvePoints() == correct_mean.getCurvePoints());
+    for(int i = 0; i<c_mean.complexity(); i++){
+        CU_ASSERT(c_mean.getCurvePoints()[i].getCoordinates() == correct_mean.getCurvePoints()[i].getCoordinates());
+    }
 }
 
 int main(void) {
