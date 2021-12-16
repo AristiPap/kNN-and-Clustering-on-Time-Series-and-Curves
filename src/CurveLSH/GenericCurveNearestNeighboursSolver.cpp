@@ -15,9 +15,12 @@ LSHSolver::LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L,
 }
 
 LSHSolver::~LSHSolver() {
-    for (auto solver : solvers) {
+    for (auto solver : solvers)
         delete solver;
-    }
+
+    for (auto gh : this->grid_hashes)
+        delete gh;
+
 
     for (auto trans_dataset : dataset_transformed)
         for (auto dp : trans_dataset) 
@@ -45,6 +48,7 @@ std::list<CurveNeighbour> *LSHSolver::kNearestNeighbours(Curve &q, uint N) {
         }
 
         delete cur_neighbours;
+        delete x;
     }
 
     list<CurveNeighbour> *closest = new list<CurveNeighbour>();
@@ -77,7 +81,7 @@ std::list<CurveNeighbour> *LSHSolver::nearestNeighbours_w_rangeSearch(Curve &q, 
              n_i++) {
             neighbours->push_back(make_pair(n_i->first->getCurve(), n_i->second));
         }
-
+        delete x;
         delete cur_neighbours;
     }
 

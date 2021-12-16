@@ -116,6 +116,7 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
             p->addCoordinate(y);                      
             
             tmp_Curve->AddToCurve(p);
+            delete p;
             _id ++;
             
             //move to the prev of the next point of sample

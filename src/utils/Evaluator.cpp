@@ -41,8 +41,7 @@ void Evaluator::evaluate_from_file(const DataList& dataset, string method_name, 
         // evaluate each query point separetely
         this->evaluate(dataset, *q, method_name, solver, out_file_stream, N, R);
     }
-    file_handler.CloseFile();
-    file_handler.cleardb();
+    
 
     out_file_stream << "tApproximateAverage: " << t_approx_sum / (queries->size()*1.0) << "ms" << endl;
     out_file_stream << "tTrueAverage: " << t_true_sum / (queries->size() * 1.0) << "ms" << endl;
@@ -54,6 +53,8 @@ void Evaluator::evaluate_from_file(const DataList& dataset, string method_name, 
     out_file_stream << "Average brute_KNN/approx_KNN time ratio: " << true_approx_time_ratio_sum/queries->size() << endl;
     out_file_stream << "Average approx_KNN dist / true_KNN dist error: " << approx_true_dist_ratio_sum/queries->size() - 1 << endl;
     #endif
+    file_handler.CloseFile();
+    file_handler.cleardb();
 }
 
 void Evaluator::evaluate(const DataList& dataset, const Point& q, string method_name, NearestNeighboursSolver& solver, ofstream &out_file, const uint32_t N, const double R) {

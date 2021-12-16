@@ -42,7 +42,7 @@ class HyperCube : public NearestNeighboursSolver{
         std::list<Neighbour>* nearestNeighbours(const Point &p, uint32_t k, double min_dist=std::numeric_limits<double>::max(), bool is_range_search=false);
     public:
         HyperCube(uint32_t w, uint32_t d, uint32_t dd, uint32_t probes, uint32_t M, std::list<Point *> &input_data);
-        ~HyperCube();
+        virtual ~HyperCube();
 
 
     // Find the nearest neighbour of point q. Returns a pair of <point id, distance from q>.

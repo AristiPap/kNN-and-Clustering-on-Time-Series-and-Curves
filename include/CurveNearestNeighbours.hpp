@@ -19,7 +19,7 @@ class CurveNearestNeighboursSolver {
    public:
     CurveNearestNeighboursSolver(std::list<Curve *> &dataset, uint32_t curve_L,
                                  double curve_delta, uint32_t curve_d);
-    ~CurveNearestNeighboursSolver();
+    virtual ~CurveNearestNeighboursSolver();
 
     // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
     virtual std::list<CurveNeighbour> *kNearestNeighbours(Curve &q,

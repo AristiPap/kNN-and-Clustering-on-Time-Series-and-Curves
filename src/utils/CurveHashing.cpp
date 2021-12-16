@@ -60,6 +60,7 @@ Point * DLSHHashingCurve::operator()(Curve &curve) {
     Curve* hashedCurve = curveHashing(curve);
     //convert hashed curve to point
     Point *p = squeeze(*hashedCurve, &curve);
+    delete hashedCurve;
     //add padding
     p->padding(dim*max_curve_len);
 
@@ -73,12 +74,12 @@ Curve* HashingCurve::curveHashing(Curve &curve){
     
     Point * previousMinPoint = NULL;   // stores previous min point
     Curve* gridCurve = new Curve();   // creating a vector to store all grid points
-    
+    Point *hash = nullptr;
     for(auto it:curve.getCurvePoints()){
         Point *p1 = &it;
         vector <double> x = p1->getCoordinates();
         
-        Point *hash = new Point("<snapped-point>",0,this->distMetric);
+        hash = new Point("<snapped-point>",0,this->distMetric);
         int i = 0;
         for(auto it2 : x){
             hash->addCoordinate(floor((it2-t[i])/delta + 0.5) * delta + t.at(i));
@@ -87,14 +88,21 @@ Curve* HashingCurve::curveHashing(Curve &curve){
         
         //avoid duplicates
         if (previousMinPoint && hash->getCoordinates() == previousMinPoint->getCoordinates()){
+            delete hash;
+            hash = nullptr;
             continue;
-        } else 
+        } else {
+            if (previousMinPoint)
+                delete previousMinPoint;
             previousMinPoint = hash;
-        
+        }
+
         gridCurve->AddToCurve(hash);
-        
     }   
-    
+    if (previousMinPoint && previousMinPoint != hash)
+        delete previousMinPoint;
+    if (hash)
+        delete hash;
     return gridCurve;   
 }
 
@@ -124,7 +132,7 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
     Curve *filtered_curve = this->filter(curve);
 
     // snap the curve onto the grid
-    Curve *grid_curve = this->curveHashing(curve);
+    Curve *grid_curve = this->curveHashing(*filtered_curve);
     delete filtered_curve;
 
     // keep only the sequences of min and maxes
@@ -150,6 +158,7 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
 
     // squeeze the point and return the vector x with padding
     Point* p = squeeze(min_max_sequence_curve, &curve);
+
     // add padding
     p->padding(dim * max_curve_len);
 

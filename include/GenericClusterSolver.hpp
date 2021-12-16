@@ -23,7 +23,7 @@ public:
     
     KMeans_Solver(int K);
 
-    ~KMeans_Solver();
+    virtual ~KMeans_Solver();
     
     // clear the centroids
     virtual void clear_centroids(void) = 0; 

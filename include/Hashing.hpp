@@ -29,7 +29,7 @@ class Hashing {
    // enable hashing activity
     virtual uint32_t operator()(const Point& p)  = 0;
     Hashing(int32_t k, int32_t w, int32_t dim);
-    ~Hashing();
+    virtual ~Hashing();
 };
 
 // Hashing class for LSH algorithm
@@ -42,7 +42,7 @@ class LSHHashing : Hashing {
    public:
     uint32_t operator()(const Point& p) ;
     LSHHashing(int32_t k, int32_t w, int32_t dim);
-    ~LSHHashing();
+    virtual ~LSHHashing();
     static uint32_t estimate_w(std::list<Point*>& dataset);
 };
 
@@ -55,5 +55,5 @@ class HyperCubeHashing : Hashing{
     public:
         uint32_t operator()(const Point& p);
         HyperCubeHashing(int dd, int32_t k, int32_t w, int32_t dim);
-        ~HyperCubeHashing();
+        virtual ~HyperCubeHashing();
 };

@@ -30,7 +30,7 @@ class LSHNearestNeighbours: public NearestNeighboursSolver {
 
    public:
     LSHNearestNeighbours(std::list<Point *>& input_data, size_t table_size, uint32_t k=4, uint32_t w=6, uint32_t L=10);
-    ~LSHNearestNeighbours();
+    virtual ~LSHNearestNeighbours();
 
     // Find the nearest neighbour of point q. Returns a pair of <point id, distance from q>.
     Neighbour nearestNeighbour(const Point &q) final;

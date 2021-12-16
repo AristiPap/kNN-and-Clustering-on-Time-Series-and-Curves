@@ -33,7 +33,7 @@ private:
 
 public:
     KMeans_pp_Solver(std::list<Point *>& dataset, AssignmentStep __assignment_step, int K);
-    ~KMeans_pp_Solver();
+    virtual ~KMeans_pp_Solver();
 
     // Perform a clustering with K means:
     // iterate at most iter_max times

@@ -25,7 +25,7 @@ private:
     // data variables
 public:
     NearestNeighboursSolver();
-    ~NearestNeighboursSolver();
+    virtual ~NearestNeighboursSolver();
     // Find the nearest neighbour of point q. Returns a pair of <point id, distance from q>.
     virtual Neighbour nearestNeighbour(const Point &q) = 0;
     // Find N nearest neighbours of q. Returns list of <point id, dist from q>.

@@ -3,7 +3,6 @@
 #include "CurveNearestNeighbours.hpp"
 #include "LSHNearestNeighbours.hpp"
 #include "hyper_cube.hpp"
-//#include "Hashing.hpp"
 #include "CurveHashing.hpp"
 
 class LSHSolver: public CurveNearestNeighboursSolver{
@@ -16,7 +15,7 @@ private:
 
 public:
     LSHSolver(std::list<Curve *> &dataset, uint32_t curve_L, double curve_delta, uint32_t curve_d, int flag, std::string storage_type="LSH", uint32_t _L=1, uint32_t k=4, uint32_t dd=14, uint32_t M=10, uint32_t probes=2, int32_t maxCurveLength=-1);
-    ~LSHSolver();
+    virtual ~LSHSolver();
     // Find N nearest neighbours of q. Returns list of <Curve *, dist from q>.
     std::list<CurveNeighbour> *kNearestNeighbours(Curve &q, uint N = 1) final;
     // find R-nearest neighbours of q. Returns list of <Curve *, dist from q>.

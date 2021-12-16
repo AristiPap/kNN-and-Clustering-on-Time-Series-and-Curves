@@ -37,7 +37,7 @@ private:
 
 public:
     KMeans_pp_Solver_Curves(std::list<Curve *>& dataset, CurveAssignmentStep __assignment_step, int K);
-    ~KMeans_pp_Solver_Curves();
+    virtual ~KMeans_pp_Solver_Curves();
 
     // Perform a clustering with K means:
     // iterate at most iter_max times
