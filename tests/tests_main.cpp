@@ -4,7 +4,9 @@
 
 #include "CurveHashing.hpp"
 #include "Hashing.hpp"
-#define N_HASHES 100
+#include "Utilities.hpp"
+
+#define N_HASHES 10000
 #define DELTA 7
 
 using namespace std;
@@ -127,6 +129,68 @@ void test_DFOptimalTraversal(void) {
     p++;
 }
 
+void test_DLSH() {
+    Point point1("1", {1, 9.1}, L2_norm);
+    Point point2("2", {2, 10}, L2_norm);
+    Point point3("3", {3, 20}, L2_norm);
+
+    Curve c1("c1", FrechetDistDiscrete, {point1, point2, point3});
+
+    Point point4("4", {1, 10.1}, L2_norm);
+    Point point5("5", {2, 9.8}, L2_norm);
+    Point point6("6", {3, 19.5}, L2_norm);
+
+    Curve c2("c2", FrechetDistDiscrete, {point4, point5, point6});
+    int suc = 0;
+    for (auto i = 0; i < 1000; i++) {
+        DLSHHashingCurve h(1, 1, 2, 70, 3);
+        Point* gc1 = h(c1);
+        Point* gc2 = h(c2);
+        auto w = L2_norm(*gc1, *gc2);
+        LSHHashing g(3, w / 10, gc1->getDims());
+        if (g(*gc1) == g(*gc2)) suc++;
+        delete gc1;
+        delete gc2;
+    }
+    CU_ASSERT((suc * 1.0) / (1.0 * 1000) >= 0.5);
+}
+
+void test_MeanCurve() {
+    Point point1("1", {1, 9.1}, L2_norm);
+    Point point2("2", {2, 10}, L2_norm);
+    Point point3("3", {3, 20}, L2_norm);
+
+    Curve c1("c1", FrechetDistDiscrete, {point1, point2, point3});
+
+    Point point4("4", {1, 10.1}, L2_norm);
+    Point point5("5", {2, 9.8}, L2_norm);
+    Point point6("6", {3, 19.5}, L2_norm);
+
+    Curve c2("c2", FrechetDistDiscrete, {point4, point5, point6});
+
+    Point point7("7", {1, 10.5}, L2_norm);
+    Point point8("8", {2, 10.2}, L2_norm);
+    Point point9("9", {3, 20.5}, L2_norm);
+
+    Curve c3("c3", FrechetDistDiscrete, {point7, point8, point9});
+
+    // calculated expected result and saved in correct_mean curve
+    Point point10("10", {1, 10.05}, L2_norm);
+    Point point11("11", {2, 10.05}, L2_norm);
+    Point point12("12", {3, 20.125}, L2_norm);
+
+    Curve correct_mean("correct_mean", FrechetDistDiscrete,
+                       {point10, point11, point12});
+
+    std::vector<Curve> CurveTree;
+    CurveTree.push_back(c1);
+    CurveTree.push_back(c2);
+    CurveTree.push_back(c3);
+
+    Curve c_mean = getMeanCurve(CurveTree);
+    CU_ASSERT(c_mean.getCurvePoints() == correct_mean.getCurvePoints());
+}
+
 int main(void) {
     CU_pSuite pSuite = NULL;
 
@@ -143,8 +207,8 @@ int main(void) {
     add_test(pSuite, "Discrete Frechet Optimal Path - Test",
              test_DFOptimalTraversal);
     add_test(pSuite, "LSH w\\ Constinuous Frechet - Test", test_CLSH);
-    // add_test(pSuite, "LSH w\\ Discrete Frechet - Test", test_DLSH);
-    // add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
+    add_test(pSuite, "LSH w\\ Discrete Frechet - Test", test_DLSH);
+     add_test(pSuite, "Mean Curve Routine - Test", test_MeanCurve);
 
     /* Run all tests using the CUnit Basic interface */
     CU_basic_set_mode(CU_BRM_VERBOSE);
