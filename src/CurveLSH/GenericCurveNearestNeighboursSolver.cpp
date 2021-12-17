@@ -100,11 +100,11 @@ void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
 
     // create a curve hashing mechanism
     if(flag == 0)
-        this->grid_hashes.push_back(new DLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
+        this->grid_hashes.push_back(new DLSHHashingCurve(dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
 
     //Continuous LSH hashing Curves
     else if(flag == 1)
-        this->grid_hashes.push_back(new CLSHHashingCurve(1, 1, dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
+        this->grid_hashes.push_back(new CLSHHashingCurve(dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
     
     // transform all data
     transform_dataset(dataset, *this->grid_hashes.back());

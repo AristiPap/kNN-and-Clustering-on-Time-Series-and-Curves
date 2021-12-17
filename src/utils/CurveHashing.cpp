@@ -41,7 +41,7 @@ double HashingCurve :: estimate_delta(std::list<Curve*>& dataset_input, std::lis
     return _delta/1000;
 }
 
-HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int32_t max_curve_len):dim(dim), delta(delta), w(w), k(k), max_curve_len(max_curve_len){
+HashingCurve::HashingCurve(int32_t dim, double delta, int32_t max_curve_len):dim(dim), delta(delta), max_curve_len(max_curve_len){
 
     for (int i=0; i<dim; i++) {
         double num = generateNumber(0,delta);
@@ -49,8 +49,8 @@ HashingCurve::HashingCurve(int32_t dim, int32_t w, int32_t k, double delta, int3
     }
 }
 
-DLSHHashingCurve::DLSHHashingCurve(int32_t k, int32_t w, int32_t dim,double delta, int32_t max_curve_len)
-:HashingCurve(dim, w, k, delta, max_curve_len){}
+DLSHHashingCurve::DLSHHashingCurve(int32_t dim,double delta, int32_t max_curve_len)
+:HashingCurve(dim, delta, max_curve_len){}
 
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
@@ -121,8 +121,8 @@ Point* HashingCurve::squeeze(Curve& gridCurve, Curve *origin){
 
 
 // Continuous LSH implementation
-CLSHHashingCurve::CLSHHashingCurve(int32_t k, int32_t w, int32_t dim, double delta,int32_t max_curve_len) 
-: HashingCurve(dim, w, k, delta, max_curve_len)
+CLSHHashingCurve::CLSHHashingCurve(int32_t dim, double delta, int32_t max_curve_len) 
+: HashingCurve(dim, delta, max_curve_len)
 {} 
 
 CLSHHashingCurve::~CLSHHashingCurve(){}

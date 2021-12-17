@@ -100,14 +100,14 @@ std::list<Neighbour>* LSHNearestNeighbours::__k_nearest_neighbours(const Point& 
 
     // in case we are done with all points of the same ID 
     // but we have not yet found k points we search the rest of the buckets
-    // if (neighbours.size() < N || is_range_search) {
-    //     // insert all elements from the rest-list in the neighbours set
-    //     for (auto i = rest.begin(); i != rest.end(); i++) {
-    //         for (auto neighbour : **i) {
-    //             __lsh_nn_step__(q, neighbour, N, neighbours, dist_b, R, is_range_search);
-    //         }
-    //     }
-    // }
+    if (is_range_search) {
+        // insert all elements from the rest-list in the neighbours set
+        for (auto i = rest.begin(); i != rest.end(); i++) {
+            for (auto neighbour : **i) {
+                __lsh_nn_step__(q, neighbour, N, neighbours, dist_b, R, is_range_search);
+            }
+        }
+    }
 
 
     list<Neighbour>* NNs = new list<Neighbour>();

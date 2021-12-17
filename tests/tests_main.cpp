@@ -40,7 +40,7 @@ void appr_curves(void) {
     // Hash with Continuous lsh and make sure the LSH_Vector hasher will assign
     // the same ID to the concatenated grid curves most of the times
     for (auto i = 0; i < N_HASHES; i++) {
-        CLSHHashingCurve h(1, 1, 2, DELTA, 3);
+        CLSHHashingCurve h(2, DELTA, 3);
         Point* gc1 = h(c1);
         Point* gc2 = h(c2);
         auto w = L2_norm(*gc1, *gc2);
@@ -75,7 +75,7 @@ void not_appr_curves() {
     // Hash with Continuous lsh and make sure the LSH_Vector hasher will assign
     // the same ID to the concatenated grid curves most of the times
     for (auto i = 0; i < N_HASHES; i++) {
-        CLSHHashingCurve h(1, 1, 2, DELTA, 3);
+        CLSHHashingCurve h(2, DELTA, 3);
         Point* gc1 = h(c1);
         Point* gc2 = h(c2);
         auto w = L2_norm(*gc1, *gc2);
@@ -143,7 +143,7 @@ void test_DLSH() {
     Curve c2("c2", FrechetDistDiscrete, {point4, point5, point6});
     int suc = 0;
     for (auto i = 0; i < 1000; i++) {
-        DLSHHashingCurve h(1, 1, 2, 70, 3);
+        DLSHHashingCurve h(2, 70, 3);
         Point* gc1 = h(c1);
         Point* gc2 = h(c2);
         auto w = L2_norm(*gc1, *gc2);
