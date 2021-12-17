@@ -137,9 +137,16 @@ void KMeans_pp_Solver_Curves::update_centroids_step(void) {
         for(auto it:cluster_points){
             Curvetree.push_back(*it.first);
         }
-        Curve new_c = getMeanCurve(Curvetree);
-        
+        Curve new_c = getMeanCurve(Curvetree, dataset.front()->complexity()*2 - 1);
+        #ifdef DEBUG
+        cout << "Mean curve '" << this->centroids[i].first.getId() << "' " <<  this->centroids[i].first.complexity();
+        #endif
+
         this->centroids[i].first.setPoints(&new_c);
+        
+        #ifdef DEBUG
+        cout << " -> " << this->centroids[i].first.complexity() << endl;
+        #endif
     }
 }
 

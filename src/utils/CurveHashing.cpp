@@ -55,7 +55,8 @@ DLSHHashingCurve::DLSHHashingCurve(int32_t dim,double delta, int32_t max_curve_l
 DLSHHashingCurve::~DLSHHashingCurve() {}
 
 Point * DLSHHashingCurve::operator()(Curve &curve) {
-    
+    if (curve.complexity() > max_curve_len) cout << curve.getId() << " " << curve.complexity() << endl;
+    assert(curve.complexity() <= max_curve_len);
     //create grid curve
     Curve* hashedCurve = curveHashing(curve);
     //convert hashed curve to point
@@ -128,8 +129,9 @@ CLSHHashingCurve::CLSHHashingCurve(int32_t dim, double delta, int32_t max_curve_
 CLSHHashingCurve::~CLSHHashingCurve(){}
 
 Point* CLSHHashingCurve::operator()(Curve& curve) {
+    assert(curve.complexity() <= max_curve_len);
     // First filter the continuous curve
-    Curve *filtered_curve = this->filter(curve);
+    Curve* filtered_curve = CLSHHashingCurve::filter(curve, EPSILON, this->dim);
 
     // snap the curve onto the grid
     Curve *grid_curve = this->curveHashing(*filtered_curve);
@@ -167,7 +169,7 @@ Point* CLSHHashingCurve::operator()(Curve& curve) {
 }
 
 // // function to filter ONLY continues curves on 2D-plane
-Curve* CLSHHashingCurve::filter(Curve &c) {
+Curve* CLSHHashingCurve::filter(Curve &c, double epsilon, int dim) {
     assert(c.complexity() > 1);
     assert(c.dimensions() > 0);
 
@@ -185,10 +187,10 @@ Curve* CLSHHashingCurve::filter(Curve &c) {
     while (a_i != curve_points.end() && b_i != curve_points.end() && c_i != curve_points.end()) {
         // 1. Check if |a-b| < e and |b-c| < e, for given points where a, b, c are the
         //  values of the time series in specific timestamps
-        double a = (*a_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
-        double b = (*b_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
-        double c = (*c_i).getCoordinate(this->dim-1); // get y coordinate: T(t_i), t_i is a timestamp
-        if (abs(a-b) <= EPSILON && abs(b-c) <= EPSILON) {
+        double a = (*a_i).getCoordinate(dim-1); // get y coordinate: T(t_i), t_i is a timestamp
+        double b = (*b_i).getCoordinate(dim-1); // get y coordinate: T(t_i), t_i is a timestamp
+        double c = (*c_i).getCoordinate(dim-1); // get y coordinate: T(t_i), t_i is a timestamp
+        if (abs(a-b) <= epsilon && abs(b-c) <= epsilon) {
             // we eliminate the point in b_i
             // by proceeding to the next points for b and c
             b_i++;

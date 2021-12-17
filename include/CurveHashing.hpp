@@ -52,5 +52,5 @@ class CLSHHashingCurve : public HashingCurve {
 
     // Filter a continuous curve to a discrete curve
     // Returns the filtered curve, malloc'd instance. User got to free by himself
-    Curve* filter(Curve& c);
+    static Curve* filter(Curve& c, double epsilon, int dim);
 };

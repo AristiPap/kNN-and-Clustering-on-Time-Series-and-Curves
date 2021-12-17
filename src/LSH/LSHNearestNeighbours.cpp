@@ -3,12 +3,11 @@
 
 using namespace std;
 
-LSHNearestNeighbours::LSHNearestNeighbours(std::list<Point *> &input_data, size_t table_size, uint32_t k, uint32_t w, uint32_t L)
+LSHNearestNeighbours::LSHNearestNeighbours(std::list<Point *> &input_data, int32_t dim, size_t table_size, uint32_t k, uint32_t w, uint32_t L)
 : table_size(table_size), L(L)
 {
     // set the number of hash tables
     this->hts.resize(L);
-    int32_t dim = input_data.front()->getDims();
 
     // set the # buckets  in each one of the hashtables
     for (int i = 0; i < L; i++) {

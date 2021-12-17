@@ -1,5 +1,6 @@
 #include "Utilities.hpp"
 #include <list>
+#include "CurveHashing.hpp"
 
 using namespace std;
 
@@ -87,8 +88,7 @@ Curve *getMeanCurve(Curve *c1, Curve *c2){
     return c;
 }
 
-// got a bug
-Curve getMeanCurve(vector<Curve>& CurveTree){
+Curve getMeanCurve(vector<Curve>& CurveTree, int max_curve_len){
     int step = 1;
     
     while(step <= CurveTree.size()- 1){
@@ -111,6 +111,20 @@ Curve getMeanCurve(vector<Curve>& CurveTree){
         }
         step *= 2;
     }
-    return CurveTree.front();
+    double epsilon = 1e-3;
+    Curve &c = CurveTree.front();
+    
+    while (c.complexity() > max_curve_len) {
+        // get new c
+        Curve* new_c = CLSHHashingCurve::filter(c, epsilon, c.dimensions());
+        // change the old one
+        c.setPoints(new_c);
+        // dispose temp new c
+        delete new_c;
+        // if it failed to reduce complexity -> increase the tolerated error
+        epsilon *= 2;
+    }
+    // filter until the curve's complexity is at most MAX_COMPLEXITY
+    return c;
 }
 

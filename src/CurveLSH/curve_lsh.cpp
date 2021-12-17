@@ -147,7 +147,7 @@ static void demo_lsh(list<Point *>* dataset) {
     Evaluator evaluator;
     // create the solver and evaluate the algorithm
     uint32_t w = LSHHashing::estimate_w(*dataset);
-    LSHNearestNeighbours solver{*dataset, dataset->size() / 8, k, w, L};
+    LSHNearestNeighbours solver{*dataset, dataset->front()->getDims(), dataset->size() / 8, k, w, L};
     evaluator.evaluate_from_file(*dataset, "LSH_Vector", solver, query_file_name, outfile_name, N, 0); // last argument @R is 0 since we dont care about it
 }
 

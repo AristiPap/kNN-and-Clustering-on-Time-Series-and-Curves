@@ -129,8 +129,13 @@ std::list<Curve *> *FileHandler::create_dbCurves(){
             }           
             
         }
-        this->curve_db->push_back(tmp_Curve);   
+
+        if (this->curve_db->size() == 0 || (tmp_Curve->complexity() == this->curve_db->front()->complexity() && tmp_Curve->dimensions() == this->curve_db->front()->dimensions()))
+            this->curve_db->push_back(tmp_Curve);
+        else cout << "Skipping curve '" << tmp_Curve->getId() << "' because it hash different complexity/dimensionality from the dataset presets" << endl;   
     }
+
+    cout << "dataset_complexity: " << this->curve_db->front()->complexity() << endl;
     return this->curve_db;
 }
 

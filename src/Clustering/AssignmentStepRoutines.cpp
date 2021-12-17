@@ -13,7 +13,7 @@ uint32_t reverse_assignment_lsh(vector<Centroid> &centroids, list<Point *> &data
     // create lsh solver 
     static uint32_t w = LSHHashing::estimate_w(dataset);
     
-    static LSHNearestNeighbours solver(dataset, dataset.size()/8, KMeans_pp_Solver::lsh_k, w, KMeans_pp_Solver::lsh_L);
+    static LSHNearestNeighbours solver(dataset, dataset.front()->getDims(), dataset.size()/8, KMeans_pp_Solver::lsh_k, w, KMeans_pp_Solver::lsh_L);
 
     return __reverse_assignment__(centroids, dataset, solver, R_MAX, unassigned_points);
 }
