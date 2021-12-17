@@ -39,7 +39,7 @@ class FileHandler{
         CurveDistMetric curveDistMetric;
         double f_sample;
     public:
-        FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample);
+        FileHandler(DistanceMetric distMetric, CurveDistMetric curveDistMetric, double f_sample=1.0);
         ~FileHandler();
         int OpenFile(string inputFile);
         void CloseFile();

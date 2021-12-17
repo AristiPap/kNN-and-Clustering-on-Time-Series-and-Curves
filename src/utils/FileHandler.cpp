@@ -152,7 +152,7 @@ void FileHandler::print_to_file(ofstream &out,const Point &p,string method,std::
         out << "distanceTrue: " << it2->second << endl;
         advance(it2,1);
     }
-    
+    out << endl;
 }
 
 

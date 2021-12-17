@@ -110,11 +110,9 @@ static void set_up(void) {
 }
 
 void demo_vector_clustering() {
-    // TODO:change that
-    double f_sample = 0.5;
     Evaluator evaluator;
 
-    FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
+    FileHandler file_handler(L2_norm, FrechetDistDiscrete);
 
     // get dataset
     file_handler.OpenFile(infile_name);
@@ -136,13 +134,10 @@ void demo_vector_clustering() {
 }
 
 
-void demo_curve_clustering() {
-    // TODO:change that
-    double f_sample = 0.5;
-    
+void demo_curve_clustering() {    
     Evaluator evaluator;
 
-    FileHandler file_handler(L2_norm, FrechetDistDiscrete, f_sample);
+    FileHandler file_handler(L2_norm, FrechetDistDiscrete);
 
     // get dataset
     DataListCurve *dataset = nullptr;

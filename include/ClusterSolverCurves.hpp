@@ -2,7 +2,7 @@
 
 #include "GenericClusterSolver.hpp"
 
-#define CLUSTERING_DELTA 2.9
+#define CLUSTERING_DELTA 0.57
 
 // static struct to help reverse assignment
 static set<Curve *> unassigned_curves;

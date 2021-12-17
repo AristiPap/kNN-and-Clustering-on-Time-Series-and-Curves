@@ -160,14 +160,13 @@ static void demo_hypercube(list<Point *> *dataset) {
     evaluator.evaluate_from_file(*dataset, "Hypercube", solver, query_file_name, outfile_name, N, 0);
 }
 
-static void demo_frechet(list<Curve *> *dataset, double f_sample) {
+static void demo_frechet(list<Curve *> *dataset) {
     Evaluator evaluator;
-    FileHandler fh(L2_norm, metric, f_sample);
+    FileHandler fh(L2_norm, metric);
     fh.OpenFile(query_file_name);
     list<Curve *> * query_list = fh.create_dbCurves();
     fh.CloseFile();
 
-    // estimate delta TODO:
     if (delta == 0)
         delta = HashingCurve::estimate_delta(*dataset, *query_list);
     
@@ -198,11 +197,7 @@ int main(int argc, char **argv) {
     ArgumentParser arg_parser(12, categorical, 5, num_args, 7, flags, 0, set_var);
     arg_parser.parse_args(argc, argv);
     
-    // TODO: Find the sampling rate from the name of the query file and pass it in
-    // the file handler
-    double f_sample = F_S;
-
-    FileHandler file_handler_train(L2_norm, metric, f_sample);  // create points with L2 points
+    FileHandler file_handler_train(L2_norm, metric);  // create points with L2 points
     bool end = false;
     bool start_process;
     DataList *dataset = nullptr;
@@ -237,7 +232,7 @@ int main(int argc, char **argv) {
             } else if (algorithm == "Hypercube") {
                 demo_hypercube(dataset);
             } else if (algorithm == "Frechet") {
-                demo_frechet(dataset_c, f_sample);
+                demo_frechet(dataset_c);
             } else {
                 cerr << "Algorithm: " << algorithm
                      << " is not a valid algorithm. Try again." << endl;

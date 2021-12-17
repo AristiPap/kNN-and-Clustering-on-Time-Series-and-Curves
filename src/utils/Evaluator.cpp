@@ -22,7 +22,7 @@ Evaluator::~Evaluator() {}
 // evaluate algorithm performance from queries of a given file
 void Evaluator::evaluate_from_file(const DataList& dataset, string method_name, NearestNeighboursSolver& solver, string query_file, string out_file, const uint32_t N, const double R, double f_sample) {
     // try to open query file
-    FileHandler file_handler(dataset.front()->getDistMetric(), nullptr, f_sample);
+    FileHandler file_handler(dataset.front()->getDistMetric(), nullptr);
     if (file_handler.OpenFile(query_file) != 0) {
         cerr << "Could not open: '" <<  query_file << "'";
         return;
@@ -199,7 +199,7 @@ void Evaluator::evaluate_from_file(const DataListCurve& dataset, std::string met
         
     }
 
-    FileHandler f(L2_norm, FrechetDistDiscrete, -1);
+    FileHandler f(L2_norm, FrechetDistDiscrete);
     ofstream f_out(out_file);
     f.print_to_file(f_out, clusters->size(), dt, method_name, *clusters, shillouette_eval, complete, silhouette);
     f_out.close();
@@ -232,7 +232,7 @@ void Evaluator::evaluate_from_file(const DataList& dataset, std::string method_n
         
     }
 
-    FileHandler f(L2_norm, FrechetDistDiscrete, 1);
+    FileHandler f(L2_norm, FrechetDistDiscrete);
     ofstream f_out(out_file);
     int assignment_id = -1;
 
