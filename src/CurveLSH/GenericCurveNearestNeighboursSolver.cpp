@@ -115,7 +115,7 @@ void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
     // create solver and initialize given the snapped curves for the specific grid hash
     if (storage_type == "LSH")
         this->solvers.push_back(new LSHNearestNeighbours(
-            this->dataset_transformed.back(), maxCurveLength*dataset.front()->dimensions(), max(this->dataset_transformed.back().size()/8, (unsigned long)1), k, w, _L)
+            this->dataset_transformed.back(), max_curve_len*dataset.front()->dimensions(), max(this->dataset_transformed.back().size()/8, (unsigned long)1), k, w, _L)
             );
     else if (storage_type == "Hypercube")
         this->solvers.push_back(
