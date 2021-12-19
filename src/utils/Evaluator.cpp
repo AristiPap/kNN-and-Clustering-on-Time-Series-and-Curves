@@ -3,7 +3,8 @@
 #include "Evaluator.hpp"
 #include "FileHandler.hpp"
 #include "Profiler.hpp"
-#include "LloydTempate.h"
+#include  "LloydTemplate.hpp"
+#include "Silhouette.hpp"
 
 using namespace std;
 

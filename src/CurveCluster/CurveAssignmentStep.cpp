@@ -1,7 +1,8 @@
 #include "ClusterSolverCurves.hpp"
 #include "GenericLSHSolver.hpp"
 #include "ReverseAssignment.hpp"
-#include "LloydTempate.h"
+#include  "LloydTemplate.hpp"
+#include "Silhouette.hpp"
 
 uint32_t reverse_assignment_lsh_curves(vector<CurveCentroid> &centroids,
                                 list<Curve *> &dataset) {

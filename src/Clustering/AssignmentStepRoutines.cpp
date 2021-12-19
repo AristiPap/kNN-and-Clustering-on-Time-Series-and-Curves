@@ -2,7 +2,8 @@
 #include "LSHNearestNeighbours.hpp"
 #include "hyper_cube.hpp"
 #include "ReverseAssignment.hpp"
-#include  "LloydTempate.h"
+#include  "LloydTemplate.hpp"
+#include "Silhouette.hpp"
 
 // Assumptions:
 // 1. The centroids are recalibrated BUT the assignment list is the same from the last kmeans-step 

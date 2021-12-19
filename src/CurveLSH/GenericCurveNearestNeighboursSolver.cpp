@@ -97,7 +97,6 @@ void LSHSolver::insert_in_grid_storage(std::list<Curve *> &dataset,
 
     // set up max_curve length based on user preferences
     int32_t max_curve_len = maxCurveLength == -1 ? dataset.front()->complexity() : maxCurveLength;
-    cout << "Max Curve len: " << max_curve_len << " dataset complexity:" << dataset.front()->complexity() << " lsh-dim:" <<  maxCurveLength*dataset.front()->dimensions() << endl;
     // create a curve hashing mechanism
     if(flag == 0)
         this->grid_hashes.push_back(new DLSHHashingCurve(dataset.front()->dimensions(), this->_curve_delta, max_curve_len));
