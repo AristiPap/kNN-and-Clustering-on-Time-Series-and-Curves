@@ -25,7 +25,7 @@ The curve hashing algorithm gets as input a curve and returns its grid curve. In
 At the same time, we check so that the grid curve wont have any duplicate points and at the end we concatenate all the hashed points together.After creating the grid curve, we squeeze it (concatenate all the points of the grid curve to one point), we add (if necessary) padding so that we always have the same dimension at our points. At this point we are ready to use the LSH algorithm to find the k-Nearest Neighbours
 
 ### LSH Algorithm
-The LSH algorithm, based on the k-hash functions with formula: h_i(\boldsymbol{p}) = \frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}$$
+The LSH algorithm, based on the k-hash functions with formula: $h_i(\boldsymbol{p}) = \frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}$
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 \par 
 Τhe **LSHHashing**, calculates the functions **g(\cdot)**. Its also responsible for the estimation of the value: 
