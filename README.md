@@ -22,7 +22,7 @@ To compile and execute the program using different algorithms:
 ## kNN on Curves
 ### LSH Algorithm
 The LSH algorithm, based on the k-hash functions with formula:
-<img src="https://latex.codecogs.com/svg.image?$h_i(\boldsymbol{p})=&space;\frac{\boldsymbol{p}&space;\cdot&space;\boldsymbol{v_i}&space;&plus;&space;t_i}{w}$" title="$h_i(\boldsymbol{p})= \frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}$" />
+![formula](https://render.githubusercontent.com/render/math?math=$h_i(\boldsymbol{p})=%20\frac{\boldsymbol{p}%20\cdot%20\boldsymbol{v_i}%20%2B%20t_i}{w}$)
 
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 \par 
