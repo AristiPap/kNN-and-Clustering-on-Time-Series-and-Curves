@@ -5,7 +5,8 @@ In this project we will explore the knn method using LSH/Hypercube
 
 ## Instalation
 To download the project just `git clone` the repository.
-To install prerequisities:
+
+To compile and execute the program using different algorithms:
 
 ```bash
 ~$ make search [verbose=1] [debug=1] # make the search executable
