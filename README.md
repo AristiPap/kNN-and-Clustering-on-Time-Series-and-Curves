@@ -23,7 +23,7 @@ To compile and execute the program using different algorithms:
 ### LSH Algorithm
 The LSH algorithm, based on the k-hash functions with formula:
 ```math
-h_i(\boldsymbol{p})=frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}
+$h_i(\boldsymbol{p})= \frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}$
 ```  
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 \par 
