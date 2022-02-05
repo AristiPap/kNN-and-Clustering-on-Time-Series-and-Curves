@@ -48,7 +48,8 @@ To implement LSH/Hypercube with Continuous Frechet, we used a subclass of the ba
 According to the theory we implemented the algorithm for continuous curve hashing as follows: For each curve $c \ in Dataset$:
 - filter with **CLSHHashing :: filter** to display the curve at $R$,
 - we use the same function for grid snapping as in discrete curve hashing, to map the points of the filtered curve $c$ at the points of the grid 
-- ![formula](https://render.githubusercontent.com/render/math?math=G_{\delta}^{t}=\{(a_1\delta%20%2B%20t)%20\;%20...%20\;%20(a_d\delta%20%2B%20t)%20|%20t\in%20(0,%20\delta)^d,%20\delta%20\in%20R^%2B,%20\forall%20a_i%20\in%20Z\}), according to the formula ![formula](https://render.githubusercontent.com/render/math?math=c'%20=%20floor(\frac{(x%20-%20t)}{\delta}%20%2B%20\frac{1}{2})%20\cdot%20\delta%20%2B%20t,%20\;%20x%20\in%20Points(c))
+- ![formula](https://render.githubusercontent.com/render/math?math=G_{\delta}^{t}=\{(a_1\delta%20%2B%20t)%20\;%20...%20\;%20(a_d\delta%20%2B%20t)%20|%20t\in%20(0,%20\delta)^d,%20\delta%20\in%20R^%2B,%20\forall%20a_i%20\in%20Z\}), according to the formula 
+![formula](https://render.githubusercontent.com/render/math?math=c'%20=%20floor(\frac{(x%20-%20t)}{\delta}%20%2B%20\frac{1}{2})%20\cdot%20\delta%20%2B%20t,%20\;%20x%20\in%20Points(c))
 - in the grid curve we keep only the local maximums and minimums
 - we make the concatenated curve vector, $x$
 - we apply padding based on the highest value of all grids
