@@ -20,26 +20,41 @@ To compile and execute the program using different algorithms:
 ```
 
 ## kNN on Curves
-### LSH with Discrete Frechet
-The curve hashing algorithm gets as input a curve and returns its grid curve. In order to do that we iterate through each Point of the curve, find its hash according to this formula: **floor((point.getCoordinate(i) - t[i])/delta + 0.5) * delta + t[i]**
-At the same time, we check so that the grid curve wont have any duplicate points and at the end we concatenate all the hashed points together.After creating the grid curve, we squeeze it (concatenate all the points of the grid curve to one point), we add (if necessary) padding so that we always have the same dimension at our points. At this point we are ready to use the LSH algorithm to find the k-Nearest Neighbours
-
 ### LSH Algorithm
 The LSH algorithm, based on the k-hash functions with formula: $h_i(\boldsymbol{p}) = \frac{\boldsymbol{p} \cdot \boldsymbol{v_i} + t_i}{w}$
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 \par 
-Τhe **LSHHashing**, calculates the functions **g(\cdot)**. Its also responsible for the estimation of the value: 
+Τhe **LSHHashing**, calculates the functions **$g(\cdot)$**. Its also responsible for the estimation of the value: 
 $$\sum\limits_{i=1}^k r_i\cdot h(p),$$ where the r_i are separate for each amplified function $g$. 
 \par 
 
-Η κλάση που υλοποιεί το LSH Nearest Neighbours, (\textit{LSHNearestNeighbours}), αρχικοποιεί L συναρτήσεις και αντίστοιχα Hashtables και παρέχει συναρτήσεις για εισαγωγή του σημείου στα hashtable, για αναζήτηση nearest neighbour, k-nearest-neighbours και range-nearest-neighbours με βάση ένα σημείο query.
+The class that implements the LSH Nearest Neighbours, (**LSHNearestNeighbours**),initializes L functions and  Hashtables and contains helper functions  for the import of a point in the hashtable, for nearest neighbor search , k-nearest-neighbors search and range-nearest-neighbors search according to a query point.
+
+### Hypercube Algorithm
+Random display in Hypercube is a similar algorithmic technique to LSH. However, instead of L hashtables with their own Amplified HashFunction, our data set is stored at the top of a Hypercube.Initially for the implementation needs of Hypercube we created the HyperCubeHashing class. This class, as in LSH, is derived from Hashing and every time the input element is shifted and then the formula "h" is calculated in it. 
+Then the f functions, all they need to do is map the result of h to {0,1} (depending on whether it already exists in f or not). Finally, a dd dimension hypercube is created at the same time as the d 'HashFunctions and f functions. Each time an item is entered, it is first mapped by each HyperCubeHash function and then mapped to {0.1} by f. The result is a binary number of length dd (which is equivalent to a decimal number, specifically with the index of the vertex to which the element will be inserted). \\
+Next we compute a set of vertices with distance $hamming <hd$ and loop over the points that were hashed on the same vertex or on a vertex with a certain hamming distance. (To find the nearby vertices each time we use the retrospective function **nearVertices**, with an optimization as it uses a visited set and has essentially similar functionality to dfs)
+
+
+### LSH/Hypercube with Discrete Frechet
+The curve hashing algorithm gets as input a curve and returns its grid curve. In order to do that we iterate through each Point of the curve, find its hash according to this formula: **floor((point.getCoordinate(i) - t[i])/delta + 0.5) * delta + t[i]**
+At the same time, we check so that the grid curve wont have any duplicate points and at the end we concatenate all the hashed points together.After creating the grid curve, we squeeze it (concatenate all the points of the grid curve to one point), we add (if necessary) padding so that we always have the same dimension at our points. At this point we are ready to use the LSH(or Hypercube) algorithm to find the k-Nearest Neighbors
+
+### LSH/Hypercube with Continuous Frechet
+To implement LSH/Hypercube with Continuous Frechet, we used a subclass of the base Class **HashingCurve**, **CLHHashingCurve**. 
+
+According to the theory we implemented the algorithm for continuous curve hashing as follows: For each curve $c \ in Dataset$:
+- filter with **CLSHHashing :: filter** to display the curve at $R$,
+- we use the same function for grid snapping as in discrete curve hashing, to map the points of the filtered curve $c$ at the points of the grid $G _ {\ delta} ^ {t} = \ {(a_1 \ delta + t) \; ... \; (a_d \ delta + t) | t \ in (0, \ delta) ^ d, \ delta \ in R ^ +, \ forall a_i \ in Z \}$, according to the formula $$ c '= \ floor {\frac {(x - t) } {\ delta} + \frac {1} {2}} \cdot \ delta + t, \; x \ in Points (c) $$
+- in the grid curve we keep only the local maximums and minimums
+- we make the concatenated curve vector, $x$
+- we apply padding based on the highest value of all grids
+
+This class also contains the filtering method, which based on an error, filters the given curve. For further use of this method, read the section **Clustering :: Mean Curve Update**
 
 ## Clustering
 
 
-## Dimensionality Reduction using CNNs Autoencoder
-
-
-
 ## Collaborators
+
 
