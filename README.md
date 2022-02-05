@@ -57,7 +57,28 @@ This class also contains the filtering method, which based on an error, filters 
 
 ## Clustering
 
+### Lloyd Algorithm 
+In the Lloyd function, only the assignment step of the algorithm has been implemented since the update part is done by another function in K-Means, based on our implementation.
+The implementation of Lloyd's algorithm is a faithful application of slides. Specifically what we do is to:
+- Parse all points of our dataset
+- For each point we find its closest centroid
+- If we are in the 1st step of Lloyd then we just add the point to the unordered map of each cluster
+- Otherwise, we compare the cluster_id of the point (which it already has), with the closest \ _centroid id we found in this loop.
+- If it is the same, then we just update the distance of the point from the centroid of the cluster in which it was already.
+ - Otherwise, assign the point to the new cluster, delete the point from the unordered map of the old cluster and increase the points changed
+### Reverse Assignment
+The reverse assignment algorithm is implemented according to the slides and using internal static variables to initialize the search radius once and at the end of its call to double it. To avoid divergence, we set a search based on the search radius (see R max in the ClusterSolver.hpp file) so that after a maximum search radius, the elements remaining in the unassigned table are assigned in a brute force manner. To observe the convergences of the algorithms we can play with these hyperparameters of convergence and observe the assignments that will throw us in stdout when we compile with **verbose = 1** in make.
+The 2 algorithms that implement the range search (LSH and Hypercube) are given through separate interface functions (see AssignmentStep.cpp) so that we pass the Nearest neighbors solvers (which are defined as static objects for unique initialization) in the general interface of the reverse assignment. In this way we will need to pass 1 specific type of assignment function to the constructor of the cluster solver without having to know its implementation. 
+During the assignment we set the cluster id at the corresponding point so as to facilitate the execution of the silhouette.
+### Mean Curve Update
+The update step in KMeans, accesses all the centroids and the curves assigned to them. The curves of each centroid are stored in a vector of curves (Curvetree), which is given as a parameter in the finding function of the Mean Curve. After calculating the Mean Curve, it is assigned as the new centroid.
+The function for finding the Mean Curve has been implemented in 3 hierarchical stages. The initial function takes as an argument a vector from Curves, where it aims to find the total mean curve. But instead of implementing it with a binary complete tree, we transferred the same logic to a table implementation. That is, the table is filled as if we did a level order traversal in b-tree. Inside the basic algorithm you will see that in the central loop we proceed by 2 * step and each time we check this sheet with the sheet in the i + step position.
+We pass the curves in these positions as an argument to the next one in the getMeanCurve hierarchy and save the mean curve in position i while deleting the curve in position i + step. To maintain the dimensionality, we use filtering techniques similar to those we use in Continuous Curve LSH , based on an error tolerance that increases until a sustainable mean curve size is achieved.
+The next function in the getMeanCurve hierarchy simply calls the optimal path finding function (which we added to Fred's Frechet class) and calculates through the optimal path the mean curve between 2 any curves.
+The last in the getMeanCurve hierarchy calculates using L2_Norm the distance between the points of each tuple of the optimal path.
+
 
 ## Collaborators
-
+- Aristi Papastavrou, Github profile: https://github.com/AristiPap
+- Vissarion Moutafis, Github profile: https://github.com/VissaMoutafis/
 
