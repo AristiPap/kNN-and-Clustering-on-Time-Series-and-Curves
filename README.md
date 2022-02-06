@@ -26,7 +26,7 @@ The LSH algorithm, based on the k-hash functions with formula:
 
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 
-Τhe **LSHHashing**, calculates the functions **$g(\cdot)$**. Its also responsible for the estimation of the value: 
+Τhe **LSHHashing**, calculates the functions **g(\cdot)**. Its also responsible for the estimation of the value: 
 ![formula](https://render.githubusercontent.com/render/math?math=\sum\limits_{i=1}^k%20r_i\cdot%20h(p)) where the r_i are separate for each amplified function g. 
  
 
@@ -45,12 +45,12 @@ At the same time, we check so that the grid curve wont have any duplicate points
 ### LSH/Hypercube with Continuous Frechet
 To implement LSH/Hypercube with Continuous Frechet, we used a subclass of the base Class **HashingCurve**, **CLHHashingCurve**. 
 
-According to the theory we implemented the algorithm for continuous curve hashing as follows: For each curve $c \ in Dataset$:
+According to the theory we implemented the algorithm for continuous curve hashing as follows: For each curve c \ in Dataset$:
 - filter with **CLSHHashing :: filter** to display the curve at $R$,
 - we use the same function for grid snapping as in discrete curve hashing, to map the points of the filtered curve c at the points of the grid 
 according to the formula <img src="photos/maping.png">
 - in the grid curve we keep only the local maximums and minimums
-- we make the concatenated curve vector, $x$
+- we make the concatenated curve vector, x
 - we apply padding based on the highest value of all grids
 
 This class also contains the filtering method, which based on an error, filters the given curve. For further use of this method, read the section **Clustering :: Mean Curve Update**
