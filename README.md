@@ -25,10 +25,10 @@ The LSH algorithm, based on the k-hash functions with formula:
 ![formula](https://render.githubusercontent.com/render/math?math=$h_i(\boldsymbol{p})=%20\frac{\boldsymbol{p}%20\cdot%20\boldsymbol{v_i}%20%2B%20t_i}{w}$)
 
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
-\par 
+
 Τhe **LSHHashing**, calculates the functions **$g(\cdot)$**. Its also responsible for the estimation of the value: 
 ![formula](https://render.githubusercontent.com/render/math?math=\sum\limits_{i=1}^k%20r_i\cdot%20h(p)) where the r_i are separate for each amplified function g. 
-\par 
+ 
 
 The class that implements the LSH Nearest Neighbours, (**LSHNearestNeighbours**),initializes L functions and  Hashtables and contains helper functions  for the import of a point in the hashtable, for nearest neighbor search , k-nearest-neighbors search and range-nearest-neighbors search according to a query point.
 
