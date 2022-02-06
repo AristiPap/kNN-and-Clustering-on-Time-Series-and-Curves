@@ -26,7 +26,7 @@ The LSH algorithm, based on the k-hash functions with formula:
 
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 
-Τhe **LSHHashing**, calculates the functions **g(\cdot)**. Its also responsible for the estimation of the value: 
+Τhe **LSHHashing**, calculates the functions <img src="https://render.githubusercontent.com/render/math?math=g(\cdot)"/>. Its also responsible for the estimation of the value: 
 <img src="photos/LSH.png"> where the r_i are separate for each amplified function g. 
  
 
