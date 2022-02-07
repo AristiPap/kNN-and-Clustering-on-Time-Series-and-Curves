@@ -27,7 +27,7 @@ The LSH algorithm, based on the k-hash functions with formula:
 was implemented  from the classes **Hashing** και **LSHHasing**. The Hashing class produces and saves the **v_i** and **t_i** as well as the production of the  **h_i** values. 
 
 Τhe **LSHHashing**, calculates the functions <img src="https://render.githubusercontent.com/render/math?math=g(\cdot)"/>. Its also responsible for the estimation of the value: 
-<img src="photos/LSH.png"> where the r_i are separate for each amplified function g. 
+<img src="misc/photos/LSH.png"> where the r_i are separate for each amplified function g. 
  
 
 The class that implements the LSH Nearest Neighbours, (**LSHNearestNeighbours**),initializes L functions and  Hashtables and contains helper functions  for the import of a point in the hashtable, for nearest neighbor search , k-nearest-neighbors search and range-nearest-neighbors search according to a query point.
@@ -48,7 +48,7 @@ To implement LSH/Hypercube with Continuous Frechet, we used a subclass of the ba
 According to the theory we implemented the algorithm for continuous curve hashing as follows: For each curve c \ in Dataset$:
 - filter with **CLSHHashing :: filter** to display the curve at $R$,
 - we use the same function for grid snapping as in discrete curve hashing, to map the points of the filtered curve c at the points of the grid 
-according to the formula <img src="photos/maping.png">
+according to the formula <img src="misc/photos/maping.png">
 - in the grid curve we keep only the local maximums and minimums
 - we make the concatenated curve vector, x
 - we apply padding based on the highest value of all grids
